@@ -280,12 +280,10 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   // send Interest
-  std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
+  // std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
   interest->setMacAddress(targetMac);
   std::cout << "targetMac was given: " << targetMac << std::endl;
-  //ownInterest->setMacAddress("superHuman");
   std::cout << "88888888888888888" << interest->getMacAddress() << std::endl;
-  //std::cout << "99999999999999999" << ownInterest->getMacAddress() << std::endl;
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
 }
