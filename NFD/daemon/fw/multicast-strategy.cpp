@@ -71,9 +71,10 @@ if(interest.getMacAddress() == "consumer") {
 
   for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	shared_ptr<Face> outFace = it->getFace();
+	std::string targetMac = it->getMac();
     if (pitEntry->canForwardTo(*outFace)) {
       //interest.setMacAddress("test");
-      this->sendInterest(pitEntry, outFace);
+      this->sendInterest(pitEntry, outFace, targetMac);
     }
   }
 

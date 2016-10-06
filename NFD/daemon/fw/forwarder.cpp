@@ -235,6 +235,57 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   // send Interest
+  std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
+  interest->setMacAddress("xXx");
+  //ownInterest->setMacAddress("superHuman");
+  std::cout << "88888888888888888" << interest->getMacAddress() << std::endl;
+  //std::cout << "99999999999999999" << ownInterest->getMacAddress() << std::endl;
+  outFace.sendInterest(*interest);
+  ++m_counters.getNOutInterests();
+}
+
+void
+Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
+                              std::string targetMac, bool wantNewNonce)
+{
+  if (outFace.getId() == INVALID_FACEID) {
+    NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
+    return;
+  }
+  NFD_LOG_DEBUG("onOutgoingInterest face=" << outFace.getId() <<
+                " interest=" << pitEntry->getName());
+
+  // scope control
+  if (pitEntry->violatesScope(outFace)) {
+    NFD_LOG_DEBUG("onOutgoingInterest face=" << outFace.getId() <<
+                  " interest=" << pitEntry->getName() << " violates scope");
+    return;
+  }
+
+  // pick Interest
+  const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
+  pit::InRecordCollection::const_iterator pickedInRecord = std::max_element(
+    inRecords.begin(), inRecords.end(), bind(&compare_pickInterest, _1, _2, &outFace));
+  BOOST_ASSERT(pickedInRecord != inRecords.end());
+  shared_ptr<Interest> interest = const_pointer_cast<Interest>(
+    pickedInRecord->getInterest().shared_from_this());
+
+  if (wantNewNonce) {
+    interest = make_shared<Interest>(*interest);
+    static boost::random::uniform_int_distribution<uint32_t> dist;
+    interest->setNonce(dist(getGlobalRng()));
+  }
+
+  // insert OutRecord
+  pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
+
+  // send Interest
+  std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
+  interest->setMacAddress(targetMac);
+  std::cout << "targetMac was given: " << targetMac << std::endl;
+  //ownInterest->setMacAddress("superHuman");
+  std::cout << "88888888888888888" << interest->getMacAddress() << std::endl;
+  //std::cout << "99999999999999999" << ownInterest->getMacAddress() << std::endl;
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
 }

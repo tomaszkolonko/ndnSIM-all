@@ -117,6 +117,12 @@ protected: // actions
                shared_ptr<Face> outFace,
                bool wantNewNonce = false);
 
+  VIRTUAL_WITH_TESTS void
+  sendInterest(shared_ptr<pit::Entry> pitEntry,
+               shared_ptr<Face> outFace,
+			   std::string targetMac,
+               bool wantNewNonce = false);
+
   /** \brief decide that a pending Interest cannot be forwarded
    *
    *  This shall not be called if the pending Interest has been
@@ -163,6 +169,15 @@ Strategy::sendInterest(shared_ptr<pit::Entry> pitEntry,
                        bool wantNewNonce)
 {
   m_forwarder.onOutgoingInterest(pitEntry, *outFace, wantNewNonce);
+}
+
+inline void
+Strategy::sendInterest(shared_ptr<pit::Entry> pitEntry,
+                       shared_ptr<Face> outFace,
+					   std::string targetMac,
+                       bool wantNewNonce)
+{
+  m_forwarder.onOutgoingInterest(pitEntry, *outFace, targetMac, wantNewNonce);
 }
 
 inline void
