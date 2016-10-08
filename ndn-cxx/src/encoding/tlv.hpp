@@ -65,7 +65,7 @@ enum {
   NameComponent = 8,
   Selectors     = 9,
   Nonce         = 10,
-  // <Unassigned> = 11,
+  Mac			= 11,
   InterestLifetime          = 12,
   MinSuffixComponents       = 13,
   MaxSuffixComponents       = 14,

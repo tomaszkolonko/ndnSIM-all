@@ -240,6 +240,9 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
     BOOST_ASSERT(!hasSelectedDelegation());
   }
 
+  if (hasMacAddress()) {
+	  totalLength += encoder.prependBlock(m_macAddress);
+  }
   // InterestLifetime
   if (getInterestLifetime() >= time::milliseconds::zero() &&
       getInterestLifetime() != DEFAULT_INTEREST_LIFETIME)

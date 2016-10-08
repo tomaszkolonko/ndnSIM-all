@@ -254,6 +254,13 @@ public: // Name and guiders
 	  return *this;
   }
 
+  // TODO correct the always true return statement !!!!
+  bool
+  hasMacAddress() const
+  {
+	  return true;
+  }
+
   /** @brief Check if Nonce set
    */
   bool
@@ -454,7 +461,8 @@ private:
   Selectors m_selectors;
   mutable Block m_nonce;
   time::milliseconds m_interestLifetime;
-  std::string m_macAddress;
+  // std::string m_macAddress;
+  mutable Block m_macAddress;
 
   mutable Block m_link;
   size_t m_selectedDelegationIndex;

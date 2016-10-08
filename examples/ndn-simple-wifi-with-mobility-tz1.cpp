@@ -181,18 +181,23 @@ main(int argc, char* argv[])
 //	  mac[n+nodeNum] = str2.str().substr(6);
   }
 
+  std::cout << std::endl << "**********************************************" << std::endl;
   std::cout << "testing mac0: " << mac[0] << std::endl;
   std::cout << "testing mac1: " << mac[1] << std::endl;
   std::cout << "testing mac2: " << mac[2] << std::endl;
   std::cout << "testing mac3: " << mac[3] << std::endl;
   std::cout << "testing mac4: " << mac[4] << std::endl;
+  std::cout << "**********************************************" << std::endl << std::endl;
   //std::cout << "testing mac5: " << mac[5] << std::endl;
 
   // adding a route again with just another mac address will overwrite the old route !!!!
 
-  // ndn::FibHelper::AddRoute(node[0], "/", 256, 123, mac[0]); // mac[0] = 00:00:00:00:00:01 Node[0]
+
   ndn::FibHelper::AddRoute(node[0], "/", 256, 234, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  ndn::FibHelper::AddRoute(node[0], "/", 256, 234, mac[2]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[3], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[1], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  //ndn::FibHelper::AddRoute()
   // ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]);  // mac[4] = 00:00:00:00:00:05 Node[4]
   //ndn::FibHelper::AddRoute(node[1], "/", 257, 345, mac[5]); // mac[5] =
 

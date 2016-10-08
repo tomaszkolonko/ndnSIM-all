@@ -93,7 +93,6 @@ FibManager::FibManager(Fib& fib,
                            UNSIGNED_COMMAND_VERBS +
                            (sizeof(UNSIGNED_COMMAND_VERBS) / sizeof(UnsignedVerbAndProcessor)))
 {
-	if(coordinates) std::cout << "INSIDE FibManager::FibManager" << std::endl;
   face->setInterestFilter("/localhost/nfd/fib",
                           bind(&FibManager::onFibRequest, this, _2));
 }

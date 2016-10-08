@@ -48,43 +48,43 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-
+	std::cout << "()()()()()() node: " << node->GetId() << " targetMac from Interest: " << interest.getMacAddress() << std::endl;
 	std::cout << std::endl;
-	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
-	}
-	std::cout << std::endl;
+//	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+//		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
+//	}
+	//std::cout << std::endl;
 
-	bool toBeDroped = true;
-	ns3::Address ad;
-	std::string mac;
+//	bool toBeDroped = true;
+//	ns3::Address ad;
+//	std::string mac;
 
-	for(int i = 0; i < node->GetNDevices(); i++) {
-		  ad = node->GetDevice(i)->GetAddress();
-		  std::ostringstream str;
-		  str << ad;
-		  mac = str.str().substr(6);
-		  std::cout << "??????????????????????????????????????????" << std::endl;
-		  std::cout << "mac from node i device" << mac << std::endl;
-		  std::cout << "mac from interest" << interest.getMacAddress() << std::endl;
-		  if(mac == interest.getMacAddress()) {
-			  std::cout << "mac == interest.getMacAddress() = TRUE" << std::endl;
-			  toBeDroped = false;
-		  } else {
-			  std::cout << "mac == interest.getMacAddress() = FALSE" << std::endl;
-		  }
-	}
+//	for(int i = 0; i < node->GetNDevices(); i++) {
+//		  ad = node->GetDevice(i)->GetAddress();
+//		  std::ostringstream str;
+//		  str << ad;
+//		  mac = str.str().substr(6);
+//		  std::cout << "??????????????????????????????????????????" << std::endl;
+//		  std::cout << "mac from node i device" << mac << std::endl;
+//		  std::cout << "mac from interest: " << interest.getMacAddress() << std::endl;
+//		  if(mac == interest.getMacAddress()) {
+//			  std::cout << "mac == interest.getMacAddress() = TRUE" << std::endl;
+//			  toBeDroped = false;
+//		  } else {
+//			  std::cout << "mac == interest.getMacAddress() = FALSE" << std::endl;
+//		  }
+//	}
+//
+//	if(toBeDroped) {
+//		// TODO drop the interest
+//	}
 
-	if(toBeDroped) {
-		// TODO drop the interest
-	}
-
-	// if node is NOT Consumer
-	if(interest.getMacAddress() == "consumer") {
-		std::cout << "interest->getMacAddress() resulted in TRUE -> consumer" << std::endl;
-	} else {
-		std::cout << "interest->getMacAddress() resulted in FALSE because it is: " << interest.getMacAddress() << std::endl;
-	}
+//	// if node is NOT Consumer
+//	if(interest.getMacAddress() == "consumer") {
+//		std::cout << "interest->getMacAddress() resulted in TRUE -> consumer" << std::endl;
+//	} else {
+//		std::cout << "interest->getMacAddress() resulted in FALSE because it is: " << interest.getMacAddress() << std::endl;
+//	}
 
 	//std::cout << "mac out of the interest: " << interest.getMacAddress() << " with name: " << interest.getName() << std::endl;
 
@@ -94,7 +94,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		shared_ptr<Face> outFace = it->getFace();
 		std::string targetMac = it->getMac();
-		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> targetMac: " << targetMac << std::endl;
+//		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> targetMac: " << targetMac << std::endl;
 		if (pitEntry->canForwardTo(*outFace)) {
 		  //interest.setMacAddress("test");
 		  this->sendInterest(pitEntry, outFace, targetMac);

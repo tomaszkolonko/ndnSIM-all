@@ -31,6 +31,9 @@
 
 #include "utils/ndn-ns3-packet-tag.hpp"
 
+#include "ns3/node.h"
+#include "ns3/node-list.h"
+
 #include <boost/random/uniform_int_distribution.hpp>
 
 namespace nfd {
@@ -38,7 +41,7 @@ namespace nfd {
 NFD_LOG_INIT("Forwarder");
 
 using fw::Strategy;
-const bool debug = false;
+const bool debug = true;
 
 const Name Forwarder::LOCALHOST_NAME("ndn:/localhost");
 
@@ -50,7 +53,6 @@ Forwarder::Forwarder()
   , m_strategyChoice(m_nameTree, fw::makeDefaultStrategy(*this))
   , m_csFace(make_shared<NullFace>(FaceUri("contentstore://")))
 {
-  if(debug) std::cout << "Inside Forwarder::Forwarder() " << std::endl;
 //  ns3::Ptr<ns3::Node> node = this->GetObject<ns3::Node> ();
   fw::installStrategies(*this);
   getFaceTable().addReserved(m_csFace, FACEID_CONTENT_STORE);
@@ -203,6 +205,7 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               bool wantNewNonce)
 {
+  if(debug) std::cout << "Forwarder::onOutgoingInterest NO targetMac" << std::endl;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -235,11 +238,6 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   // send Interest
-  std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
-  interest->setMacAddress("xXx");
-  //ownInterest->setMacAddress("superHuman");
-  std::cout << "88888888888888888" << interest->getMacAddress() << std::endl;
-  //std::cout << "99999999999999999" << ownInterest->getMacAddress() << std::endl;
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
 }
@@ -248,6 +246,7 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               std::string targetMac, bool wantNewNonce)
 {
+  if(debug) std::cout << "Forwarder::onOutgoingInterest WITH targetMac" << std::endl;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -280,10 +279,13 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   // send Interest
-  // std::cout << "77777777777777777" << interest->getMacAddress() << std::endl;
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  interest = make_shared<Interest>(*interest);
   interest->setMacAddress(targetMac);
-  std::cout << "targetMac was given: " << targetMac << std::endl;
-  std::cout << "88888888888888888" << interest->getMacAddress() << std::endl;
+  if(debug) {
+    std::cout << "targetMac was given (in node: " << node->GetId() << "): " << targetMac << std::endl;
+    std::cout << "test targetMac from interest: " << interest->getMacAddress() << std::endl;
+  }
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
 }
