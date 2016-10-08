@@ -461,8 +461,8 @@ private:
   Selectors m_selectors;
   mutable Block m_nonce;
   time::milliseconds m_interestLifetime;
-  // std::string m_macAddress;
-  mutable Block m_macAddress;
+  std::string m_macAddress;
+  // mutable Block m_macAddress;
 
   mutable Block m_link;
   size_t m_selectedDelegationIndex;

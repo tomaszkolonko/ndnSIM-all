@@ -241,7 +241,7 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
   }
 
   if (hasMacAddress()) {
-	  totalLength += encoder.prependBlock(m_macAddress);
+	  totalLength += prependStringBlock(encoder, tlv::Mac, m_macAddress);
   }
   // InterestLifetime
   if (getInterestLifetime() >= time::milliseconds::zero() &&
@@ -325,6 +325,12 @@ Interest::wireDecode(const Block& wire)
 
   // Nonce
   m_nonce = m_wire.get(tlv::Nonce);
+
+  // mac address
+  val = m_wire.find(tlv::Mac);
+  if(val != m_wire.elements_end()) {
+	  m_macAddress = readString(*val);
+  }
 
   // InterestLifetime
   val = m_wire.find(tlv::InterestLifetime);
