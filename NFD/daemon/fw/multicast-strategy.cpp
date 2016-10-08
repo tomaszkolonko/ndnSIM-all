@@ -94,10 +94,13 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		shared_ptr<Face> outFace = it->getFace();
 		std::string targetMac = it->getMac();
-//		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> targetMac: " << targetMac << std::endl;
+		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> targetMac: " << targetMac << std::endl;
 		if (pitEntry->canForwardTo(*outFace)) {
-		  //interest.setMacAddress("test");
+			std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> canForwardTo(*outFace) YES" << std::endl;
+			//interest.setMacAddress("test");
 		  this->sendInterest(pitEntry, outFace, targetMac);
+		} else {
+			std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> canForwardTo(*outFace) NO" << std::endl;
 		}
 	  }
 

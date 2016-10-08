@@ -143,7 +143,7 @@ main(int argc, char* argv[])
   ///////////////
   // 1. Install Wifi
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
-  //NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
   // 2. Install Mobility model
   //mobility.Install(nodes);
@@ -158,16 +158,16 @@ main(int argc, char* argv[])
   // ndnHelper.AddNetDeviceFaceCreateCallback (WifiNetDevice::GetTypeId (), MakeCallback
   // (MyNetDeviceFaceCallback));
   ndnHelper.SetOldContentStore("ns3::ndn::cs::Lru", "MaxSize", "1000");
-  ndnHelper.SetDefaultRoutes(false);
+  ndnHelper.SetDefaultRoutes(true);
   ndnHelper.Install(nodes);
 
   // Adding specific routes does not yield wanted results... probably it's the strategy that decides
   // what is accepted at which node.
   // AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric);
 
-  std::string mac[(nodeNum)];
+  std::string mac[(2*nodeNum)];
   Address ad;
-  //Address ad2;
+  Address ad2;
 
   for(int n = 0; n < nodeNum; n++) {
 	  ad = node[n]->GetDevice(0)->GetAddress();
@@ -175,10 +175,10 @@ main(int argc, char* argv[])
 	  str << ad;
 	  mac[n] = str.str().substr(6);
 
-//	  ad2 = node[n]->GetDevice(1)->GetAddress();
-//	  std::ostringstream str2;
-//	  str2 << ad2;
-//	  mac[n+nodeNum] = str2.str().substr(6);
+	  ad2 = node[n]->GetDevice(1)->GetAddress();
+	  std::ostringstream str2;
+	  str2 << ad2;
+	  mac[n+nodeNum] = str2.str().substr(6);
   }
 
   std::cout << std::endl << "**********************************************" << std::endl;
@@ -193,10 +193,10 @@ main(int argc, char* argv[])
   // adding a route again with just another mac address will overwrite the old route !!!!
 
 
-  ndn::FibHelper::AddRoute(node[0], "/", 256, 234, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-  ndn::FibHelper::AddRoute(node[3], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-  ndn::FibHelper::AddRoute(node[1], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[0], "/", 256, 234, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+//  ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[3], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[1], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
   //ndn::FibHelper::AddRoute()
   // ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]);  // mac[4] = 00:00:00:00:00:05 Node[4]
   //ndn::FibHelper::AddRoute(node[1], "/", 257, 345, mac[5]); // mac[5] =
