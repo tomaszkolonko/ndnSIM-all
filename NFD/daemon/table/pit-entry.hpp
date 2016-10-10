@@ -42,7 +42,7 @@ namespace pit {
 
 /** \brief represents an unordered collection of InRecords
  */
-typedef std::list< InRecord>  InRecordCollection;
+typedef std::list<InRecord>  InRecordCollection;
 
 /** \brief represents an unordered collection of OutRecords
  */

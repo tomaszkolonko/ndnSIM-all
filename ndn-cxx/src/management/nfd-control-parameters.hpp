@@ -285,34 +285,35 @@ public: // getters & setters
     return *this;
   }
   bool
-    hasMac() const
-    {
-      return m_hasFields[CONTROL_PARAMETER_MAC];
-    }
+  hasMac() const
+  {
+    return m_hasFields[CONTROL_PARAMETER_MAC];
+  }
 
-    std::string
-    getMac() const
-    {
-      BOOST_ASSERT(this->hasMac());
-      return m_mac;
-    }
+  std::string
+  getMac() const
+  {
+    BOOST_ASSERT(this->hasMac());
+    return m_mac;
+  }
 
-    ControlParameters&
-    setMac(std::string mac)
-    {
-      m_wire.reset();
-      m_mac = mac;
-      m_hasFields[CONTROL_PARAMETER_MAC] = true;
-      return *this;
-    }
+  ControlParameters&
+  setMac(std::string mac)
+  {
+    m_wire.reset();
+    m_mac = mac;
+    m_hasFields[CONTROL_PARAMETER_MAC] = true;
+    return *this;
+  }
 
-    ControlParameters&
-    unsetMac()
-    {
-      m_wire.reset();
-      m_hasFields[CONTROL_PARAMETER_MAC] = false;
-      return *this;
-    }
+  ControlParameters&
+  unsetMac()
+  {
+    m_wire.reset();
+    m_hasFields[CONTROL_PARAMETER_MAC] = false;
+    return *this;
+  }
+
   bool
   hasFlags() const
   {

@@ -158,7 +158,7 @@ main(int argc, char* argv[])
   // ndnHelper.AddNetDeviceFaceCreateCallback (WifiNetDevice::GetTypeId (), MakeCallback
   // (MyNetDeviceFaceCallback));
   ndnHelper.SetOldContentStore("ns3::ndn::cs::Lru", "MaxSize", "1000");
-  ndnHelper.SetDefaultRoutes(true);
+  ndnHelper.SetDefaultRoutes(false);
   ndnHelper.Install(nodes);
 
   // Adding specific routes does not yield wanted results... probably it's the strategy that decides
@@ -193,10 +193,10 @@ main(int argc, char* argv[])
   // adding a route again with just another mac address will overwrite the old route !!!!
 
 
-//  ndn::FibHelper::AddRoute(node[0], "/", 256, 234, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-//  ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-//  ndn::FibHelper::AddRoute(node[3], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-//  ndn::FibHelper::AddRoute(node[1], "/", 256, 234, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[3], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+  ndn::FibHelper::AddRoute(node[1], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
   //ndn::FibHelper::AddRoute()
   // ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]);  // mac[4] = 00:00:00:00:00:05 Node[4]
   //ndn::FibHelper::AddRoute(node[1], "/", 257, 345, mac[5]); // mac[5] =
@@ -210,7 +210,9 @@ main(int argc, char* argv[])
   ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix("/test/prefix");
   consumerHelper.SetAttribute("Frequency", DoubleValue(10.0));
-  consumerHelper.Install(nodes.Get(0));
+  ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
+  consumer.Start(Seconds(2));
+  consumer.Stop(Seconds(10));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/");
@@ -222,7 +224,7 @@ main(int argc, char* argv[])
 
   ndn::L3RateTracer::InstallAll("rate-trace.txt", Seconds(1));
 
-  Simulator::Stop(Seconds(3));
+  Simulator::Stop(Seconds(10));
 
   Simulator::Run();
   /*

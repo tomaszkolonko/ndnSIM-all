@@ -97,7 +97,7 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
 
-  std::cout << "INSIDE Producer::OnInterest" << std::endl;
+  std::cout << "INSIDE Producer::OnInterest -> interst.getMacAddress(): " << interest->getMacAddress() << std::endl;
 
   NS_LOG_FUNCTION(this << interest);
 
@@ -110,6 +110,8 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 
   auto data = make_shared<Data>();
   data->setName(dataName);
+  // TODO: find out correct macAddress (you are still within application !!!
+  data->setMacAddressPro("producer Mac");
   data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
 
   data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
@@ -127,6 +129,7 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
   data->setSignature(signature);
 
   NS_LOG_INFO("node(" << GetNode()->GetId() << ") responding with Data: " << data->getName());
+  std::cout << "node(" << GetNode()->GetId() << ") responding with Data: " << data->getName() << std::endl;
 
   // to create real wire encoding
   data->wireEncode();
