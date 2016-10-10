@@ -304,6 +304,7 @@ Interest::wireDecode(const Block& wire)
   //                Name
   //                Selectors?
   //                Nonce
+  //				MacAddress
   //                InterestLifetime?
   //                Link?
   //                SelectedDelegation?
@@ -326,7 +327,7 @@ Interest::wireDecode(const Block& wire)
   // Nonce
   m_nonce = m_wire.get(tlv::Nonce);
 
-  // mac address
+  // Mac Address
   val = m_wire.find(tlv::Mac);
   if(val != m_wire.elements_end()) {
 	  m_macAddress = readString(*val);
