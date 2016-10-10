@@ -157,6 +157,7 @@ public:
   Data&
   setName(const Name& name);
 
+
   //
 
   /**
@@ -303,6 +304,28 @@ public:
   Data&
   setCachingPolicy(nfd::LocalControlHeader::CachingPolicy cachingPolicy);
 
+public: // Mac setters and getters
+  const std::string
+  getMacAddressPro() const
+  {
+  	  return m_macAddressPro;
+  }
+
+  Data&
+  setMacAddressPro(const std::string mac)
+  {
+  	  m_macAddressPro = mac;
+  	  m_wire.reset();
+  	  return *this;
+  }
+
+  // TODO correct the always true return statement !!!!
+  bool
+  hasMacAddressPro() const
+  {
+  	  return true;
+  }
+
 public: // EqualityComparable concept
   bool
   operator==(const Data& other) const;
@@ -322,6 +345,7 @@ private:
   MetaInfo m_metaInfo;
   mutable Block m_content;
   Signature m_signature;
+  std::string m_macAddressPro;
 
   mutable Block m_wire;
   mutable Name m_fullName;

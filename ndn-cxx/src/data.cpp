@@ -81,6 +81,8 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
   // MetaInfo
   totalLength += getMetaInfo().wireEncode(encoder);
 
+  totalLength += prependStringBlock(encoder, tlv::Mac, m_macAddressPro);
+
   // Name
   totalLength += getName().wireEncode(encoder);
 
@@ -140,12 +142,22 @@ Data::wireDecode(const Block& wire)
 
   // Data ::= DATA-TLV TLV-LENGTH
   //            Name
+  //			MacAddressPro
   //            MetaInfo
   //            Content
   //            Signature
 
   // Name
   m_name.wireDecode(m_wire.get(tlv::Name));
+
+  // Mac Address
+  Block::element_const_iterator val = m_wire.find(tlv::Mac);
+  val = m_wire.find(tlv::Mac);
+  if(val != m_wire.elements_end()) {
+	  m_macAddressPro = readString(*val);
+  }
+
+//  m_macAddress.wireDecode(m_wire.get(tlv::Mac));
 
   // MetaInfo
   m_metaInfo.wireDecode(m_wire.get(tlv::MetaInfo));
@@ -161,7 +173,7 @@ Data::wireDecode(const Block& wire)
   m_signature.setInfo(m_wire.get(tlv::SignatureInfo));
 
   // SignatureValue
-  Block::element_const_iterator val = m_wire.find(tlv::SignatureValue);
+  val = m_wire.find(tlv::SignatureValue);
   if (val != m_wire.elements_end())
     m_signature.setValue(*val);
 }
@@ -340,6 +352,7 @@ std::ostream&
 operator<<(std::ostream& os, const Data& data)
 {
   os << "Name: " << data.getName() << "\n";
+  os << "MacAddress: " << data.getMacAddressPro() << "\n";
   os << "MetaInfo: " << data.getMetaInfo() << "\n";
   os << "Content: (size: " << data.getContent().value_size() << ")\n";
   os << "Signature: (type: " << data.getSignature().getType() <<
