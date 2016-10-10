@@ -52,7 +52,7 @@ const bool debug = false;
 void
 FibHelper::AddNextHop(const ControlParameters& parameters, Ptr<Node> node)
 {
-  if(debug) {
+  if(true) {
 	  std::cout << "INSIDE FibHelper::AddNextHop(const ControlParameters&, Ptr<Node>)" << std::endl;
 	  std::cout << "ControlParameters: " << parameters << "node: " << node->GetId() << std::endl;
 	  std::cout << "Add Next Hop command was initialized" << std::endl;

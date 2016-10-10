@@ -253,6 +253,7 @@ Consumer::OnData(shared_ptr<const Data> data)
       NS_LOG_DEBUG("Hop count: " << hopCount);
     }
   }
+  std::cout << "consumer receiving data for: " << seq << " with hopcount: " << hopCount << std::endl;
 
   SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
   if (entry != m_seqLastDelay.end()) {
