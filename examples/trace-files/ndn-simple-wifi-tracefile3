@@ -3,13 +3,13 @@ $node_(0) set X_ 100
 $node_(0) set Y_ 300
 
 #regular nodes in between
-$node_(1) set X_ 160
+$node_(1) set X_ 180
 $node_(1) set Y_ 320
-$node_(2) set X_ 140
+$node_(2) set X_ 260
 $node_(2) set Y_ 300
-$node_(3) set X_ 160
+$node_(3) set X_ 340
 $node_(3) set Y_ 280
 
 #producer
-$node_(4) set X_ 220
+$node_(4) set X_ 460
 $node_(4) set Y_ 310
