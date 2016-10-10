@@ -29,6 +29,19 @@
 #include "strategy.hpp"
 #include "face/null-face.hpp"
 
+// *******
+#include "model/ndn-l3-protocol.hpp"
+#include "ns3/core-module.h"
+#include "ns3/network-module.h"
+#include "ns3/applications-module.h"
+#include "ns3/wifi-module.h"
+//#include "ns3/mobility-module.h"
+//#include "ns3/internet-module.h"
+//#include "ns3/ndnSIM/utils/tracers/ndn-l3-rate-tracer.hpp"
+
+#include "helper/ndn-fib-helper.hpp"
+// *******
+
 #include "utils/ndn-ns3-packet-tag.hpp"
 
 #include "ns3/node.h"
@@ -41,7 +54,7 @@ namespace nfd {
 NFD_LOG_INIT("Forwarder");
 
 using fw::Strategy;
-const bool debug = true;
+const bool debug = false;
 
 const Name Forwarder::LOCALHOST_NAME("ndn:/localhost");
 
@@ -362,6 +375,27 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+  // Add new Route since the data is solicited and no scope violations detected
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  if(debug) {
+    std::cout << "*****************************************************************" << std::endl;
+    std::cout << "data.getMacAddressPro()  " << data.getMacAddressPro() << std::endl;
+    std::cout << "INSIDE: Forwarder::onIncomingData: " << inFace << std::endl;
+    std::cout << "*****************************************************************" << std::endl;
+  }
+
+  if(data.getMacAddressPro() == "producer Mac") {
+	  // TODO: attache origin mac to data package possibly through PIT table
+  } else {
+	  // TODO check for other cases like control messages !!!
+	  std::string str = data.getMacAddressPro();
+	  ns3::ndn::FibHelper::AddRoute(node, "/", 256, 111, str);
+  }
+
+
+
+  //ns3::ndn::FibHelper::AddRoute(node, "/", 256, 234, "jaja");
+
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
   // - reduce amount of memory used by cached entries
   // - remove all tags that (e.g., hop count tag) that could have been associated with Ptr<Packet>
@@ -381,6 +415,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // foreach PitEntry
   for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());
+    //std::cout << "onIncomingData matching= pitEntry->getName() : " << pitEntry->getName() << std::endl;
 
     // cancel unsatisfy & straggler timer
     this->cancelUnsatisfyAndStragglerTimer(pitEntry);
@@ -416,6 +451,28 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     shared_ptr<Face> pendingDownstream = *it;
     if (pendingDownstream.get() == &inFace) {
       continue;
+    }
+    // Get the current node and get every NetDevice on it. Then get the FaceId through l3protocol and compare
+    // it to the downstream face if it matches attach it to the MacField in data for next node
+    ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+    ns3::Address ad;
+    for(u_int i = 0; i < node->GetNDevices(); i++) {
+    	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
+    	std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%" << netDevice->GetAddress() << std::endl;
+    	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+    	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
+    	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
+    	if(faceToCheck->getId() == pendingDownstream->getId()) {
+    		std::cout << "CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE" << std::endl;
+    		shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
+    		ad = netDevice->GetAddress();
+    		std::ostringstream str;
+    		str << ad;
+    		dataWithNewMac->setMacAddressPro(str.str().substr(6));
+    	} else {
+    		std::cout << "CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE" << std::endl;
+    		this->onOutgoingData(data, *pendingDownstream);
+    	}
     }
     // goto outgoing Data pipeline
     this->onOutgoingData(data, *pendingDownstream);
