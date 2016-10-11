@@ -33,7 +33,7 @@ namespace fw {
 const Name MulticastStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/multicast/%FD%01");
 NFD_REGISTER_STRATEGY(MulticastStrategy);
 
-const bool debug = true;
+const bool debug = false;
 
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
@@ -48,8 +48,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	std::cout << "()()()()()() node: " << node->GetId() << " targetMac from Interest: " << interest.getMacAddress() << std::endl;
-	std::cout << std::endl;
 //	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
@@ -94,13 +92,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		shared_ptr<Face> outFace = it->getFace();
 		std::string targetMac = it->getMac();
-		std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> targetMac: " << targetMac << std::endl;
 		if (pitEntry->canForwardTo(*outFace)) {
-			std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> canForwardTo(*outFace) YES" << std::endl;
-			//interest.setMacAddress("test");
 		  this->sendInterest(pitEntry, outFace, targetMac);
 		} else {
-			std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>> canForwardTo(*outFace) NO" << std::endl;
+			if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
 		}
 	  }
 

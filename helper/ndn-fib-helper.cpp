@@ -52,7 +52,7 @@ const bool debug = false;
 void
 FibHelper::AddNextHop(const ControlParameters& parameters, Ptr<Node> node)
 {
-  if(true) {
+  if(debug) {
 	  std::cout << "INSIDE FibHelper::AddNextHop(const ControlParameters&, Ptr<Node>)" << std::endl;
 	  std::cout << "ControlParameters: " << parameters << "node: " << node->GetId() << std::endl;
 	  std::cout << "Add Next Hop command was initialized" << std::endl;
@@ -97,8 +97,11 @@ FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, i
                    << " metric " << metric);
 
 
-  std::cout << "UPPER FibHelper::AddRoute node [" << node->GetId() << "]$ route add " << prefix << " via " << face->getLocalUri()
-                           << " metric " << metric << std::endl;
+  if(debug) {
+	  std::cout << "UPPER FibHelper::AddRoute node [" << node->GetId() << "]$ route add "
+			  << prefix << " via " << face->getLocalUri() << " metric " << metric << std::endl;
+  }
+
   // Get L3Protocol object
   Ptr<L3Protocol> L3protocol = node->GetObject<L3Protocol>();
   // Get the forwarder instance
@@ -119,9 +122,10 @@ FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, i
   NS_LOG_LOGIC("[" << node->GetId() << "]$ route add " << prefix << " via " << face->getLocalUri()
                    << " metric " << metric);
 
-
-std::cout << "LOWER FibHelper::AddRoute node [" << node->GetId() << "]$ route add " << prefix << " via " << face->getLocalUri()
-                           << " metric " << metric << std::endl;
+  if(debug) {
+	  std::cout << "LOWER FibHelper::AddRoute node [" << node->GetId() << "]$ route add "
+			  << prefix << " via " << face->getLocalUri() << " metric " << metric << std::endl;
+  }
   // Get L3Protocol object
   Ptr<L3Protocol> L3protocol = node->GetObject<L3Protocol>();
   // Get the forwarder instance

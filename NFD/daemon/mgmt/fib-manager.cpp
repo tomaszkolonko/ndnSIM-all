@@ -119,7 +119,6 @@ FibManager::onFibRequest(const Interest& request)
     }
 
   const Name::Component& verb = command.at(COMMAND_PREFIX.size());
-  std::cout << "HERE HERE" << std::endl;
   const auto unsignedVerbProcessor = m_unsignedVerbDispatch.find(verb);
   if (unsignedVerbProcessor != m_unsignedVerbDispatch.end())
     {
