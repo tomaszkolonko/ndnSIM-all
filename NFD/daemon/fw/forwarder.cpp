@@ -384,12 +384,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     std::cout << "*****************************************************************" << std::endl;
   }
 
+  //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
+
   if(data.getMacAddressPro() == "producer Mac") {
 	  // TODO: attache origin mac to data package possibly through PIT table
   } else {
 	  // TODO check for other cases like control messages !!!
 	  std::string str = data.getMacAddressPro();
-	  ns3::ndn::FibHelper::AddRoute(node, "/", 256, 111, str);
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
   }
 
 
@@ -458,24 +460,22 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     ns3::Address ad;
     for(u_int i = 0; i < node->GetNDevices(); i++) {
     	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
-    	std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%" << netDevice->GetAddress() << std::endl;
     	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
     	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
     	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
     	if(faceToCheck->getId() == pendingDownstream->getId()) {
-    		std::cout << "CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE CHECKED TRUE" << std::endl;
     		shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
     		ad = netDevice->GetAddress();
     		std::ostringstream str;
     		str << ad;
     		dataWithNewMac->setMacAddressPro(str.str().substr(6));
+    		this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
     	} else {
-    		std::cout << "CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE CHECKED FALSE" << std::endl;
     		this->onOutgoingData(data, *pendingDownstream);
     	}
     }
     // goto outgoing Data pipeline
-    this->onOutgoingData(data, *pendingDownstream);
+    // this->onOutgoingData(data, *pendingDownstream);
   }
 }
 
