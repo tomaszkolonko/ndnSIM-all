@@ -26,6 +26,7 @@
 #include "ns3/ndnSIM/utils/tracers/ndn-l3-rate-tracer.hpp"
 
 #include "ns3/ndnSIM-module.h"
+//#include <ns3/ndnSIM/utils/tracers/ndn-cs-tracer.hpp>
 
 using namespace std;
 namespace ns3 {
@@ -91,7 +92,7 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 5;
+  int nodeNum = 10;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
@@ -158,7 +159,7 @@ main(int argc, char* argv[])
   // ndnHelper.AddNetDeviceFaceCreateCallback (WifiNetDevice::GetTypeId (), MakeCallback
   // (MyNetDeviceFaceCallback));
   ndnHelper.SetOldContentStore("ns3::ndn::cs::Lru", "MaxSize", "1000");
-  ndnHelper.SetDefaultRoutes(false);
+  ndnHelper.SetDefaultRoutes(true);
   ndnHelper.Install(nodes);
 
   // Adding specific routes does not yield wanted results... probably it's the strategy that decides
@@ -193,10 +194,10 @@ main(int argc, char* argv[])
   // adding a route again with just another mac address will overwrite the old route !!!!
 
 
-  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-  ndn::FibHelper::AddRoute(node[3], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-  ndn::FibHelper::AddRoute(node[1], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+//  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[3], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
+//  ndn::FibHelper::AddRoute(node[1], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
   //ndn::FibHelper::AddRoute()
   // ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]);  // mac[4] = 00:00:00:00:00:05 Node[4]
   //ndn::FibHelper::AddRoute(node[1], "/", 257, 345, mac[5]); // mac[5] =
@@ -217,12 +218,16 @@ main(int argc, char* argv[])
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/");
   producerHelper.SetAttribute("PayloadSize", StringValue("1200"));
-  producerHelper.Install(nodes.Get(4));
+  producerHelper.Install(nodes.Get(9));
 
   if(debug) printNodes(nodes, nodeNum);
 
 
   ndn::L3RateTracer::InstallAll("rate-trace.txt", Seconds(1));
+
+//  // Does not work ;(
+//  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
+//  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
   Simulator::Stop(Seconds(10));
 
