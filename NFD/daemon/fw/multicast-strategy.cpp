@@ -53,29 +53,15 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //	}
 	//std::cout << std::endl;
 
-//	bool toBeDroped = true;
-//	ns3::Address ad;
-//	std::string mac;
 
-//	for(int i = 0; i < node->GetNDevices(); i++) {
-//		  ad = node->GetDevice(i)->GetAddress();
-//		  std::ostringstream str;
-//		  str << ad;
-//		  mac = str.str().substr(6);
-//		  std::cout << "??????????????????????????????????????????" << std::endl;
-//		  std::cout << "mac from node i device" << mac << std::endl;
-//		  std::cout << "mac from interest: " << interest.getMacAddress() << std::endl;
-//		  if(mac == interest.getMacAddress()) {
-//			  std::cout << "mac == interest.getMacAddress() = TRUE" << std::endl;
-//			  toBeDroped = false;
-//		  } else {
-//			  std::cout << "mac == interest.getMacAddress() = FALSE" << std::endl;
-//		  }
-//	}
-//
-//	if(toBeDroped) {
-//		// TODO drop the interest
-//	}
+	// bool interestShouldBeDropped = dropInterest(interest, *node);
+	if(interest.getMacAddress() == "consumer") {
+		if(node->GetId() == 3 || node->GetId() == 4 || node->GetId() == 5) {
+			std::cout << "interest dropped since directly from consumer" << std::endl;
+			// drop package since from consumer directly
+			return;
+		}
+	}
 
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
@@ -103,6 +89,20 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		this->rejectPendingInterest(pitEntry);
 	  }
 	}
+
+//bool
+//MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
+//{
+//	if(interest.getMacAddress() == "consumer") {
+//		std::cout << node.GetId() << std::endl;
+//		if(node.GetId() == 3 || node.GetId() == 4 || node.GetId() == 5) {
+//			std::cout << "interest dropped since directly from consumer" << std::endl;
+//			return true;
+//		}
+//	}
+//
+//	return false;
+//}
 
 } // namespace fw
 } // namespace nfd
