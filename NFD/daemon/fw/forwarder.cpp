@@ -394,8 +394,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
   }
 
-
-
   //ns3::ndn::FibHelper::AddRoute(node, "/", 256, 234, "jaja");
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes

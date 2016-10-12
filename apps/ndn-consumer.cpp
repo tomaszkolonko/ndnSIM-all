@@ -193,15 +193,9 @@ Consumer::SendPacket()
   interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setName(*nameWithSequence);
   time::milliseconds interestLifeTime(m_interestLifeTime.GetMilliSeconds());
+  // std::cout << "time::miliseconds of the Interest send out: " << m_interestLifeTime.GetMilliSeconds() << std::endl;
   interest->setInterestLifetime(interestLifeTime);
 
-
-  // TODO: how do I get the correct mac into the interest?
-//	  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-//	  Address ad = node->GetDevice(0)->GetAddress();
-//	  std::ostringstream str;
-//	  str << ad;
-//	  std::string macAddress = str.str().substr(6);
 
   // The strategy knows, that this interest has been just created and that
   // we are within the consumer
