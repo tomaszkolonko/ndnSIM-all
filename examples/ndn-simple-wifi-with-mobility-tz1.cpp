@@ -35,20 +35,6 @@ NS_LOG_COMPONENT_DEFINE("ndn.WifiExample");
 
 const bool debug = true;
 
-//
-// DISCLAIMER:  Note that this is an extremely simple example, containing just 2 wifi nodes
-// communicating directly over AdHoc channel.
-//
-
-// Ptr<ndn::NetDeviceFace>
-// MyNetDeviceFaceCallback (Ptr<Node> node, Ptr<ndn::L3Protocol> ndn, Ptr<NetDevice> device)
-// {
-//   // NS_LOG_DEBUG ("Create custom network device " << node->GetId ());
-//   Ptr<ndn::NetDeviceFace> face = CreateObject<ndn::MyNetDeviceFace> (node, device);
-//   ndn->AddFace (face);
-//   return face;
-// }
-
 void printNodes(NodeContainer nodes, int nodeNum)
 {
   std::cout << "**********************************************" << std::endl;
@@ -75,13 +61,10 @@ int
 main(int argc, char* argv[])
 {
 
-    LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
-    LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
-    // LogComponentEnable("ndn.Consumer", LOG_LEVEL_DEBUG);
-    // LogComponentEnable("ndn.Producer", LOG_LEVEL_DEBUG);
-    // LogComponentEnable("ndn.StrategyChoiceHelper", LOG_LEVEL_DEBUG);
-    // LogComponentEnable("nfd.StrategyChoiceManager", LOG_LEVEL_DEBUG);
-    // LogComponentEnable("nfd.Forwarder", LOG_LEVEL_DEBUG);
+  LogComponentEnable("UdpEchoClientApplication", LOG_LEVEL_INFO);
+  LogComponentEnable("UdpEchoServerApplication", LOG_LEVEL_INFO);
+  // LogComponentEnable("ndn.Consumer", LOG_LEVEL_DEBUG);
+  // LogComponentEnable("ndn.Producer", LOG_LEVEL_DEBUG);
 
   // disable fragmentation
   Config::SetDefault("ns3::WifiRemoteStationManager::FragmentationThreshold", StringValue("2200"));
@@ -92,7 +75,7 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 10;
+  int nodeNum = 6;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
@@ -132,7 +115,7 @@ main(int argc, char* argv[])
   NodeContainer nodes;
   Ptr<Node> node[nodeNum];
 
-// Nodes are being created as in variable nodeNum defines and added to an array of pointers
+  // Nodes are being created as in variable nodeNum defines and added to an array of pointers
   // and to a nodeContainer for further processing.
   for(int i = 0; i < nodeNum; i++) {
 	  node[i] = CreateObject<Node> ();
@@ -141,16 +124,13 @@ main(int argc, char* argv[])
 
   if(debug) printNodes(nodes, nodeNum);
 
-  ///////////////
   // 1. Install Wifi
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
   // 2. Install Mobility model
-  //mobility.Install(nodes);
-
-  	  Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
-  	  ns2.Install ();
+  Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
+  ns2.Install ();
 
   // 3. Install NDN stack -> L3Protocol
   NS_LOG_INFO("Installing NDN stack");
@@ -162,8 +142,6 @@ main(int argc, char* argv[])
   ndnHelper.SetDefaultRoutes(true);
   ndnHelper.Install(nodes);
 
-  // Adding specific routes does not yield wanted results... probably it's the strategy that decides
-  // what is accepted at which node.
   // AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric);
 
   std::string mac[(2*nodeNum)];
@@ -189,18 +167,10 @@ main(int argc, char* argv[])
   std::cout << "testing mac3: " << mac[3] << std::endl;
   std::cout << "testing mac4: " << mac[4] << std::endl;
   std::cout << "**********************************************" << std::endl << std::endl;
-  //std::cout << "testing mac5: " << mac[5] << std::endl;
-
-  // adding a route again with just another mac address will overwrite the old route !!!!
 
 
-//  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-//  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-//  ndn::FibHelper::AddRoute(node[3], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-//  ndn::FibHelper::AddRoute(node[1], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-  //ndn::FibHelper::AddRoute()
-  // ndn::FibHelper::AddRoute(node[2], "/", 256, 234, mac[4]);  // mac[4] = 00:00:00:00:00:05 Node[4]
-  //ndn::FibHelper::AddRoute(node[1], "/", 257, 345, mac[5]); // mac[5] =
+  //  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+  //  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
 
   // Set BestRoute strategy
   ndn::StrategyChoiceHelper::Install(nodes, "/", "/localhost/nfd/strategy/multicast");
@@ -218,16 +188,16 @@ main(int argc, char* argv[])
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/");
   producerHelper.SetAttribute("PayloadSize", StringValue("1200"));
-  producerHelper.Install(nodes.Get(9));
+  producerHelper.Install(nodes.Get(5));
 
   if(debug) printNodes(nodes, nodeNum);
 
 
   ndn::L3RateTracer::InstallAll("rate-trace.txt", Seconds(1));
 
-//  // Does not work ;(
-//  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
-//  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
+  //  Does not work ;(
+  //  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
+  //  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
   Simulator::Stop(Seconds(10));
 
