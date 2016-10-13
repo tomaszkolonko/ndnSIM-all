@@ -75,7 +75,7 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 6;
+  int nodeNum = 4;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
@@ -188,7 +188,7 @@ main(int argc, char* argv[])
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/");
   producerHelper.SetAttribute("PayloadSize", StringValue("1200"));
-  producerHelper.Install(nodes.Get(5));
+  producerHelper.Install(nodes.Get(3));
 
   if(debug) printNodes(nodes, nodeNum);
 
