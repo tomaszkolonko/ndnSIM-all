@@ -58,7 +58,7 @@ Consumer::GetTypeId(void)
 
       .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&Consumer::m_interestName), MakeNameChecker())
-      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("2s"),
+      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("10s"),
                     MakeTimeAccessor(&Consumer::m_interestLifeTime), MakeTimeChecker())
 
       .AddAttribute("RetxTimer",
@@ -198,19 +198,17 @@ Consumer::SendPacket()
 
 
   // The strategy knows, that this interest has been just created and that
-  // we are within the consumer
+  // it is inside the consumer node
   interest->setMacAddress("consumer");
 
 // leads to 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<ndn::Block::Error> >'
-
-//  const Name& theName = Name("test");
-//  std::cout << "theName: " << theName << std::endl;
-//  interest->setSelectedDelegation(theName);
 
   // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
   NS_LOG_INFO("> Interest for " << seq);
 
   WillSendOutInterest(seq);
+
+  std::cout << "TRACKER TRACKER TRACKER within Consumer App sending interest out through m_face..." << std::endl;
 
   m_transmittedInterests(interest, this, m_face);
   m_face->onReceiveInterest(*interest);
