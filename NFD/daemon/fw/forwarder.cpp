@@ -250,6 +250,9 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   // insert OutRecord
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  std::cout << "Interest " << pitEntry->getName() << " is being forwarded from node(" << node->GetId() << ")" << std::endl;
+
   // send Interest
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
