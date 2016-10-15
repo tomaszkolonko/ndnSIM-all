@@ -355,6 +355,28 @@ Forwarder::onInterestFinalize(shared_ptr<pit::Entry> pitEntry, bool isSatisfied,
 void
 Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
+//	ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+//	if(nodee->GetId() == 0) {
+//		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+//			// this->rejectPendingInterest(pitEntry);
+//			return;
+//		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
+//			// this->rejectPendingInterest(pitEntry);
+//			return;
+//		}
+//	}
+//
+//	if(nodee->GetId() == 2) {
+//		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+//			// this->rejectPendingInterest(pitEntry);
+//			return;
+//		}
+//	}
+
+
   // receive Data
   NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() << " data=" << data.getName());
   const_cast<Data&>(data).setIncomingFaceId(inFace.getId());
@@ -513,7 +535,30 @@ Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
 void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
-  if (outFace.getId() == INVALID_FACEID) {
+
+		ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+		if(nodee->GetId() == 0) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+				// this->rejectPendingInterest(pitEntry);
+				return;
+			} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
+				// this->rejectPendingInterest(pitEntry);
+				return;
+			}
+		}
+
+		if(nodee->GetId() == 1) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+				// this->rejectPendingInterest(pitEntry);
+				return;
+			}
+		}
+
+
+	if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
     return;
   }

@@ -58,25 +58,25 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// TODO check PIT entries if they are written to the tables although interest is dropped
 	// TODO what has happend before strategy inside this node?
 
-//	if(node->GetId() == 3) {
-//		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
-//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-//			this->rejectPendingInterest(pitEntry);
-//			return;
-//		} else if(interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:06") {
-//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 1" << std::endl;
-//			this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
-//
-//	if(node->GetId() == 2) {
-//		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
-//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-//			this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
+	if(node->GetId() == 3) {
+		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
+			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
+			this->rejectPendingInterest(pitEntry);
+			//return;
+		} else if(interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:06") {
+			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 1" << std::endl;
+			this->rejectPendingInterest(pitEntry);
+			//return;
+		}
+	}
+
+	if(node->GetId() == 2) {
+		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
+			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
+			this->rejectPendingInterest(pitEntry);
+			//return;
+		}
+	}
 //
 //	if(node->GetId() == 4 || node->GetId() == 3) {
 //		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:07") {

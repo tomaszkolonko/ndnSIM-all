@@ -169,7 +169,10 @@ main(int argc, char* argv[])
   std::cout << "**********************************************" << std::endl << std::endl;
 
 
-  //  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+//  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+//  ndn::FibHelper::AddRoute(node[0], "/", 257, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+//  ndn::FibHelper::AddRoute(node[0], "/test", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
+
   //  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
 
   // Set BestRoute strategy

@@ -159,8 +159,8 @@ FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t
   NS_ASSERT_MSG(ndn != 0, "Ndn stack should be installed on the node");
 
   shared_ptr<Face> face = ndn->getFaceById(faceId);
-  NS_ASSERT_MSG(face != 0, "Face with ID [" << faceId << "] does not exist on node ["
-                                            << node->GetId() << "]");
+  //NS_ASSERT_MSG(face != 0, "Face with ID [" << faceId << "] does not exist on node ["
+  //                                          << node->GetId() << "]");
 
   AddRoute(node, prefix, face, metric, macAddress);
 }
