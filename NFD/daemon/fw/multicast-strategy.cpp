@@ -48,7 +48,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	std::cout << "you are on node(" << node->GetId() << ") and the Mac is: " << interest.getMacAddress() << std::endl;
+	std::cout << "you are on node(" << node->GetId() << ") and the Mac of the recv. Interest is: " << interest.getMacAddress() << std::endl;
 //	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
@@ -58,25 +58,25 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// TODO check PIT entries if they are written to the tables although interest is dropped
 	// TODO what has happend before strategy inside this node?
 
-	if(node->GetId() == 3) {
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		} else if(interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:06") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 1" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		}
-	}
-
-	if(node->GetId() == 2) {
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		}
-	}
+//	if(node->GetId() == 3) {
+//		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
+//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
+//			this->rejectPendingInterest(pitEntry);
+//			return;
+//		} else if(interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:06") {
+//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 1" << std::endl;
+//			this->rejectPendingInterest(pitEntry);
+//			return;
+//		}
+//	}
+//
+//	if(node->GetId() == 2) {
+//		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
+//			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
+//			this->rejectPendingInterest(pitEntry);
+//			return;
+//		}
+//	}
 //
 //	if(node->GetId() == 4 || node->GetId() == 3) {
 //		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:07") {
@@ -111,10 +111,12 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	// TODO here you want to implement the strategy that checks for the incoming mac and it's own mac and
 	// compares for dropping or continuing.....
-
+int i = 0;
+std::cout << "***************** for the next few iterations you are on node (" << node->GetId() << ") !!!" << std::endl;
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		shared_ptr<Face> outFace = it->getFace();
 		std::string targetMac = it->getMac();
+		std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
 		if (pitEntry->canForwardTo(*outFace)) {
 		  this->sendInterest(pitEntry, outFace, targetMac);
 		} else {
