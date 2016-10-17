@@ -246,6 +246,7 @@ Consumer::OnData(shared_ptr<const Data> data)
     }
   }
   std::cout << "consumer receiving data for: " << seq << " with hopcount: " << hopCount << std::endl;
+  std::cout << "MacRoute of the data is: " << data->getMacRoute() << std::endl;
 
   SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
   if (entry != m_seqLastDelay.end()) {

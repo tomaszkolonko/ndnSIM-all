@@ -114,6 +114,8 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
   data->setMacAddressPro("producer Mac");
   data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
 
+  data->setMacRoute("producer Mac");
+
   data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
 
   Signature signature;
