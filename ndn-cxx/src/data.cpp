@@ -83,6 +83,8 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
 
   totalLength += prependStringBlock(encoder, tlv::Mac, m_macAddressPro);
 
+  totalLength += prependStringBlock(encoder, tlv::MacRoute, m_macRoute);
+
   // Name
   totalLength += getName().wireEncode(encoder);
 
@@ -146,6 +148,7 @@ Data::wireDecode(const Block& wire)
   //            MetaInfo
   //            Content
   //            Signature
+  //
 
   // Name
   m_name.wireDecode(m_wire.get(tlv::Name));
@@ -155,6 +158,13 @@ Data::wireDecode(const Block& wire)
   val = m_wire.find(tlv::Mac);
   if(val != m_wire.elements_end()) {
 	  m_macAddressPro = readString(*val);
+  }
+
+  // Mac Address
+  val = m_wire.find(tlv::MacRoute);
+  val = m_wire.find(tlv::MacRoute);
+  if(val != m_wire.elements_end()) {
+	  m_macRoute = readString(*val);
   }
 
 //  m_macAddress.wireDecode(m_wire.get(tlv::Mac));

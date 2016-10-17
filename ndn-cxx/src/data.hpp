@@ -326,6 +326,35 @@ public: // Mac setters and getters
   	  return true;
   }
 
+  const std::string
+  getMacRoute() const
+  {
+  	  return m_macRoute;
+  }
+
+  Data&
+  setMacRoute(const std::string macRoute)
+  {
+	  m_macRoute = macRoute;
+  	  m_wire.reset();
+  	  return *this;
+  }
+
+  Data&
+  addMacRoute(const std::string macRoute)
+  {
+	  m_macRoute.append(macRoute);
+	  m_wire.reset();
+	  return *this;
+  }
+
+  // TODO correct the always true return statement !!!!
+  bool
+  hasMacRoute() const
+  {
+  	  return true;
+  }
+
 public: // EqualityComparable concept
   bool
   operator==(const Data& other) const;
@@ -346,6 +375,7 @@ private:
   mutable Block m_content;
   Signature m_signature;
   std::string m_macAddressPro;
+  std::string m_macRoute;
 
   mutable Block m_wire;
   mutable Name m_fullName;
