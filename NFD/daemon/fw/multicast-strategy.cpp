@@ -59,7 +59,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// TODO what has happend before strategy inside this node?
 
 	if(node->GetId() == 3) {
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
+		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05" ||
+				interest.getMacAddress() == "consumer") {
 			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
 			this->rejectPendingInterest(pitEntry);
 			//return;

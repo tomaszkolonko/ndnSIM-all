@@ -355,28 +355,6 @@ Forwarder::onInterestFinalize(shared_ptr<pit::Entry> pitEntry, bool isSatisfied,
 void
 Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
-//	ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-//	if(nodee->GetId() == 0) {
-//		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-//			// this->rejectPendingInterest(pitEntry);
-//			return;
-//		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
-//			// this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
-//
-//	if(nodee->GetId() == 2) {
-//		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//			std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-//			// this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
-
-
   // receive Data
   NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() << " data=" << data.getName());
   const_cast<Data&>(data).setIncomingFaceId(inFace.getId());
@@ -392,6 +370,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+
+
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
   if (pitMatches.begin() == pitMatches.end()) {
@@ -402,6 +382,26 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   // Add new Route since the data is solicited and no scope violations detected
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+  if(node->GetId() == 0) {
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+  			// this->rejectPendingInterest(pitEntry);
+  			return;
+  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
+  			// this->rejectPendingInterest(pitEntry);
+  			return;
+  		}
+  	}
+  	if(node->GetId() == 1) {
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+  			// this->rejectPendingInterest(pitEntry);
+  			return;
+  		}
+  	}
+
   if(debug) {
     std::cout << "*****************************************************************" << std::endl;
     std::cout << "data.getMacAddressPro()  " << data.getMacAddressPro() << std::endl;
@@ -417,10 +417,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
   }
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro() == "control command" || data.getMacAddressPro() == "") {
-	  std::cout << "SHOULD NOT BE ADDED TO ROUTE SINCE MACADDRESSPRO() IS: " << data.getMacAddressPro() << std::endl;
+	  //std::cout << "SHOULD NOT BE ADDED TO ROUTE SINCE MACADDRESSPRO() IS: " << data.getMacAddressPro() << std::endl;
   } else {
 
-	  std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
+	  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
 	  // TODO check for other cases like control messages !!!
 	  std::string str = data.getMacAddressPro();
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
@@ -536,26 +536,26 @@ void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
 
-		ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-		if(nodee->GetId() == 0) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-				// this->rejectPendingInterest(pitEntry);
-				return;
-			} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
-				// this->rejectPendingInterest(pitEntry);
-				return;
-			}
-		}
-
-		if(nodee->GetId() == 1) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-				// this->rejectPendingInterest(pitEntry);
-				return;
-			}
-		}
+//		ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+//		if(nodee->GetId() == 0) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+//				// this->rejectPendingInterest(pitEntry);
+//				return;
+//			} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
+//				// this->rejectPendingInterest(pitEntry);
+//				return;
+//			}
+//		}
+//
+//		if(nodee->GetId() == 1) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
+//				// this->rejectPendingInterest(pitEntry);
+//				return;
+//			}
+//		}
 
 
 	if (outFace.getId() == INVALID_FACEID) {
