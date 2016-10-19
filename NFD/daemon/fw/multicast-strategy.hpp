@@ -27,6 +27,8 @@
 #define NFD_DAEMON_FW_MULTICAST_STRATEGY_HPP
 
 #include "strategy.hpp"
+#include "ns3/node.h"
+#include "ns3/node-list.h"
 
 namespace nfd {
 namespace fw {
@@ -43,6 +45,15 @@ public:
                        const Interest& interest,
                        shared_ptr<fib::Entry> fibEntry,
                        shared_ptr<pit::Entry> pitEntry) DECL_OVERRIDE;
+private:
+  virtual bool
+  dropInterest(const Interest& interest, const ns3::Node& node);
+
+  virtual void
+  printPITInRecord(const shared_ptr<pit::Entry> pitEntry);
+
+  virtual void
+  printPITOutRecord(const shared_ptr<pit::Entry> pitEntry);
 
 public:
   static const Name STRATEGY_NAME;

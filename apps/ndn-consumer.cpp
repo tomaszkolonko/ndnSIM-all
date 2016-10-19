@@ -208,7 +208,7 @@ Consumer::SendPacket()
 
   WillSendOutInterest(seq);
 
-  std::cout << "TRACKER TRACKER TRACKER within Consumer App sending interest out through m_face..." << std::endl;
+  std::cout << "Consumer App sending interest out through m_face..." << std::endl;
 
   m_transmittedInterests(interest, this, m_face);
   m_face->onReceiveInterest(*interest);
@@ -245,6 +245,7 @@ Consumer::OnData(shared_ptr<const Data> data)
       NS_LOG_DEBUG("Hop count: " << hopCount);
     }
   }
+  std::cout << "*****************************************************************" << std::endl;
   std::cout << "consumer receiving data for: " << seq << " with hopcount: " << hopCount << std::endl;
   std::cout << "MacRoute of the data is: " << data->getMacRoute() << std::endl;
 

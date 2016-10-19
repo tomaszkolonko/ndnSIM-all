@@ -97,8 +97,6 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
 
-  std::cout << "INSIDE Producer::OnInterest -> interst.getMacAddress(): " << interest->getMacAddress() << std::endl;
-
   NS_LOG_FUNCTION(this << interest);
 
   if (!m_active)

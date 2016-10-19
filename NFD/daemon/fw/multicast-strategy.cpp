@@ -26,6 +26,7 @@
 #include "multicast-strategy.hpp"
 #include "ns3/node.h"
 #include "ns3/node-list.h"
+#include <typeinfo>
 
 namespace nfd {
 namespace fw {
@@ -52,6 +53,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
+<<<<<<< Updated upstream
 	//std::cout << std::endl;
 
 
@@ -99,7 +101,11 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //		}
 //	}
 
+=======
+>>>>>>> Stashed changes
 
+	printPITInRecord(pitEntry);
+	printPITOutRecord(pitEntry);
 
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
@@ -110,14 +116,11 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	//std::cout << "mac out of the interest: " << interest.getMacAddress() << " with name: " << interest.getName() << std::endl;
 
-	// TODO here you want to implement the strategy that checks for the incoming mac and it's own mac and
-	// compares for dropping or continuing.....
-int i = 0;
 std::cout << "***************** for the next few iterations you are on node (" << node->GetId() << ") !!!" << std::endl;
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		shared_ptr<Face> outFace = it->getFace();
 		std::string targetMac = it->getMac();
-		std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
+		//std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
 		if (pitEntry->canForwardTo(*outFace)) {
 		  this->sendInterest(pitEntry, outFace, targetMac);
 		} else {
@@ -130,19 +133,45 @@ std::cout << "***************** for the next few iterations you are on node (" <
 	  }
 	}
 
-//bool
-//MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
-//{
-//	if(interest.getMacAddress() == "consumer") {
-//		std::cout << node.GetId() << std::endl;
-//		if(node.GetId() == 3 || node.GetId() == 4 || node.GetId() == 5) {
-//			std::cout << "interest dropped since directly from consumer" << std::endl;
-//			return true;
-//		}
-//	}
-//
-//	return false;
-//}
+bool
+MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
+{
+	if(interest.getMacAddress() == "consumer") {
+		std::cout << node.GetId() << std::endl;
+		if(node.GetId() == 3 || node.GetId() == 4 || node.GetId() == 5) {
+			std::cout << "interest dropped since directly from consumer" << std::endl;
+			return true;
+		}
+	}
+	return false;
+}
+
+// iterates through all inRecords of ONE pitEntry
+// Check FaceRecord for more options to display
+void
+MulticastStrategy::printPITInRecord(shared_ptr<pit::Entry> pitEntry) {
+	const pit::InRecordCollection& inRecCol = pitEntry->getInRecords();
+	std::cout << std::endl;
+	std::cout << "MulticastStrategy::printPITInRecord" << std::endl;
+	for(pit::InRecordCollection::const_iterator inIt = inRecCol.begin(); inIt != inRecCol.end(); ++inIt){
+		std::cout << "inRecord interest: " << inIt->getInterest().getName() << std::endl;
+		std::cout << "inRecord face: " << inIt->getFace()->getId() << std::endl;
+	}
+	std::cout << std::endl;
+}
+
+// iterates through all outRecords of ONE pitEntry
+// Check FaceRecord for more options to display
+void
+MulticastStrategy::printPITOutRecord(shared_ptr<pit::Entry> pitEntry) {
+	const pit::OutRecordCollection& outRecCol = pitEntry->getOutRecords();
+	std::cout << std::endl;
+	std::cout << "MulticastStrategy::printPITOutRecord" << std::endl;
+	for(pit::OutRecordCollection::const_iterator inIt = outRecCol.begin(); inIt != outRecCol.end(); ++inIt){
+		std::cout << "outRecord face: " << inIt->getFace()->getId() << std::endl;
+	}
+	std::cout << std::endl;
+}
 
 } // namespace fw
 } // namespace nfd
