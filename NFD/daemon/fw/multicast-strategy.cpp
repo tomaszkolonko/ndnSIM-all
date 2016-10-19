@@ -53,56 +53,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
-<<<<<<< Updated upstream
-	//std::cout << std::endl;
-
-
-	// TODO check PIT entries if they are written to the tables although interest is dropped
-	// TODO what has happend before strategy inside this node?
-
-	if(node->GetId() == 3) {
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05" ||
-				interest.getMacAddress() == "consumer") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		} else if(interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:06") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 1" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		}
-	}
-
-	if(node->GetId() == 2) {
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:05") {
-			std::cout << "node(" << node->GetId() << ") received an illegal interest from node 0" << std::endl;
-			this->rejectPendingInterest(pitEntry);
-			//return;
-		}
-	}
-//
-//	if(node->GetId() == 4 || node->GetId() == 3) {
-//		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:07") {
-//			// drop package since from node 0
-//			std::cout << "interest dropped since from node 0" << std::endl;
-//			this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
-//	// Producer accepts interests only from neighbors
-//	if(node->GetId() == 5) {
-//		if(interest.getMacAddress() == "00:00:00:00:00:03" || interest.getMacAddress() == "00:00:00:00:00:09" ||
-//				interest.getMacAddress() == "00:00:00:00:00:02" || interest.getMacAddress() == "00:00:00:00:00:08" ||
-//				interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:07") {
-//			std::cout << "interest dropped since from node 0, 1 or 2" << std::endl;
-//			// drop package since from node 0, 1 or 2
-//			this->rejectPendingInterest(pitEntry);
-//			return;
-//		}
-//	}
-
-=======
->>>>>>> Stashed changes
 
 	printPITInRecord(pitEntry);
 	printPITOutRecord(pitEntry);

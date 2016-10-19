@@ -165,9 +165,8 @@ main(int argc, char* argv[])
   std::cout << "testing mac1: " << mac[1] << std::endl;
   std::cout << "testing mac2: " << mac[2] << std::endl;
   std::cout << "testing mac3: " << mac[3] << std::endl;
-  std::cout << "testing mac4: " << mac[4] << std::endl;
+  //std::cout << "testing mac4: " << mac[4] << std::endl;
   std::cout << "**********************************************" << std::endl << std::endl;
-
 
 //  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
 //  ndn::FibHelper::AddRoute(node[0], "/", 257, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]

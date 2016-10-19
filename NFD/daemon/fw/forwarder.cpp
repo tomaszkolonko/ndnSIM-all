@@ -380,6 +380,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
+  // TODO: try to show what is inside PIT
+
+
   // Add new Route since the data is solicited and no scope violations detected
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
@@ -499,18 +502,21 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     		std::ostringstream str;
     		str << ad;
     		dataWithNewMac->setMacAddressPro(str.str().substr(6));
-    		if(true	) {
-    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-    		  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
-    		  std::cout << "Mac on the NEW data package is: " << dataWithNewMac->getMacAddressPro() << std::endl;
-    		  std::cout << "It should be the same as one of the nodes NetDevice Macs" << std::endl;;
-    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-    		}
+    		dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
+//    		if(true	) {
+//    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
+//    		  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
+//    		  std::cout << "Mac on the NEW data package is: " << dataWithNewMac->getMacAddressPro() << std::endl;
+//    		  std::cout << "It should be the same as one of the nodes NetDevice Macs" << std::endl;;
+//    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
+//    		}
     		this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
     	}
     }
     // goto outgoing Data pipeline
-    this->onOutgoingData(data, *pendingDownstream);
+    shared_ptr<Data> dataWithNewMacRoute = make_shared<Data>(data);
+    dataWithNewMacRoute->addMacRoute("xxx");
+    this->onOutgoingData(*dataWithNewMacRoute, *pendingDownstream);
   }
 }
 
@@ -536,29 +542,9 @@ void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
 
-//		ns3::Ptr<ns3::Node> nodee = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-//		if(nodee->GetId() == 0) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-//				// this->rejectPendingInterest(pitEntry);
-//				return;
-//			} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 2" << std::endl;
-//				// this->rejectPendingInterest(pitEntry);
-//				return;
-//			}
-//		}
-//
-//		if(nodee->GetId() == 1) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//				std::cout << "node(" << nodee->GetId() << ") received an illegal data from node 3" << std::endl;
-//				// this->rejectPendingInterest(pitEntry);
-//				return;
-//			}
-//		}
 
 
-	if (outFace.getId() == INVALID_FACEID) {
+  if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
     return;
   }
