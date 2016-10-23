@@ -454,7 +454,20 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   } else {
 
 	  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
-	  // TODO check for other cases like control messages !!!
+	  // TODO: check for other cases like control messages !!!
+
+	  // TODO: try to add a new face here
+	  // Problem... you first have to choose a NetDevice to add the face to !!!
+	  // let's assume for starters that you only have one NetDevice.
+	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+	  ns3::Ptr<FaceUri> remoteUri = new FaceUri("\\RemoteUri");
+	  ns3::Ptr<FaceUri> localUri = new FaceUri("\\localUri");
+	  ns3::Ptr<Face> face = new Face(remoteUri, localUri, true, false);
+
+	  l3->addFace(face);
+
+
 	  std::string str = data.getMacAddressPro();
 	  std::cout << "... a new rout is being added ..." << std::endl;
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
@@ -522,13 +535,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     // it to the downstream face if it matches attach it to the MacField in data for next node
     // ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
     ns3::Address ad;
-    ns3::ndn::StackHelper ndnHelper;
     for(u_int i = 0; i < node->GetNDevices(); i++) {
     	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
     	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-
-    	// ndnHelper.createAndRegisterFace(node,l3,netDevice);
-
     	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
     	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
     	if(faceToCheck->getId() == pendingDownstream->getId()) {
