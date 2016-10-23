@@ -205,7 +205,9 @@ StackHelper::Install(Ptr<Node> node) const
     // if (DynamicCast<LoopbackNetDevice> (device) != 0)
     //   continue; // don't create face for a LoopbackNetDevice
 
-    faces->Add(this->createAndRegisterFace(node, ndn, device));
+    shared_ptr<NetDeviceFace> aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    faces->Add(aNetDevice);
   }
 
   if(STACKHELPER_INSTALL_DEBUG) {
@@ -348,14 +350,14 @@ StackHelper::createAndRegisterFace(Ptr<Node> node, Ptr<L3Protocol> ndn, Ptr<NetD
 
 
   if (m_needSetDefaultRoutes) {
-	 Address ad= device->GetAddress();
-	 std::ostringstream str;
-	 str << ad;
-	 std::string macAddress =str.str().substr(6);
+//	 Address ad= device->GetAddress();
+//	 std::ostringstream str;
+//	 str << ad;
+//	 std::string macAddress =str.str().substr(6);
 
     // default route with lowest priority possible
 	if(debug) std::cout << "BEFORE first call to FibHelper::AddRoute()" << std::endl;
-    FibHelper::AddRoute(node, "/", face, std::numeric_limits<int32_t>::max(), macAddress);
+    FibHelper::AddRoute(node, "/", face, std::numeric_limits<int32_t>::max());
     if(debug) std::cout << "AFTER first call to FibHelper::AddRoute()" << std::endl;
   }
   return face;

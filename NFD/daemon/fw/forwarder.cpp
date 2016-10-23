@@ -40,6 +40,7 @@
 //#include "ns3/ndnSIM/utils/tracers/ndn-l3-rate-tracer.hpp"
 
 #include "helper/ndn-fib-helper.hpp"
+#include "ns3/ndnSIM-module.h"
 // *******
 
 #include "utils/ndn-ns3-packet-tag.hpp"
@@ -150,6 +151,18 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 
   // FIB lookup
   shared_ptr<fib::Entry> fibEntry = m_fib.findLongestPrefixMatch(*pitEntry);
+
+  // Displays all the nextHops for a certain prefix on a certain node
+  if(debug) {
+	  std::cout << std::endl;
+	  std::cout << "INSIDE FORWARDER::ONcONTENTsTOREmISS" << std::endl;
+	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
+	  std::cout << "within ONE fibEntry for prefix: \"" << fibEntry->getPrefix() << "\" looking at nextHop entries...." << std::endl;
+	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+		  std::cout << "Get fibEntry outFace" << it->getFace()->getId() << "   Cost: " << it->getCost() << "   Mac: " << it->getMac() << std::endl;
+	  }
+	  std::cout << std::endl;
+  }
 
   // dispatch to strategy
   this->dispatchToStrategy(pitEntry, bind(&Strategy::afterReceiveInterest, _1,
@@ -386,24 +399,24 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // Add new Route since the data is solicited and no scope violations detected
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  if(node->GetId() == 0) {
-  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-  			// this->rejectPendingInterest(pitEntry);
-  			return;
-  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
-  			// this->rejectPendingInterest(pitEntry);
-  			return;
-  		}
-  	}
-  	if(node->GetId() == 1) {
-  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-  			// this->rejectPendingInterest(pitEntry);
-  			return;
-  		}
-  	}
+//  if(node->GetId() == 0) {
+//  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+//  			// this->rejectPendingInterest(pitEntry);
+//  			return;
+//  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
+//  			// this->rejectPendingInterest(pitEntry);
+//  			return;
+//  		}
+//  	}
+//  	if(node->GetId() == 1) {
+//  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+//  			// this->rejectPendingInterest(pitEntry);
+//  			return;
+//  		}
+//  	}
 
   if(debug) {
     std::cout << "*****************************************************************" << std::endl;
@@ -419,13 +432,31 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
 	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
   }
+
+  // here you need to check if there is already an FIB Entry with this inFace and the target MAC
+  // If yes, don't do anything.... if no -> create a new face and add a new AddRoute(node / newFace, 111, mac)
+
+  // what do we need?
+//  targetMac = data.getMacAddressPro();
+//  inFaceId already here.
+
+
+
+  // check the scenarios that are possible in that case
+  // scenario I   -> Data is received coming from App on the same node
+  //            !!! you want to attach own MacAddress to the Data package (done further down this method)
+  // scenario II  -> Data is received coming from another node and has already a MacAddress on it.
+  //            !!! you want to make NOW a new route with possible new face for this incoming MacAddress
+  //                befor removing it and adding the current MacAddress to it.
+  // scenario III -> Data received is a control command. In this case ignore it completly (I think that should not happen, though)
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro() == "control command" || data.getMacAddressPro() == "") {
-	  //std::cout << "SHOULD NOT BE ADDED TO ROUTE SINCE MACADDRESSPRO() IS: " << data.getMacAddressPro() << std::endl;
+	  // no route is added since data is not coming from another node
   } else {
 
 	  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
 	  // TODO check for other cases like control messages !!!
 	  std::string str = data.getMacAddressPro();
+	  std::cout << "... a new rout is being added ..." << std::endl;
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
   }
 
@@ -491,9 +522,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     // it to the downstream face if it matches attach it to the MacField in data for next node
     // ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
     ns3::Address ad;
+    ns3::ndn::StackHelper ndnHelper;
     for(u_int i = 0; i < node->GetNDevices(); i++) {
     	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
     	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+
+    	// ndnHelper.createAndRegisterFace(node,l3,netDevice);
+
     	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
     	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
     	if(faceToCheck->getId() == pendingDownstream->getId()) {
@@ -515,7 +550,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     }
     // goto outgoing Data pipeline
     shared_ptr<Data> dataWithNewMacRoute = make_shared<Data>(data);
-    dataWithNewMacRoute->addMacRoute("xxx");
+    dataWithNewMacRoute->addMacRoute(" --> ???");
     this->onOutgoingData(*dataWithNewMacRoute, *pendingDownstream);
   }
 }

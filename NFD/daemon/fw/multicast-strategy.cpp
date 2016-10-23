@@ -54,8 +54,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
 
-	printPITInRecord(pitEntry);
-	printPITOutRecord(pitEntry);
+	if(false) printPITInRecord(pitEntry);
+	if(false) printPITOutRecord(pitEntry);
 
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
