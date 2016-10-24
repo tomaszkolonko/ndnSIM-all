@@ -54,6 +54,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
 //	}
 
+	std::cout << "typeid of face: " << typeid(inFace).name() << std::endl;
 	if(false) printPITInRecord(pitEntry);
 	if(false) printPITOutRecord(pitEntry);
 

@@ -35,9 +35,6 @@
 #include "ns3/network-module.h"
 #include "ns3/applications-module.h"
 #include "ns3/wifi-module.h"
-//#include "ns3/mobility-module.h"
-//#include "ns3/internet-module.h"
-//#include "ns3/ndnSIM/utils/tracers/ndn-l3-rate-tracer.hpp"
 
 #include "helper/ndn-fib-helper.hpp"
 #include "ns3/ndnSIM-module.h"
@@ -461,15 +458,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  // let's assume for starters that you only have one NetDevice.
 	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-	  ns3::Ptr<FaceUri> remoteUri = new FaceUri("\\RemoteUri");
-	  ns3::Ptr<FaceUri> localUri = new FaceUri("\\localUri");
-	  ns3::Ptr<Face> face = new Face(remoteUri, localUri, true, false);
+	  ns3::Ptr<ns3::ndn::NetDeviceFace> p_netD = ns3::ndn::NetDeviceFace(node, netDevice);
 
-	  l3->addFace(face);
+	  //l3->addFace(face);
 
 
 	  std::string str = data.getMacAddressPro();
-	  std::cout << "... a new rout is being added ..." << std::endl;
+	  std::cout << "... a new route is being added ..." << std::endl;
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
   }
 
