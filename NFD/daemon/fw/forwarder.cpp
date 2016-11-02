@@ -286,7 +286,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 
 void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
-                              std::string targetMac, bool wantNewNonce)
+                              std::string targetMac, int inFaceId, bool wantNewNonce)
 {
   if(debug) std::cout << "Forwarder::onOutgoingInterest WITH targetMac" << std::endl;
   if (outFace.getId() == INVALID_FACEID) {
@@ -329,7 +329,9 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   ad = node->GetDevice(0)->GetAddress();
   std::ostringstream breadcrumbInterest;
   breadcrumbInterest << ad;
-  interest->addMacAddressPath(" --> " + breadcrumbInterest.str().substr(6));
+  std::string in = " (in " + std::to_string(node->GetId()) + "/" + std::to_string(inFaceId) + ") ";
+  std::string out = " (out " + std::to_string(node->GetId()) + "/" + std::to_string(outFace.getId()) + ") ";
+  interest->addMacAddressPath(" --> " +  in + breadcrumbInterest.str().substr(6) + out);
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END ***************************
 
 

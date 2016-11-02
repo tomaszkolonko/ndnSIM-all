@@ -146,15 +146,12 @@ PUBLIC_WITH_TESTS_ELSE_PRIVATE: // pipelines
   onInterestLoop(Face& inFace, const Interest& interest,
                  shared_ptr<pit::Entry> pitEntry);
 
-  /** \brief outgoing Interest pipeline
-   */
   VIRTUAL_WITH_TESTS void
-  onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
-                     bool wantNewNonce = false);
+  onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace, bool wantNewNonce = false);
 
-  VIRTUAL_WITH_TESTS void
-  onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
-				     std::string targetMac, bool wantNewNonce = false);
+ VIRTUAL_WITH_TESTS void
+ onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
+				    std::string targetMac, int inFaceId, bool wantNewNonce = false);
 
   /** \brief Interest reject pipeline
    */

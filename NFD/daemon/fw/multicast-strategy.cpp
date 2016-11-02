@@ -70,9 +70,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
 	  std::string targetMac = it->getMac();
+	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " << targetMac << std::endl;
 	  //std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
 	  if (pitEntry->canForwardTo(*outFace)) {
-		this->sendInterest(pitEntry, outFace, targetMac);
+		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
 		if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
 	  }
@@ -86,6 +87,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 bool
 MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
 {
+	//std::cout << "ààààààààààààà " << node.GetId() << " / " << interest.getMacAddress() << std::endl;
 	if(interest.getMacAddress() == "consumer") {
 		if(node.GetId() == 1 || node.GetId() == 2 || node.GetId() == 3) {
 			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
