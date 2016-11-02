@@ -261,6 +261,29 @@ public: // Name and guiders
 	  return true;
   }
 
+
+  const std::string
+  getMacAddressPath() const
+  {
+	  return m_macAddressPath;
+  }
+
+
+  Interest&
+  addMacAddressPath(const std::string mac)
+  {
+	  m_macAddressPath.append(mac);
+	  m_wire.reset();
+	  return *this;
+  }
+
+  // TODO correct the always true return statement !!!!
+  bool
+  hasMacAddressPath() const
+  {
+	  return true;
+  }
+
   /** @brief Check if Nonce set
    */
   bool
@@ -462,6 +485,7 @@ private:
   mutable Block m_nonce;
   time::milliseconds m_interestLifetime;
   std::string m_macAddress;
+  std::string m_macAddressPath;
 
   mutable Block m_link;
   size_t m_selectedDelegationIndex;

@@ -31,11 +31,15 @@
 
 // *******
 #include "model/ndn-l3-protocol.hpp"
-#include "ns3/core-module.h"
-#include "ns3/network-module.h"
-#include "ns3/applications-module.h"
-#include "ns3/wifi-module.h"
-
+// ************
+#include "ns3/ndnSIM/model/ndn-face.hpp"
+#include "ns3/net-device.h"
+#include "model/ndn-net-device-face.hpp"
+// ************
+//#include "ns3/core-module.h"
+//#include "ns3/network-module.h"
+//#include "ns3/applications-module.h"
+//#include "ns3/wifi-module.h"
 #include "helper/ndn-fib-helper.hpp"
 #include "ns3/ndnSIM-module.h"
 // *******
@@ -261,6 +265,18 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+
+
+  // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: BEGIN ***************************
+  ns3::Address ad;
+  ad = node->GetDevice(0)->GetAddress();
+  std::ostringstream breadcrumbInterest;
+  breadcrumbInterest << ad;
+  interest->addMacAddressPath(breadcrumbInterest.str().substr(6));
+  // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END ***************************
+
+
   // std::cout << "Interest " << pitEntry->getName() << " is being forwarded from node(" << node->GetId() << ")" << std::endl;
 
   // send Interest
@@ -306,6 +322,18 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 
   // send Interest
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+
+  // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: BEGIN ***************************
+  ns3::Address ad;
+  ad = node->GetDevice(0)->GetAddress();
+  std::ostringstream breadcrumbInterest;
+  breadcrumbInterest << ad;
+  interest->addMacAddressPath(" --> " + breadcrumbInterest.str().substr(6));
+  // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END ***************************
+
+
+
   interest = make_shared<Interest>(*interest);
   interest->setMacAddress(targetMac);
   if(debug) {
@@ -380,39 +408,39 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-
-
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
   if (pitMatches.begin() == pitMatches.end()) {
     // goto Data unsolicited pipeline
-    this->onDataUnsolicited(inFace, data);
+    // this->onDataUnsolicited(inFace, data);
     return;
   }
 
-  // TODO: try to show what is inside PIT
-
-
-  // Add new Route since the data is solicited and no scope violations detected
+  // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-
+//  std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: "  << data.getMacAddressPro() << std::endl;
 //  if(node->GetId() == 0) {
 //  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
 //  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-//  			// this->rejectPendingInterest(pitEntry);
 //  			return;
 //  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
 //  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
-//  			// this->rejectPendingInterest(pitEntry);
 //  			return;
 //  		}
+////  		else if(data.getMacAddressPro() == "producer Mac") {
+////  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+////  			return;
+////  		}
 //  	}
 //  	if(node->GetId() == 1) {
 //  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
 //  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-//  			// this->rejectPendingInterest(pitEntry);
 //  			return;
 //  		}
+////  		else if(data.getMacAddressPro() == "producer Mac") {
+////  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+////  			return;
+////  		}
 //  	}
 
   if(debug) {
@@ -424,10 +452,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
   if(debug) {
-	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
+	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
 	  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
 	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
-	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
+	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
   }
 
   // here you need to check if there is already an FIB Entry with this inFace and the target MAC
@@ -446,29 +474,19 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //            !!! you want to make NOW a new route with possible new face for this incoming MacAddress
   //                befor removing it and adding the current MacAddress to it.
   // scenario III -> Data received is a control command. In this case ignore it completly (I think that should not happen, though)
-  if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro() == "control command" || data.getMacAddressPro() == "") {
-	  // no route is added since data is not coming from another node
+  if(data.getMacAddressPro() == "producer Mac") {
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
-
-	  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
-	  // TODO: check for other cases like control messages !!!
-
 	  // TODO: try to add a new face here
 	  // Problem... you first have to choose a NetDevice to add the face to !!!
 	  // let's assume for starters that you only have one NetDevice.
-	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
-	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-	  ns3::Ptr<ns3::ndn::NetDeviceFace> p_netD = ns3::ndn::NetDeviceFace(node, netDevice);
-
+	  // const ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+	  // ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+	  // ns3::Ptr<ns3::ndn::NetDeviceFace> p_netD = ns3::CreateObject<ns3::ndn::NetDeviceFace> (node, netDevice);
 	  //l3->addFace(face);
 
-
-	  std::string str = data.getMacAddressPro();
-	  std::cout << "... a new route is being added ..." << std::endl;
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getMacAddressPro());
   }
-
-  //ns3::ndn::FibHelper::AddRoute(node, "/", 256, 234, "jaja");
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
   // - reduce amount of memory used by cached entries
@@ -519,43 +537,64 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     this->setStragglerTimer(pitEntry, true, data.getFreshnessPeriod());
   }
 
+
+
   // foreach pending downstream
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
-      it != pendingDownstreams.end(); ++it) {
-    shared_ptr<Face> pendingDownstream = *it;
-    if (pendingDownstream.get() == &inFace) {
-      continue;
-    }
+		  	  	  it != pendingDownstreams.end(); ++it) {
+	  shared_ptr<Face> pendingDownstream = *it;
+	  // data cannot be send through the same face it was received on
+	  if (pendingDownstream.get() == &inFace) {
+		continue;
+	  }
     // Get the current node and get every NetDevice on it. Then get the FaceId through l3protocol and compare
     // it to the downstream face if it matches attach it to the MacField in data for next node
     // ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
     ns3::Address ad;
-    for(u_int i = 0; i < node->GetNDevices(); i++) {
-    	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
-    	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-    	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
-    	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
-    	if(faceToCheck->getId() == pendingDownstream->getId()) {
-    		shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
-    		ad = netDevice->GetAddress();
-    		std::ostringstream str;
-    		str << ad;
-    		dataWithNewMac->setMacAddressPro(str.str().substr(6));
-    		dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
-//    		if(true	) {
-//    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-//    		  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
-//    		  std::cout << "Mac on the NEW data package is: " << dataWithNewMac->getMacAddressPro() << std::endl;
-//    		  std::cout << "It should be the same as one of the nodes NetDevice Macs" << std::endl;;
-//    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-//    		}
-    		this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
-    	}
-    }
+//    for(u_int i = 0; i < node->GetNDevices(); i++) {
+//    	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
+//    	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+//    	// TODO: Problem here is that you have more faces for faceToCheck not only one!!!!!!!!!!!!!!!!
+//    	// What about the faceTable?
+//    	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
+//		ad = netDevice->GetAddress();
+//		std::ostringstream str;
+//		str << ad;
+//    	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
+//    	if(faceToCheck->getId() == pendingDownstream->getId()) {
+//    		shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
+//    		dataWithNewMac->setMacAddressPro(str.str().substr(6));
+//    		dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
+////    		if(true	) {
+////    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
+////    		  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
+////    		  std::cout << "Mac on the NEW data package is: " << dataWithNewMac->getMacAddressPro() << std::endl;
+////    		  std::cout << "It should be the same as one of the nodes NetDevice Macs" << std::endl;;
+////    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
+////    		}
+//    		this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
+//    	} else {
+//    	    shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
+//    	    dataWithNewMac->setMacAddressPro(str.str().substr(6));
+//    	    dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
+//    	    this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
+//    	}
+//    }
     // goto outgoing Data pipeline
-    shared_ptr<Data> dataWithNewMacRoute = make_shared<Data>(data);
-    dataWithNewMacRoute->addMacRoute(" --> ???");
-    this->onOutgoingData(*dataWithNewMacRoute, *pendingDownstream);
+    shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
+    ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+	ad = netDevice->GetAddress();
+	std::ostringstream str;
+	str << ad;
+	dataWithNewMac->setMacAddressPro(str.str().substr(6));
+	dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
+	this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
+
+
+//    shared_ptr<Data> dataWithNewMacRoute = make_shared<Data>(data);
+//    dataWithNewMacRoute->setMacAddressPro("???");
+//    dataWithNewMacRoute->addMacRoute(" --> ???");
+//    this->onOutgoingData(*dataWithNewMacRoute, *pendingDownstream);
   }
 }
 

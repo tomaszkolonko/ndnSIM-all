@@ -96,6 +96,8 @@ void
 Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
+  std::cout << "PRODUCER RECEIVING INTEREST WITH FOLLOWING PATH: " << interest->getMacAddressPath() << std::endl;
+  std::cout << "but mac Address is: " << interest->getMacAddress() << std::endl;
 
   NS_LOG_FUNCTION(this << interest);
 

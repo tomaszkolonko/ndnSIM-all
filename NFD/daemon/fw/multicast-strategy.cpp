@@ -49,14 +49,12 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	std::cout << "you are on node(" << node->GetId() << ") and the Mac of the recv. Interest is: " << interest.getMacAddress() << std::endl;
-//	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-//		std::cout << "cost: " << it->getCost() << "  ---  mac: " << it->getMac()  << "  ---  within: " << node->GetId() << std::endl;
-//	}
 
-	std::cout << "typeid of face: " << typeid(inFace).name() << std::endl;
 	if(false) printPITInRecord(pitEntry);
 	if(false) printPITOutRecord(pitEntry);
+	if(this->dropInterest(interest, *node)) {
+		return;
+	}
 
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
@@ -67,33 +65,50 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	//std::cout << "mac out of the interest: " << interest.getMacAddress() << " with name: " << interest.getName() << std::endl;
 
-std::cout << "***************** for the next few iterations you are on node (" << node->GetId() << ") !!!" << std::endl;
-	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-		shared_ptr<Face> outFace = it->getFace();
-		std::string targetMac = it->getMac();
-		//std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
-		if (pitEntry->canForwardTo(*outFace)) {
-		  this->sendInterest(pitEntry, outFace, targetMac);
-		} else {
-			if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
-		}
-	  }
-
-	  if (!pitEntry->hasUnexpiredOutRecords()) {
-		this->rejectPendingInterest(pitEntry);
+// std::cout << "***************** for the next few iterations you are on node (" << node->GetId() << ") !!!" << std::endl;
+	ns3::Address ad;
+	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+	  shared_ptr<Face> outFace = it->getFace();
+	  std::string targetMac = it->getMac();
+	  //std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
+	  if (pitEntry->canForwardTo(*outFace)) {
+		this->sendInterest(pitEntry, outFace, targetMac);
+	  } else {
+		if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
 	  }
 	}
+
+	if (!pitEntry->hasUnexpiredOutRecords()) {
+	  this->rejectPendingInterest(pitEntry);
+	}
+}
 
 bool
 MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
 {
 	if(interest.getMacAddress() == "consumer") {
-		std::cout << node.GetId() << std::endl;
-		if(node.GetId() == 3 || node.GetId() == 4 || node.GetId() == 5) {
-			std::cout << "interest dropped since directly from consumer" << std::endl;
+		if(node.GetId() == 1 || node.GetId() == 2 || node.GetId() == 3) {
+			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
 			return true;
 		}
 	}
+
+	if(node.GetId() == 2) {
+		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+		if(interest.getMacAddress() == "00:00:00:00:00:01") {
+			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+			return true;
+		}
+	}
+
+	if(node.GetId() == 3) {
+		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:02") {
+			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+			return true;
+		}
+	}
+
 	return false;
 }
 

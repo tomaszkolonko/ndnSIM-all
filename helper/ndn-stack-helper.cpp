@@ -208,6 +208,8 @@ StackHelper::Install(Ptr<Node> node) const
     shared_ptr<NetDeviceFace> aNetDevice = this->createAndRegisterFace(node, ndn, device);
     aNetDevice = this->createAndRegisterFace(node, ndn, device);
     faces->Add(aNetDevice);
+//    aNetDevice = this->createAndRegisterFace(node, ndn, device);
+//    faces->Add(aNetDevice);
   }
 
   if(STACKHELPER_INSTALL_DEBUG) {
@@ -350,11 +352,6 @@ StackHelper::createAndRegisterFace(Ptr<Node> node, Ptr<L3Protocol> ndn, Ptr<NetD
 
 
   if (m_needSetDefaultRoutes) {
-//	 Address ad= device->GetAddress();
-//	 std::ostringstream str;
-//	 str << ad;
-//	 std::string macAddress =str.str().substr(6);
-
     // default route with lowest priority possible
 	if(debug) std::cout << "BEFORE first call to FibHelper::AddRoute()" << std::endl;
     FibHelper::AddRoute(node, "/", face, std::numeric_limits<int32_t>::max());

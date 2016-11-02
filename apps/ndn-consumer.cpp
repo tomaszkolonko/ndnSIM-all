@@ -199,7 +199,8 @@ Consumer::SendPacket()
 
   // The strategy knows, that this interest has been just created and that
   // it is inside the consumer node
-  interest->setMacAddress("consumer");
+  interest->setMacAddress("consumer ");
+  interest->addMacAddressPath("consumer");
 
 // leads to 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<ndn::Block::Error> >'
 
@@ -208,7 +209,7 @@ Consumer::SendPacket()
 
   WillSendOutInterest(seq);
 
-  std::cout << "Consumer App sending interest out through m_face..." << std::endl;
+  std::cout << "Consumer App sending interest " << interest->getName() << std::endl;
 
   m_transmittedInterests(interest, this, m_face);
   m_face->onReceiveInterest(*interest);
@@ -245,9 +246,12 @@ Consumer::OnData(shared_ptr<const Data> data)
       NS_LOG_DEBUG("Hop count: " << hopCount);
     }
   }
+
   std::cout << "*****************************************************************" << std::endl;
-  std::cout << "consumer receiving data for: " << seq << " with hopcount: " << hopCount << std::endl;
-  std::cout << "MacRoute of the data is: " << data->getMacRoute() << std::endl;
+  std::cout << "consumer receiving ;) data for: " << seq << " with hopcount: " << hopCount << std::endl;
+  std::cout << "MacRoute of the data ;) is: " << data->getMacRoute() << std::endl;
+  std::cout << "MacAddressPro() ;) on this node is: " << data->getMacAddressPro() << std::endl;
+  std::cout << std::endl;
 
   SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
   if (entry != m_seqLastDelay.end()) {
