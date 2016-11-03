@@ -42,6 +42,7 @@
 //#include "ns3/wifi-module.h"
 #include "helper/ndn-fib-helper.hpp"
 #include "ns3/ndnSIM-module.h"
+// #include "model/ndn-net-device-face.hpp"
 // *******
 
 #include "utils/ndn-ns3-packet-tag.hpp"
@@ -477,15 +478,28 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //                befor removing it and adding the current MacAddress to it.
   // scenario III -> Data received is a control command. In this case ignore it completly (I think that should not happen, though)
   if(data.getMacAddressPro() == "producer Mac") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
+	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
-	  // TODO: try to add a new face here
-	  // Problem... you first have to choose a NetDevice to add the face to !!!
-	  // let's assume for starters that you only have one NetDevice.
-	  // const ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
-	  // ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-	  // ns3::Ptr<ns3::ndn::NetDeviceFace> p_netD = ns3::CreateObject<ns3::ndn::NetDeviceFace> (node, netDevice);
-	  //l3->addFace(face);
+
+  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
+  //	  // TODO: check for other cases like control messages !!!
+  //
+  //	  // TODO: try to add a new face here
+  //	  // Problem... you first have to choose a NetDevice to add the face to !!!
+  //	  // let's assume for starters that you only have one NetDevice.
+  //	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+  //	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+  //
+  //	  // https://groups.google.com/forum/#!topic/ns-3-users/g4kgUdXmVUg
+  //
+  //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
+  //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
+
+
+	  	  std::string str = data.getMacAddressPro();
+	  	  std::cout << "... a new route is being added ..." << std::endl;
+	  	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
+
 
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getMacAddressPro());
   }
