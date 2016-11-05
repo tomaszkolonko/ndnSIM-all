@@ -98,33 +98,43 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   }
 
 
-  // Dropping interest before they are written to PIT
-
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  //std::cout << "ààààààààààààà " << node.GetId() << " / " << interest.getMacAddress() << std::endl;
-  	if(interest.getMacAddress() == "consumer") {
-  		if(node->GetId() == 1 || node->GetId() == 2 || node->GetId() == 3) {
-  			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
-  			return;
-  		}
-  	}
 
-  	if(node->GetId() == 2) {
-  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
-  		if(interest.getMacAddress() == "00:00:00:00:00:01") {
-  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
-  			return;
-  		}
-  	}
 
-  	if(node->GetId() == 3) {
-  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
-  		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:02") {
-  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
-  			return;
-  		}
-  	}
+  ns3::Address ad;
+  ad = node->GetDevice(0)->GetAddress();
+  std::ostringstream addr;
+  addr << ad;
+  std::string a = addr.str().substr(6);
 
+  if(interest.getMacAddress() == "consumer" || interest.getMacAddress() == "producer Mac" || interest.getMacAddress() == "unknown"){
+		  if(a != interest.getMacAddress()) {return;}
+  }
+
+//
+//  //std::cout << "ààààààààààààà " << node.GetId() << " / " << interest.getMacAddress() << std::endl;
+//  	if(interest.getMacAddress() == "consumer") {
+//  		if(node->GetId() == 1 || node->GetId() == 2 || node->GetId() == 3) {
+//  			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
+//  			return;
+//  		}
+//  	}
+//
+//  	if(node->GetId() == 2) {
+//  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+//  		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "unknown") {
+//  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+//  			return;
+//  		}
+//  	}
+//
+//  	if(node->GetId() == 3) {
+//  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+//  		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:02") {
+//  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+//  			return;
+//  		}
+//  	}
 
 
 
@@ -347,11 +357,30 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
     interest->setNonce(dist(getGlobalRng()));
   }
 
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+  std::string targettMac = "";
+// 	  switch(node->GetId()) {
+// 		  case 0 : targettMac = "00:00:00:00:00:02"; // node 1
+// 		  	  	   break;
+// 		  case 1 : targettMac = "00:00:00:00:00:03"; // node 2
+// 		  	  	   break;
+// 		  case 2 : targettMac = "00:00:00:00:00:04"; // node 3
+// 		  	  	   break;
+// 		  default: targettMac = "unknown";
+// 	  }
+//   interest->setMacAddress(targettMac);
+//   std::cout << "--------------------------------------" << std::endl;
+//   std::cout << "--------------------------------------" << std::endl;
+//   std::cout << "you are on node (" << node->GetId() << ") interest Mac : " << interest->getMacAddress() << std::endl;
+
+
+
   // insert OutRecord
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   // send Interest
-  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  //node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
 
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: BEGIN ***************************
@@ -359,8 +388,10 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   ad = node->GetDevice(0)->GetAddress();
   std::ostringstream breadcrumbInterest;
   breadcrumbInterest << ad;
+
   std::string in = " (in " + std::to_string(node->GetId()) + "/" + std::to_string(inFaceId) + ") ";
   std::string out = " (out " + std::to_string(node->GetId()) + "/" + std::to_string(outFace.getId()) + ") ";
+
   interest->addMacAddressPath(" --> " +  in + breadcrumbInterest.str().substr(6) + out);
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END ***************************
 
@@ -450,30 +481,30 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-//  std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: "  << data.getMacAddressPro() << std::endl;
-//  if(node->GetId() == 0) {
-//  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-//  			return;
-//  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
-//  			return;
-//  		}
-////  		else if(data.getMacAddressPro() == "producer Mac") {
-////  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
-////  			return;
-////  		}
-//  	}
-//  	if(node->GetId() == 1) {
-//  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-//  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-//  			return;
-//  		}
-////  		else if(data.getMacAddressPro() == "producer Mac") {
-////  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
-////  			return;
-////  		}
-//  	}
+  std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: "  << data.getMacAddressPro() << std::endl;
+  if(node->GetId() == 0) {
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+  			return;
+  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
+  			return;
+  		}
+  		else if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
+  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+  			return;
+  		}
+  	}
+  	if(node->GetId() == 1) {
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
+  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
+  			return;
+  		}
+  		else if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
+  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+  			return;
+  		}
+  	}
 
   if(debug) {
     std::cout << "*****************************************************************" << std::endl;
@@ -506,7 +537,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //            !!! you want to make NOW a new route with possible new face for this incoming MacAddress
   //                befor removing it and adding the current MacAddress to it.
   // scenario III -> Data received is a control command. In this case ignore it completly (I think that should not happen, though)
-  if(data.getMacAddressPro() == "producer Mac") {
+  if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
 	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
 
@@ -526,7 +557,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 
 	  	  std::string str = data.getMacAddressPro();
-	  	  std::cout << "... a new route is being added ..." << std::endl;
+	  	  std::cout << "... a new route is being added ... on node(" << node->GetId() << ") with prefix / and faceID: " << inFace.getId()
+	  			  << " and targetMac: " << str << std::endl;
 	  	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
 
 

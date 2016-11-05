@@ -243,11 +243,11 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
   }
 
   if (hasMacAddress()) {
-	  totalLength += prependStringBlock(encoder, tlv::MacInterestRoute, m_macAddress);
+	  totalLength += prependStringBlock(encoder, tlv::MacInterest, m_macAddress);
   }
 
   if (hasMacAddressPath()) {
-	  totalLength += prependStringBlock(encoder, tlv::MacInterest, m_macAddressPath);
+	  totalLength += prependStringBlock(encoder, tlv::MacInterestRoute, m_macAddressPath);
   }
   // InterestLifetime
   if (getInterestLifetime() >= time::milliseconds::zero() &&

@@ -56,6 +56,22 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //		return;
 //	}
 
+//	std::cout << "NODE AND MAC MUST BE OF THE SAME!!! " << std::endl;
+//	std::cout << node->GetId() << " - >" << interest.getMacAddress() << "<" << std::endl;
+
+    ns3::Address addr;
+    addr = node->GetDevice(0)->GetAddress();
+    std::ostringstream MacToTest;
+    MacToTest << addr;
+
+    std::string tt = MacToTest.str().substr(6);
+
+
+	if(tt != interest.getMacAddress() && !interest.getMacAddress().empty() && interest.getMacAddress() != "consumer ") {
+		//std::cout << "dropping interest in MulticastStrategy" << std::endl;
+		return;
+	}
+
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
 //		std::cout << "interest->getMacAddress() resulted in TRUE -> consumer" << std::endl;
@@ -69,6 +85,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
+
 	  std::string targetMac; // = it->getMac();
 
 
@@ -80,7 +97,22 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  }
 
 	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " << targetMac << std::endl;
+
 	  //std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
+	  std::string targetMac = it->getMac();
+
+	  switch(node->GetId()) {
+		  case 0 : targetMac = "00:00:00:00:00:02"; // node 1
+		  	  	   break;
+		  case 1 : targetMac = "00:00:00:00:00:03"; // node 2
+		  	  	   break;
+		  case 2 : targetMac = "00:00:00:00:00:04"; // node 3
+		  	  	   break;
+		  default: targetMac = "unknown";
+	  }
+	  // tested and correct
+	  // std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> We are on node(" << node->GetId() << ") and want to reach: " <<
+	//		  targetMac << std::endl;
 	  if (pitEntry->canForwardTo(*outFace)) {
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
@@ -106,7 +138,7 @@ MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
 
 	if(node.GetId() == 2) {
 		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
-		if(interest.getMacAddress() == "00:00:00:00:00:01") {
+		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "unknown") {
 			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
 			return true;
 		}
