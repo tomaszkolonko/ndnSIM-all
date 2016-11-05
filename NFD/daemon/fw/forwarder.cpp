@@ -36,10 +36,6 @@
 #include "ns3/net-device.h"
 #include "model/ndn-net-device-face.hpp"
 // ************
-//#include "ns3/core-module.h"
-//#include "ns3/network-module.h"
-//#include "ns3/applications-module.h"
-//#include "ns3/wifi-module.h"
 #include "helper/ndn-fib-helper.hpp"
 #include "ns3/ndnSIM-module.h"
 // #include "model/ndn-net-device-face.hpp"
@@ -69,7 +65,6 @@ Forwarder::Forwarder()
   , m_strategyChoice(m_nameTree, fw::makeDefaultStrategy(*this))
   , m_csFace(make_shared<NullFace>(FaceUri("contentstore://")))
 {
-//  ns3::Ptr<ns3::Node> node = this->GetObject<ns3::Node> ();
   fw::installStrategies(*this);
   getFaceTable().addReserved(m_csFace, FACEID_CONTENT_STORE);
 }
@@ -107,8 +102,10 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   addr << ad;
   std::string a = addr.str().substr(6);
 
-  if(interest.getMacAddress() == "consumer" || interest.getMacAddress() == "producer Mac" || interest.getMacAddress() == "unknown"){
-		  if(a != interest.getMacAddress()) {return;}
+  if(interest.getMacAddress() == "consumer " || interest.getMacAddress() == "producer Mac" || interest.getMacAddress() == "unknown"){
+		  if(a != interest.getMacAddress()) {
+			  return;
+		  }
   }
 
 //
@@ -316,9 +313,6 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   interest->addMacAddressPath(breadcrumbInterest.str().substr(6));
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END ***************************
 
-
-  // std::cout << "Interest " << pitEntry->getName() << " is being forwarded from node(" << node->GetId() << ")" << std::endl;
-
   // send Interest
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
@@ -521,15 +515,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
   }
 
-  // here you need to check if there is already an FIB Entry with this inFace and the target MAC
-  // If yes, don't do anything.... if no -> create a new face and add a new AddRoute(node / newFace, 111, mac)
-
-  // what do we need?
-//  targetMac = data.getMacAddressPro();
-//  inFaceId already here.
-
-
-
   // check the scenarios that are possible in that case
   // scenario I   -> Data is received coming from App on the same node
   //            !!! you want to attach own MacAddress to the Data package (done further down this method)
@@ -541,12 +526,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
 
-  //std::cout << "WILL GET ADDED SINCE MACADDRESSSPRO() IS: " << data.getMacAddressPro() << std::endl;
-  //	  // TODO: check for other cases like control messages !!!
-  //
-  //	  // TODO: try to add a new face here
-  //	  // Problem... you first have to choose a NetDevice to add the face to !!!
-  //	  // let's assume for starters that you only have one NetDevice.
   //	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
   //	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
   //
@@ -555,14 +534,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
   //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
 
-
-	  	  std::string str = data.getMacAddressPro();
-	  	  std::cout << "... a new route is being added ... on node(" << node->GetId() << ") with prefix / and faceID: " << inFace.getId()
-	  			  << " and targetMac: " << str << std::endl;
-	  	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
-
-
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getMacAddressPro());
+	  std::string str = data.getMacAddressPro();
+	  std::cout << "... a new route is being added ... on node(" << node->GetId() << ") with prefix / and faceID: " << inFace.getId()
+			  << " and targetMac: " << str << std::endl;
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
@@ -666,12 +641,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	dataWithNewMac->setMacAddressPro(str.str().substr(6));
 	dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
 	this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
-
-
-//    shared_ptr<Data> dataWithNewMacRoute = make_shared<Data>(data);
-//    dataWithNewMacRoute->setMacAddressPro("???");
-//    dataWithNewMacRoute->addMacRoute(" --> ???");
-//    this->onOutgoingData(*dataWithNewMacRoute, *pendingDownstream);
   }
 }
 

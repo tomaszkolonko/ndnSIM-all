@@ -52,12 +52,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry);
 	if(false) printPITOutRecord(pitEntry);
-//	if(this->dropInterest(interest, *node)) {
-//		return;
-//	}
 
-//	std::cout << "NODE AND MAC MUST BE OF THE SAME!!! " << std::endl;
-//	std::cout << node->GetId() << " - >" << interest.getMacAddress() << "<" << std::endl;
 
     ns3::Address addr;
     addr = node->GetDevice(0)->GetAddress();
@@ -72,22 +67,12 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		return;
 	}
 
-//	// if node is NOT Consumer
-//	if(interest.getMacAddress() == "consumer") {
-//		std::cout << "interest->getMacAddress() resulted in TRUE -> consumer" << std::endl;
-//	} else {
-//		std::cout << "interest->getMacAddress() resulted in FALSE because it is: " << interest.getMacAddress() << std::endl;
-//	}
 
-	//std::cout << "mac out of the interest: " << interest.getMacAddress() << " with name: " << interest.getName() << std::endl;
-
-// std::cout << "***************** for the next few iterations you are on node (" << node->GetId() << ") !!!" << std::endl;
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
 
 	  std::string targetMac; // = it->getMac();
-
 
 	  switch(node->GetId()) {
 	  case 0: targetMac = "00:00:00:00:00:02"; break;
@@ -96,23 +81,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  default: targetMac = "";
 	  }
 
-	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " << targetMac << std::endl;
-
-	  //std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
-	  std::string targetMac = it->getMac();
-
-	  switch(node->GetId()) {
-		  case 0 : targetMac = "00:00:00:00:00:02"; // node 1
-		  	  	   break;
-		  case 1 : targetMac = "00:00:00:00:00:03"; // node 2
-		  	  	   break;
-		  case 2 : targetMac = "00:00:00:00:00:04"; // node 3
-		  	  	   break;
-		  default: targetMac = "unknown";
-	  }
-	  // tested and correct
-	  // std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> We are on node(" << node->GetId() << ") and want to reach: " <<
-	//		  targetMac << std::endl;
 	  if (pitEntry->canForwardTo(*outFace)) {
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
@@ -123,36 +91,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if (!pitEntry->hasUnexpiredOutRecords()) {
 	  this->rejectPendingInterest(pitEntry);
 	}
-}
-
-bool
-MulticastStrategy::dropInterest(const Interest& interest, const ns3::Node& node)
-{
-	//std::cout << "ààààààààààààà " << node.GetId() << " / " << interest.getMacAddress() << std::endl;
-	if(interest.getMacAddress() == "consumer") {
-		if(node.GetId() == 1 || node.GetId() == 2 || node.GetId() == 3) {
-			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
-			return true;
-		}
-	}
-
-	if(node.GetId() == 2) {
-		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "unknown") {
-			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
-			return true;
-		}
-	}
-
-	if(node.GetId() == 3) {
-		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
-		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:02") {
-			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
-			return true;
-		}
-	}
-
-	return false;
 }
 
 // iterates through all inRecords of ONE pitEntry
