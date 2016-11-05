@@ -221,7 +221,7 @@ template<typename Owner, typename ...TArgs>
 inline void
 Signal<Owner, TArgs...>::operator()(const TArgs&... args)
 {
-  //BOOST_ASSERT_MSG(!m_isExecuting, "cannot emit signal from a handler");
+  BOOST_ASSERT_MSG(!m_isExecuting, "cannot emit signal from a handler");
   if (m_slots.empty()) {
     return;
   }

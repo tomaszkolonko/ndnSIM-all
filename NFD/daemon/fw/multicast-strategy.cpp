@@ -52,9 +52,9 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry);
 	if(false) printPITOutRecord(pitEntry);
-	if(this->dropInterest(interest, *node)) {
-		return;
-	}
+//	if(this->dropInterest(interest, *node)) {
+//		return;
+//	}
 
 //	// if node is NOT Consumer
 //	if(interest.getMacAddress() == "consumer") {
@@ -69,7 +69,16 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
-	  std::string targetMac = it->getMac();
+	  std::string targetMac; // = it->getMac();
+
+
+	  switch(node->GetId()) {
+	  case 0: targetMac = "00:00:00:00:00:02"; break;
+	  case 1: targetMac = "00:00:00:00:00:03"; break;
+	  case 2: targetMac = "00:00:00:00:00:04"; break;
+	  default: targetMac = "";
+	  }
+
 	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> " << targetMac << std::endl;
 	  //std::cout << "**FIB** Get Target Mac from FIB entry (" << ++i << "): " << targetMac << std::endl;
 	  if (pitEntry->canForwardTo(*outFace)) {

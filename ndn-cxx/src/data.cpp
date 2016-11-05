@@ -56,6 +56,8 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
   // Data ::= DATA-TLV TLV-LENGTH
   //            Name
   //            MetaInfo
+  //			MacDataRoute
+  //			MacData
   //            Content
   //            Signature
 
@@ -81,9 +83,9 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
   // MetaInfo
   totalLength += getMetaInfo().wireEncode(encoder);
 
-  totalLength += prependStringBlock(encoder, tlv::Mac, m_macAddressPro);
+  totalLength += prependStringBlock(encoder, tlv::MacData, m_macAddressPro);
 
-  totalLength += prependStringBlock(encoder, tlv::MacRoute, m_macRoute);
+  totalLength += prependStringBlock(encoder, tlv::MacDataRoute, m_macRoute);
 
   // Name
   totalLength += getName().wireEncode(encoder);
@@ -153,16 +155,15 @@ Data::wireDecode(const Block& wire)
   // Name
   m_name.wireDecode(m_wire.get(tlv::Name));
 
-  // Mac Address
-  Block::element_const_iterator val = m_wire.find(tlv::Mac);
-  val = m_wire.find(tlv::Mac);
+  // Mac Data
+  Block::element_const_iterator val = m_wire.find(tlv::MacData);
+  val = m_wire.find(tlv::MacData);
   if(val != m_wire.elements_end()) {
 	  m_macAddressPro = readString(*val);
   }
 
-  // Mac Address
-  val = m_wire.find(tlv::MacRoute);
-  val = m_wire.find(tlv::MacRoute);
+  // Mac Data Route
+  val = m_wire.find(tlv::MacDataRoute);
   if(val != m_wire.elements_end()) {
 	  m_macRoute = readString(*val);
   }
@@ -362,7 +363,8 @@ std::ostream&
 operator<<(std::ostream& os, const Data& data)
 {
   os << "Name: " << data.getName() << "\n";
-  os << "MacAddress: " << data.getMacAddressPro() << "\n";
+  os << "MacData: " << data.getMacAddressPro() << "\n";
+  os << "MacDataRoute: " << data.getMacRoute() << "\n";
   os << "MetaInfo: " << data.getMetaInfo() << "\n";
   os << "Content: (size: " << data.getContent().value_size() << ")\n";
   os << "Signature: (type: " << data.getSignature().getType() <<

@@ -223,6 +223,8 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
   //                Selectors?
   //                Nonce
   //                InterestLifetime?
+  //				MacInterest
+  //				MacInterestRoute
   //                Link?
   //                SelectedDelegation?
 
@@ -241,11 +243,11 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
   }
 
   if (hasMacAddress()) {
-	  totalLength += prependStringBlock(encoder, tlv::Mac, m_macAddress);
+	  totalLength += prependStringBlock(encoder, tlv::MacInterestRoute, m_macAddress);
   }
 
   if (hasMacAddressPath()) {
-	  totalLength += prependStringBlock(encoder, tlv::MacPath, m_macAddressPath);
+	  totalLength += prependStringBlock(encoder, tlv::MacInterest, m_macAddressPath);
   }
   // InterestLifetime
   if (getInterestLifetime() >= time::milliseconds::zero() &&
@@ -308,8 +310,8 @@ Interest::wireDecode(const Block& wire)
   //                Name
   //                Selectors?
   //                Nonce
-  //				MacAddress
-  //				MacAddressPath
+  //				MacInterest
+  //				MacInterestRoute
   //                InterestLifetime?
   //                Link?
   //                SelectedDelegation?
@@ -332,14 +334,14 @@ Interest::wireDecode(const Block& wire)
   // Nonce
   m_nonce = m_wire.get(tlv::Nonce);
 
-  // Mac Address
-  val = m_wire.find(tlv::Mac);
+  // Mac Interest
+  val = m_wire.find(tlv::MacInterest);
   if(val != m_wire.elements_end()) {
 	  m_macAddress = readString(*val);
   }
 
-  // Mac Address Path
-  val = m_wire.find(tlv::MacPath);
+  // Mac Interest Route
+  val = m_wire.find(tlv::MacInterestRoute);
   if(val != m_wire.elements_end()) {
 	  m_macAddressPath = readString(*val);
   }

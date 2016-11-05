@@ -97,6 +97,37 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
     return;
   }
 
+
+  // Dropping interest before they are written to PIT
+
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  //std::cout << "ààààààààààààà " << node.GetId() << " / " << interest.getMacAddress() << std::endl;
+  	if(interest.getMacAddress() == "consumer") {
+  		if(node->GetId() == 1 || node->GetId() == 2 || node->GetId() == 3) {
+  			// std::cout << "interest dropped since directly from consumer and not on Node 0" << std::endl;
+  			return;
+  		}
+  	}
+
+  	if(node->GetId() == 2) {
+  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+  		if(interest.getMacAddress() == "00:00:00:00:00:01") {
+  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+  			return;
+  		}
+  	}
+
+  	if(node->GetId() == 3) {
+  		// std::cout << interest.getMacAddress() << " on node (" << node.GetId() << ")" << std::endl;
+  		if(interest.getMacAddress() == "00:00:00:00:00:01" || interest.getMacAddress() == "00:00:00:00:00:02") {
+  			// std::cout << "interest dropped (" << node.GetId() << ") with " << interest.getMacAddress() << std::endl;
+  			return;
+  		}
+  	}
+
+
+
+
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
@@ -266,8 +297,6 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-
-
 
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: BEGIN ***************************
   ns3::Address ad;
