@@ -353,23 +353,6 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  std::string targettMac = "";
-// 	  switch(node->GetId()) {
-// 		  case 0 : targettMac = "00:00:00:00:00:02"; // node 1
-// 		  	  	   break;
-// 		  case 1 : targettMac = "00:00:00:00:00:03"; // node 2
-// 		  	  	   break;
-// 		  case 2 : targettMac = "00:00:00:00:00:04"; // node 3
-// 		  	  	   break;
-// 		  default: targettMac = "unknown";
-// 	  }
-//   interest->setMacAddress(targettMac);
-//   std::cout << "--------------------------------------" << std::endl;
-//   std::cout << "--------------------------------------" << std::endl;
-//   std::cout << "you are on node (" << node->GetId() << ") interest Mac : " << interest->getMacAddress() << std::endl;
-
-
-
   // insert OutRecord
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
@@ -474,28 +457,19 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
+  // At the moment all data.Mac's are 04 empty or producers
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: "  << data.getMacAddressPro() << std::endl;
+  std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
   if(node->GetId() == 0) {
-  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-  			return;
-  		} else if(data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro() == "00:00:00:00:00:07") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 2" << std::endl;
-  			return;
-  		}
-  		else if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
-  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+  		if(data.getMacAddressPro() == "00:00:00:00:00:03"  || data.getMacAddressPro() == "00:00:00:00:00:04" ||
+  				data.getMacAddressPro() == "Producer Mac") {
+  			std::cout << "dropping data" << std::endl;
   			return;
   		}
   	}
   	if(node->GetId() == 1) {
-  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "00:00:00:00:00:08") {
-  			std::cout << "node(" << node->GetId() << ") received an illegal data from node 3" << std::endl;
-  			return;
-  		}
-  		else if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
-  			std::cout << "node(" << node->GetId() << ") received illegal direct data from PRODUCER" << std::endl;
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04") {
+  			std::cout << "dropping data" << std::endl;
   			return;
   		}
   	}
@@ -534,10 +508,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
   //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
 
-	  std::string str = data.getMacAddressPro();
+	  // TODO: somehow always 04
 	  std::cout << "... a new route is being added ... on node(" << node->GetId() << ") with prefix / and faceID: " << inFace.getId()
-			  << " and targetMac: " << str << std::endl;
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, str);
+			  << " and targetMac: " << data.getMacAddressPro() << std::endl;
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getMacAddressPro());
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
@@ -548,6 +522,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // pointing to the same underlying memory buffer.
   shared_ptr<Data> dataCopyWithoutPacket = make_shared<Data>(data);
   dataCopyWithoutPacket->removeTag<ns3::ndn::Ns3PacketTag>();
+
+  // TODO: leads to the simulator crashing
+//ns3::Address add;
+//ns3::Ptr<ns3::NetDevice> netDevicee = node->GetDevice(0);
+//add = netDevicee->GetAddress();
+//std::ostringstream strr;
+//strr << add;
+//dataCopyWithoutPacket->setMacAddressPro(strr.str().substr(6));
 
   // CS insert
   if (m_csFromNdnSim == nullptr)
@@ -633,6 +615,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //    	}
 //    }
     // goto outgoing Data pipeline
+    std::cout << "333333333333333333333333333333333333333333333333333333333333333333 YES WE CAN" << std::endl;
     shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
     ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	ad = netDevice->GetAddress();
@@ -683,6 +666,9 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
     // (drop)
     return;
   }
+
+  // TODO: seems all to be ok delete it after debugging
+  std::cout << "Forwarder::onOutgoingData mac -> " << data.getMacAddressPro() << std::endl;
 
   // TODO traffic manager
 
