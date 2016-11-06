@@ -46,9 +46,6 @@ public:
                        shared_ptr<fib::Entry> fibEntry,
                        shared_ptr<pit::Entry> pitEntry) DECL_OVERRIDE;
 private:
-  virtual bool
-  dropInterest(const Interest& interest, const ns3::Node& node);
-
   virtual void
   printPITInRecord(const shared_ptr<pit::Entry> pitEntry);
 

@@ -102,7 +102,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   addr << ad;
   std::string a = addr.str().substr(6);
 
-  if(interest.getMacAddress() == "consumer " || interest.getMacAddress() == "producer Mac" || interest.getMacAddress() == "unknown"){
+  if(interest.getMacAddress() == "consumer" || interest.getMacAddress() == "producer Mac" || interest.getMacAddress() == "unknown"){
 		  if(a != interest.getMacAddress()) {
 			  return;
 		  }
