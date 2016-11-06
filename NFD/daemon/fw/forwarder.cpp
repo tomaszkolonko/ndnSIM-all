@@ -459,16 +459,26 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   // At the moment all data.Mac's are 04 empty or producers
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+  //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
+  if(true) {
+	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
+	  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
+	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
+	  std::cout << "---------------------------------------------------------------------" << std::endl;
+  }
+
+
   std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
   if(node->GetId() == 0) {
   		if(data.getMacAddressPro() == "00:00:00:00:00:03"  || data.getMacAddressPro() == "00:00:00:00:00:04" ||
-  				data.getMacAddressPro() == "Producer Mac") {
+  				data.getMacAddressPro() == "producer Mac") {
   			std::cout << "dropping data" << std::endl;
   			return;
   		}
   	}
   	if(node->GetId() == 1) {
-  		if(data.getMacAddressPro() == "00:00:00:00:00:04") {
+  		if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "producer Mac") {
   			std::cout << "dropping data" << std::endl;
   			return;
   		}
@@ -482,20 +492,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
-  if(debug) {
-	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
+  if(true) {
+	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 	  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
 	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
-	  std::cout << "ççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççççç" << std::endl;
+	  std::cout << "---------------------------------------------------------------------" << std::endl;
   }
 
-  // check the scenarios that are possible in that case
-  // scenario I   -> Data is received coming from App on the same node
-  //            !!! you want to attach own MacAddress to the Data package (done further down this method)
-  // scenario II  -> Data is received coming from another node and has already a MacAddress on it.
-  //            !!! you want to make NOW a new route with possible new face for this incoming MacAddress
-  //                befor removing it and adding the current MacAddress to it.
-  // scenario III -> Data received is a control command. In this case ignore it completly (I think that should not happen, though)
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
 	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
@@ -648,9 +651,6 @@ Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
 void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
-
-
-
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
     return;
