@@ -78,6 +78,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  case 0: targetMac = "00:00:00:00:00:02"; break;
 	  case 1: targetMac = "00:00:00:00:00:03"; break;
 	  case 2: targetMac = "00:00:00:00:00:04"; break;
+	  case 3: targetMac = "Producer Mac"; break;
 	  default: targetMac = "";
 	  }
 

@@ -99,8 +99,8 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 
   // Logging the Path till the end
   std::cout << std::endl;
-  std::cout << "PRODUCER RECEIVING INTEREST WITH FOLLOWING PATH: " << interest->getMacAddressPath() << " --> " <<
-		  interest->getMacAddress() << std::endl;
+  std::cout << "PRODUCER RECEIVING INTEREST WITH FOLLOWING PATH: " << interest->getMacAddressPath() << " --> >" <<
+		  interest->getMacAddress() << "<" << std::endl;
 
   NS_LOG_FUNCTION(this << interest);
 
@@ -115,9 +115,12 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
   data->setName(dataName);
   // TODO: find out correct macAddress (you are still within application !!!
   data->setMacAddressPro("producer Mac");
+  data->setMacRoute("producer Mac");
+
+
   data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
 
-  data->setMacRoute("producer Mac");
+
 
   data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
 

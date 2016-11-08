@@ -254,11 +254,10 @@ public: // Name and guiders
 	  return *this;
   }
 
-  // TODO correct the always true return statement !!!!
   bool
   hasMacAddress() const
   {
-	  return true;
+	  return !m_macAddress.empty();
   }
 
 
@@ -277,11 +276,10 @@ public: // Name and guiders
 	  return *this;
   }
 
-  // TODO correct the always true return statement !!!!
   bool
   hasMacAddressPath() const
   {
-	  return true;
+	  return !m_macAddressPath.empty();
   }
 
   /** @brief Check if Nonce set

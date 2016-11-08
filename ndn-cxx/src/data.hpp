@@ -319,12 +319,11 @@ public: // Mac setters and getters
   	  return *this;
   }
 
-  // TODO correct the always true return statement !!!!
-  bool
-  hasMacAddressPro() const
-  {
-  	  return true;
-  }
+//  bool
+//  hasMacAddressPro() const
+//  {
+//  	  return m_macAddressPro.empty();
+//  }
 
   const std::string
   getMacRoute() const
@@ -348,12 +347,11 @@ public: // Mac setters and getters
 	  return *this;
   }
 
-  // TODO correct the always true return statement !!!!
-  bool
-  hasMacRoute() const
-  {
-  	  return true;
-  }
+//  bool
+//  hasMacRoute() const
+//  {
+//  	  return m_macRoute.empty();
+//  }
 
 public: // EqualityComparable concept
   bool

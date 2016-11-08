@@ -427,9 +427,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-	  std::cout << pitEntry->getOutRecords()
-  }
+//  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+//	  std::cout << pitEntry->getOutRecords()
+//  }
 
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   // At the moment all data.Mac's are 04 empty or producers
