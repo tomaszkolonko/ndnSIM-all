@@ -62,10 +62,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
     std::string tt = MacToTest.str().substr(6);
 
 
-	if(tt != interest.getMacAddress() && !interest.getMacAddress().empty() && interest.getMacAddress() != "consumer ") {
-		//std::cout << "dropping interest in MulticastStrategy" << std::endl;
-		return;
-	}
+//	if(tt != interest.getMacAddress() && !interest.getMacAddress().empty() && interest.getMacAddress() != "consumer ") {
+//		//std::cout << "dropping interest in MulticastStrategy" << std::endl;
+//		return;
+//	}
 
 
 	ns3::Address ad;
