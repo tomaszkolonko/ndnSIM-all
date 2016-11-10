@@ -209,6 +209,10 @@ StackHelper::Install(Ptr<Node> node) const
     // creates two faces within the same NetDevice
     shared_ptr<NetDeviceFace> aNetDevice = this->createAndRegisterFace(node, ndn, device);
     aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    aNetDevice = this->createAndRegisterFace(node, ndn, device);
+    aNetDevice = this->createAndRegisterFace(node, ndn, device);
     faces->Add(aNetDevice);
   }
 

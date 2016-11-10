@@ -314,8 +314,11 @@ public: // Mac setters and getters
   Data&
   setMacAddressPro(const std::string mac)
   {
+
+	  m_wire.reset();
+	  m_fullName.clear();
   	  m_macAddressPro = mac;
-  	  m_wire.reset();
+  	  //m_wire.reset();
   	  return *this;
   }
 
@@ -334,16 +337,22 @@ public: // Mac setters and getters
   Data&
   setMacRoute(const std::string macRoute)
   {
+	  m_wire.reset();
+	  m_fullName.clear();
+
 	  m_macRoute = macRoute;
-  	  m_wire.reset();
+  	  //m_wire.reset();
   	  return *this;
   }
 
   Data&
   addMacRoute(const std::string macRoute)
   {
-	  m_macRoute.append(macRoute);
 	  m_wire.reset();
+	  m_fullName.clear();
+
+	  m_macRoute.append(macRoute);
+	  //m_wire.reset();
 	  return *this;
   }
 
