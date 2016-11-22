@@ -171,7 +171,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   // Displays all the nextHops for a certain prefix on a certain node IMPORTANT
   // at the moment all new routes get the 04 MAC address which is a big problem
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  if(true) {
+  if(false) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE FORWARDER::ONcONTENTsTOREmISS" << std::endl;
 	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
@@ -487,14 +487,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			if(data.getMacAddressPro().substr(0, 17) == "00:00:00:00:00:03"  ||
 					data.getMacAddressPro().substr(0, 17) == "00:00:00:00:00:04" ||
 					data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
-				std::cout << "dropping data because node(0) and " << data.getMacAddressPro().substr(0, 17) << std::endl;
+				// std::cout << "dropping data because node(0) and " << data.getMacAddressPro().substr(0, 17) << std::endl;
 				return;
 			}
 		}
 		if(node->GetId() == 1) {
 			if(data.getMacAddressPro().substr(0, 17) == "00:00:00:00:00:04" || data.getMacAddressPro() == "producer Mac" ||
 					data.getMacAddressPro().empty()) {
-				std::cout << "dropping data because node(1) and " << data.getMacAddressPro().substr(0, 17) << std::endl;
+				// std::cout << "dropping data because node(1) and " << data.getMacAddressPro().substr(0, 17) << std::endl;
 				return;
 			}
 		}
@@ -511,7 +511,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
-  if(true) {
+  if(false) {
 	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 	  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
 	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
@@ -576,11 +576,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // cancel unsatisfy & straggler timer
     this->cancelUnsatisfyAndStragglerTimer(pitEntry);
+
+
 ///////////////////////////////////////////////////////////////////////////////////////
     // remember pending downstreams
-    const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-    for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-                                                 it != outRecords.end(); ++it) {
+    const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
+    for (pit::InRecordCollection::const_iterator it = inRecords.begin();
+                                                 it != inRecords.end(); ++it) {
       if (it->getExpiry() > time::steady_clock::now()) {
     	  // TODO: here seems to be a problem. Rarely a face (256) is added to pendingDownstream.
     	  // TODO: find out why?
@@ -588,7 +590,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
         pendingDownstreams.insert(it->getFace());
       }
     }
-    //////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////
 
     // invoke PIT satisfy callback
     beforeSatisfyInterest(*pitEntry, inFace, data);
@@ -615,6 +617,33 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "superiterator -- pendingDownstream: " << it->get()->getId() << std::endl;
   }
   std::cout << "superiterator >> END \n" << std::endl;
+
+
+  ///////////////////////////////////////////////////////////////////////// TO BE DELETED >>>>>>>>>>>>>
+      std::cout << "234234234234234234234234234234234234234234234 on node(" << node->GetId() << ") and inFace: " <<
+    		  inFace.getId() << std::endl;
+      for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+    	  std::cout << pitEntry->getName() << std::endl;
+
+    	  // IN RECORD COLLECTION
+    	  std::cout << "inRecordCollection:";
+    	  const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
+    	  for (pit::InRecordCollection::const_iterator it = inRecords.begin();
+    	                                                 it != inRecords.end(); ++it) {
+    		  std::cout << " " << it->getFace()->getId() << "; ";
+    	  }
+    	  std::cout << std::endl;
+    	  // OUT RECORD COLLECTION
+    	  std::cout << "outRecordCollection:";
+    	  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+    	  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+    	                                                 it != outRecords.end(); ++it) {
+    		  std::cout << " " << it->getFace()->getId() << "; ";
+    	  }
+      }
+      std::cout << "\n234234234234234234234234234234234234234234234" << std::endl;
+  ///////////////////////////////////////////////////////////////////////// TO BE DELETED <<<<<<<<<<<<<<<<
+
 
   // foreach pending downstream
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
@@ -659,6 +688,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //    	    this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
 //    	}
 //    }
+
+
     // goto outgoing Data pipeline
     shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
     ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
