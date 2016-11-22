@@ -576,11 +576,11 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // cancel unsatisfy & straggler timer
     this->cancelUnsatisfyAndStragglerTimer(pitEntry);
-
+///////////////////////////////////////////////////////////////////////////////////////
     // remember pending downstreams
-    const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
-    for (pit::InRecordCollection::const_iterator it = inRecords.begin();
-                                                 it != inRecords.end(); ++it) {
+    const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+    for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+                                                 it != outRecords.end(); ++it) {
       if (it->getExpiry() > time::steady_clock::now()) {
     	  // TODO: here seems to be a problem. Rarely a face (256) is added to pendingDownstream.
     	  // TODO: find out why?
@@ -588,6 +588,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
         pendingDownstreams.insert(it->getFace());
       }
     }
+    //////////////////////////////////////////////////////////////////////////////////////////////
 
     // invoke PIT satisfy callback
     beforeSatisfyInterest(*pitEntry, inFace, data);
@@ -673,6 +674,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 //	dataWithNewMac->setMacAddressPro(str.str().substr(6));
 //	dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
+	std::cout << ".............................................................................." << std::endl;
+	std::cout << "data " << data.getName() << " is being send to pendingDownstream: " << pendingDownstream->getId() << std::endl;
+	std::cout << ".............................................................................." << std::endl;
 	this->onOutgoingData(data, *pendingDownstream);
   }
 }
