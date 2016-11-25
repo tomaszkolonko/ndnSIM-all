@@ -176,13 +176,14 @@ main(int argc, char* argv[])
 
   // Set BestRoute strategy
   ndn::StrategyChoiceHelper::Install(nodes, "/", "/localhost/nfd/strategy/multicast");
+  // ndn::StrategyChoiceHelper::Install(nodes, "/", "/localhost/nfd/strategy/bestroute");
 
   // 4. Set up applications
   NS_LOG_INFO("Installing Applications");
 
   ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix("/test/prefix");
-  consumerHelper.SetAttribute("Frequency", DoubleValue(10.0));
+  consumerHelper.SetAttribute("Frequency", DoubleValue(5.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
   consumer.Stop(Seconds(10));
