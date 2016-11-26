@@ -52,6 +52,25 @@ Strategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
 {
   NFD_LOG_DEBUG("beforeSatisfyInterest pitEntry=" << pitEntry->getName() <<
     " inFace=" << inFace.getId() << " data=" << data.getName());
+  std::cout << "you are within beforeStatisfyInterest() in strategy.cpp" << std::endl;
+  std::cout << "data.getMacAddressPro() : " << data.getMacAddressPro() << std::endl;
+
+	const pit::InRecordCollection& inRecCol = pitEntry->getInRecords();
+	std::cout << std::endl;
+	std::cout << "MulticastStrategy::printPITInRecord" << std::endl;
+	for(pit::InRecordCollection::const_iterator inIt = inRecCol.begin(); inIt != inRecCol.end(); ++inIt){
+		std::cout << "inRecord interest: " << inIt->getInterest().getName() << std::endl;
+		std::cout << "inRecord face: " << inIt->getFace()->getId() << std::endl;
+	}
+	std::cout << std::endl;
+
+	const pit::OutRecordCollection& outRecCol = pitEntry->getOutRecords();
+	std::cout << std::endl;
+	std::cout << "MulticastStrategy::printPITOutRecord" << std::endl;
+	for(pit::OutRecordCollection::const_iterator inIt = outRecCol.begin(); inIt != outRecCol.end(); ++inIt){
+		std::cout << "outRecord face: " << inIt->getFace()->getId() << std::endl;
+	}
+	std::cout << std::endl;
 }
 
 void

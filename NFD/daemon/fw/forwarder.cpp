@@ -171,7 +171,8 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   // Displays all the nextHops for a certain prefix on a certain node IMPORTANT
   // at the moment all new routes get the 04 MAC address which is a big problem
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  if(false) {
+  std::cout << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
+  if(true) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE FORWARDER::ONcONTENTsTOREmISS" << std::endl;
 	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
@@ -182,6 +183,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 	  }
 	  std::cout << std::endl;
   }
+  std::cout << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
 
   // dispatch to strategy
   this->dispatchToStrategy(pitEntry, bind(&Strategy::afterReceiveInterest, _1,
@@ -482,7 +484,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
-  if(false) {
+  if(true) {
 	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 	  std::cout << "you are on node (" << node->GetId() << ") Mac on the received data package is: "
 			  << data.getMacAddressPro() << std::endl;
@@ -526,14 +528,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			if(data.getMacAddressPro() == "00:00:00:00:00:03"  ||
 					data.getMacAddressPro() == "00:00:00:00:00:04" ||
 					data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
-				// std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
+				std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
 		if(node->GetId() == 1) {
 			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "producer Mac" ||
 					data.getMacAddressPro().empty()) {
-				// std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
+				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
@@ -631,6 +633,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // invoke PIT satisfy callback
     beforeSatisfyInterest(*pitEntry, inFace, data);
+    if(true) std::cout << "Entering strategy from onIncomingData method on node(" << node->GetId() << ") !!!!" << std::endl;
     this->dispatchToStrategy(pitEntry, bind(&Strategy::beforeSatisfyInterest, _1,
                                             pitEntry, cref(inFace), cref(data)));
 
@@ -722,6 +725,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		std::cout << ".............................................................................." << std::endl;
 	}
 
+	// check for any internal faces, if the package is
 	if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
 					|| inFace.getId() == 260 || inFace.getId() == 261) {
 		  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
@@ -737,17 +741,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			  std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
 		  }
 	} else {
+		std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
 		this->onOutgoingData(data, *pendingDownstream);
 	}
-
-
-//	if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-//					|| inFace.getId() == 260 || inFace.getId() == 261) {
-//		this->onOutgoingData(data, inFace);
-//		// this->onOutgoingData(data, *pendingDownstream);
-//	} else {
-//		this->onOutgoingData(data, *pendingDownstream);
-//	}
   }
 }
 
@@ -788,17 +784,17 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
     return;
   }
 
-//	// goto outgoing Data pipeline
-//	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-//	std::cout << "sending data out node(" << node->GetId() << ")outFace: " << outFace.getId() << std::endl;
-//	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
-//	std::ostringstream str;
-//	std::ostringstream face;
-//	str << netDevice->GetAddress();
-//	//face << pendingDownstream->getId();
-//
-//	const_cast<Data&>(data).setMacAddressPro(str.str().substr(6));
-//	const_cast<Data&>(data).addMacRoute(" --> " + str.str().substr(6));
+	// goto outgoing Data pipeline
+	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+	std::cout << "sending data out node(" << node->GetId() << ")outFace: " << outFace.getId() << std::endl;
+	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+	std::ostringstream str;
+	std::ostringstream face;
+	str << netDevice->GetAddress();
+	//face << pendingDownstream->getId();
+
+	const_cast<Data&>(data).setMacAddressPro(str.str().substr(6));
+	const_cast<Data&>(data).addMacRoute(" --> " + str.str().substr(6));
 
 //	if(false) {
 //		std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
