@@ -136,7 +136,7 @@ void
 ManagerBase::onCommandValidationFailed(const shared_ptr<const Interest>& command,
                                        const std::string& error)
 {
-	std::cout << "555" << std::endl;
+	std::cout << "555" << command->getName() << std::endl;
   NFD_LOG_DEBUG("command result: unauthorized command: " << *command << " (" << error << ")");
   sendResponse(command->getName(), 403, "Unauthorized command");
 }

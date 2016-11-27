@@ -160,6 +160,8 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 
   shared_ptr<Face> face = const_pointer_cast<Face>(inFace.shared_from_this());
   // insert InRecord
+
+
   pitEntry->insertOrUpdateInRecord(face, interest);
 
   // set PIT unsatisfy timer
@@ -171,8 +173,8 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   // Displays all the nextHops for a certain prefix on a certain node IMPORTANT
   // at the moment all new routes get the 04 MAC address which is a big problem
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  std::cout << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
-  if(true) {
+  //std::cout << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
+  if(false) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE FORWARDER::ONcONTENTsTOREmISS" << std::endl;
 	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
@@ -183,7 +185,17 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 	  }
 	  std::cout << std::endl;
   }
-  std::cout << "mmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
+
+  if(false) {
+	  // IN RECORD COLLECTION
+	  		  std::cout << "inRecordCollection: node(" << node->GetId() << ") ";
+	  		  const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
+	  		  for (pit::InRecordCollection::const_iterator it = inRecords.begin();
+	  														 it != inRecords.end(); ++it) {
+	  			  std::cout << "inside onContentstoreMiss: " << it->getFace()->getId() << "; ";
+	  		  }
+  }
+  //std::cout << "\nmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmmm" << std::endl;
 
   // dispatch to strategy
   this->dispatchToStrategy(pitEntry, bind(&Strategy::afterReceiveInterest, _1,
@@ -428,7 +440,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-  std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
+  // std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
   std::cout << data.getName() << std::endl;
 
   // PIT match
@@ -444,7 +456,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // At the moment all data.Mac's are 04 empty or producers
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  std::cout << "on node(" << node->GetId() << ")" << std::endl;
+  std::cout << "yeah.... on node(" << node->GetId() << ") and pitchMatches.size() is: " << pitMatches.size() << std::endl;
 
   if(false) {
 		std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
@@ -484,7 +496,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
-  if(true) {
+  if(false) {
 	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
 	  std::cout << "you are on node (" << node->GetId() << ") Mac on the received data package is: "
 			  << data.getMacAddressPro() << std::endl;
@@ -611,6 +623,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   std::set<shared_ptr<Face>> pendingDownstreams;
   // foreach PitEntry
   for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+
     NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());
     //std::cout << "onIncomingData matching= pitEntry->getName() : " << pitEntry->getName() << std::endl;
 
@@ -621,6 +634,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     ///////////////////////////////////////////////////////////////////////////////////////
     // remember pending downstreams
     const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
+
+    std::cout << "zzzz" << inRecords.size() << std::endl;
+
+
     for (pit::InRecordCollection::const_iterator it = inRecords.begin();
                                                  it != inRecords.end(); ++it) {
       if (it->getExpiry() > time::steady_clock::now()) {
@@ -633,7 +650,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // invoke PIT satisfy callback
     beforeSatisfyInterest(*pitEntry, inFace, data);
-    if(true) std::cout << "Entering strategy from onIncomingData method on node(" << node->GetId() << ") !!!!" << std::endl;
+    if(false) std::cout << "Entering strategy from onIncomingData method on node(" << node->GetId() << ") !!!!" << std::endl;
     this->dispatchToStrategy(pitEntry, bind(&Strategy::beforeSatisfyInterest, _1,
                                             pitEntry, cref(inFace), cref(data)));
 
@@ -660,9 +677,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
   // foreach pending downstream
+  std::cout << "EIRINI you are on node(" << node->GetId() << " and the pendingDownstream size is: " << pendingDownstreams.size() << std::endl;
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
 		  	  	  it != pendingDownstreams.end(); ++it) {
 	  shared_ptr<Face> pendingDownstream = *it;
+	  std::cout << "tomasz: " << pendingDownstream.get()->getId() << std::endl;
+
+
 	  // data cannot be send through the same face it was received on
 	  if (pendingDownstream.get() == &inFace) {
 		continue;
@@ -731,14 +752,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 			  std::cout << std::endl;
 			  // OUT RECORD COLLECTION
-			  std::cout << "outRecordCollection:";
+			  //std::cout << "outRecordCollection:";
 			  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
 			  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 															 it != outRecords.end(); ++it) {
-				  std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
+				  //std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
 				  this->onOutgoingData(data, *it->getFace());
 			  }
-			  std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
+			  //std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
 		  }
 	} else {
 		std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
@@ -759,7 +780,6 @@ Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
     else
       m_csFromNdnSim->Add(data.shared_from_this());
   }
-
   NFD_LOG_DEBUG("onDataUnsolicited face=" << inFace.getId() <<
                 " data=" << data.getName() <<
                 (acceptToCache ? " cached" : " not cached"));
@@ -786,7 +806,7 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 
 	// goto outgoing Data pipeline
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	std::cout << "sending data out node(" << node->GetId() << ")outFace: " << outFace.getId() << std::endl;
+	// std::cout << "sending data out node(" << node->GetId() << ")outFace: " << outFace.getId() << std::endl;
 	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	std::ostringstream str;
 	std::ostringstream face;

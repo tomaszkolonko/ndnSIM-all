@@ -100,7 +100,7 @@ Pit::findAllDataMatches(const Data& data) const
         matches.emplace_back(pitEntry);
     }
   }
-
+std::cout<< "qwertz << " << matches.size() <<std::endl;
   return matches;
 }
 
