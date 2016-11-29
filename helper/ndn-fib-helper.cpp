@@ -76,6 +76,7 @@ void
 FibHelper::RemoveNextHop(const ControlParameters& parameters, Ptr<Node> node)
 {
   NS_LOG_DEBUG("Remove Next Hop command was initialized");
+  std::cout << "Remove Next Hop command was initialized" << std::endl;
   Block encodedParameters(parameters.wireEncode());
 
   Name commandName("/localhost/nfd/fib");
@@ -84,6 +85,9 @@ FibHelper::RemoveNextHop(const ControlParameters& parameters, Ptr<Node> node)
 
   shared_ptr<Interest> command(make_shared<Interest>(commandName));
   StackHelper::getKeyChain().sign(*command);
+
+  std::cout << "INSIDE FIBHELPER::REMOVENEXTHOP" << std::endl;
+  std::cout << commandName << std::endl;
 
   Ptr<L3Protocol> L3protocol = node->GetObject<L3Protocol>();
   shared_ptr<nfd::FibManager> fibManager = L3protocol->getFibManager();
@@ -244,6 +248,7 @@ FibHelper::RemoveRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face
 void
 FibHelper::RemoveRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId)
 {
+	std::cout << "our function inside FibHelper::RemoveRoute " << std::endl;
   Ptr<L3Protocol> ndn = node->GetObject<L3Protocol>();
   NS_ASSERT_MSG(ndn != 0, "Ndn stack should be installed on the node");
 

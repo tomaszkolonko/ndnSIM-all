@@ -110,7 +110,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
   // If the an interest with the same nonce has passed this node already, the pit entry
-  // will be updated BUT the further processing of this interest will be dropped immediately.
+  // will be updated BUT further processing of this interest will be stopped immediately.
 
   // detect duplicate Nonce
   int dnw = pitEntry->findNonce(interest.getNonce(), inFace);
@@ -119,8 +119,6 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   if (hasDuplicateNonce) {
     // goto Interest loop pipeline
     this->onInterestLoop(inFace, interest, pitEntry);
-    // seems to be dropped correctly
-    //std::cout << "DROPPING INTEREST DROPPING INTEREST DROPPING INTEREST" << std::endl;
     return;
   }
 
@@ -425,6 +423,9 @@ Forwarder::onInterestFinalize(shared_ptr<pit::Entry> pitEntry, bool isSatisfied,
 void
 Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
+  std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
+  std::cout << data.getName() << std::endl;
+
   // receive Data
   NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() << " data=" << data.getName());
   const_cast<Data&>(data).setIncomingFaceId(inFace.getId());
@@ -440,23 +441,24 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-  // std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
-  std::cout << data.getName() << std::endl;
-
   // PIT match
   // typedef std::vector<shared_ptr<pit::Entry>> DataMatchResult;
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
+
+  std::cout << "yeah1.... on node(xxx) and pitchMatches.size() is: " << pitMatches.size() << std::endl;
+  std::cout << "with data name: " << data.getName() << std::endl;
+
   if (pitMatches.begin() == pitMatches.end()) {
     // goto Data unsolicited pipeline
-    // this->onDataUnsolicited(inFace, data);
+    this->onDataUnsolicited(inFace, data);
     return;
   }
 
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   // At the moment all data.Mac's are 04 empty or producers
-  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  std::cout << "yeah.... on node(" << node->GetId() << ") and pitchMatches.size() is: " << pitMatches.size() << std::endl;
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  std::cout << "yeah2.... on node(" << node->GetId() << ") and pitchMatches.size() is: " << pitMatches.size() << std::endl;
 
   if(false) {
 		std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
@@ -545,32 +547,32 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			}
 		}
 		if(node->GetId() == 1) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:04" || data.getMacAddressPro() == "producer Mac" ||
+			if(data.getMacAddressPro() == "00:00:00:00:00:04" ||
+					data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "producer Mac" ||
 					data.getMacAddressPro().empty()) {
 				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
+		if(node->GetId() == 2) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
+					data.getMacAddressPro().empty()) {
+				std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
+				return;
+			}
+		}
+		if(node->GetId() == 3) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
+					data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro().empty()) {
+						std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
+										return;
+			}
+		}
   }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-  // std::cout << "APPARENTLY YOUR DATA PACKAGE HAS NOT BEEN DROPPED IF YOU ARE ON NODE" <<
-//		  "2 KEEP LOOKING FURTHER DOWN WHAT HAPPENS" << std::endl;
-  if(false) {
-    std::cout << "*****************************************************************" << std::endl;
-    std::cout << "data.getMacAddressPro()  " << data.getMacAddressPro() << std::endl;
-    std::cout << "INSIDE: Forwarder::onIncomingData: " << inFace << std::endl;
-    std::cout << "*****************************************************************" << std::endl;
-  }
-
-  //std::cout << ns3::ndn::ContentStore::GetContentStore(node)->GetSize() << std::endl;
-  if(false) {
-	  std::cout << "|||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||||" << std::endl;
-	  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
-	  std::cout << "Mac on the received data package is: " << data.getMacAddressPro() << std::endl;
-	  std::cout << "---------------------------------------------------------------------" << std::endl;
-  }
-
+  std::cout << "heckingMacAddress: >" << data.getMacAddressPro() << "<" << std::endl;
+  std::cout << "data.getMacAddressPro().empty() true: " << data.getMacAddressPro().empty() << std::endl;
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
 	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else {
@@ -602,7 +604,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //	  std::cout << "... a new route is being added ... on node(" << node->GetId() << ") with prefix /test and faceID: " << inFace.getId()
 //			  << " and targetMac: " << data.getMacAddressPro() << " and Route: " << data.getMacRoute() << std::endl;
 
-	  ns3::ndn::FibHelper::AddRoute(node, "/test/", inFace.getId(), 111, data.getMacAddressPro());
+	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
+	   // ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
@@ -622,9 +625,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   std::set<shared_ptr<Face>> pendingDownstreams;
   // foreach PitEntry
-  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
-    NFD_LOG_DEBUG("onIncomingData matching=" << pitEntry->getName());
+  std::cout << "pitMatches.size() : " << pitMatches.size() << std::endl;
+
+  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
     //std::cout << "onIncomingData matching= pitEntry->getName() : " << pitEntry->getName() << std::endl;
 
     // cancel unsatisfy & straggler timer
@@ -635,7 +639,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     // remember pending downstreams
     const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
 
-    std::cout << "zzzz" << inRecords.size() << std::endl;
+    std::cout << "inRecords.size() for each entry within pitMatches" << inRecords.size() << std::endl;
 
 
     for (pit::InRecordCollection::const_iterator it = inRecords.begin();
@@ -681,12 +685,14 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
 		  	  	  it != pendingDownstreams.end(); ++it) {
 	  shared_ptr<Face> pendingDownstream = *it;
-	  std::cout << "tomasz: " << pendingDownstream.get()->getId() << std::endl;
 
+	  std::cout << "tomasz pendingDownstream.get()->getId(): " << pendingDownstream.get()->getId() << std::endl;
+	  std::cout << "tomasz inFace through which the data came from: " << inFace.getId() << std::endl;
 
 	  // data cannot be send through the same face it was received on
 	  if (pendingDownstream.get() == &inFace) {
-		continue;
+		  std::cout << " --> pendingDownstream.get() == &inFace <-- " << std::endl;
+		//continue;
 	  }
 	  // std::cout << "you are on node (" << node->GetId() << ") AND PENDINGDOWNSTREAM IS OK ;) inFace: " << inFace.getId() << std::endl;
     // Get the current node and get every NetDevice on it. Then get the FaceId through l3protocol and compare
@@ -735,20 +741,16 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	if(false) {
 		std::cout << "you are on node (" << node->GetId() << ") and adding " << str.str().substr(6) << " to outgoing data" << std::endl;
 
-		// const_cast<Data&>(data).setMacAddressPro(str.str().substr(6) + ":" + face.str());
-		// const_cast<Data&>(data).setMacAddressPro(str.str().substr(6));
-		// const_cast<Data&>(data).addMacRoute(" --> " + str.str().substr(6));
-
-	//	dataWithNewMac->setMacAddressPro(str.str().substr(6));
-	//	dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
 		std::cout << ".............................................................................." << std::endl;
 		std::cout << "data " << data.getName() << " is being send to pendingDownstream: " << pendingDownstream->getId() << std::endl;
 		std::cout << ".............................................................................." << std::endl;
 	}
 
 	// check for any internal faces, if the package is
+	std::cout << "desiigner: inFace is: " << inFace.getId() << "...." << std::endl;
 	if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-					|| inFace.getId() == 260 || inFace.getId() == 261) {
+					|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) {
+		std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
 		  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 			  std::cout << std::endl;
 			  // OUT RECORD COLLECTION
@@ -756,21 +758,23 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
 			  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 															 it != outRecords.end(); ++it) {
-				  //std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
+				  std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
 				  this->onOutgoingData(data, *it->getFace());
 			  }
 			  //std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
 		  }
 	} else {
-		std::cout << "sending data out on node(" << node->GetId() << ") inFace: " << inFace.getId() << std::endl;
+		std::cout << "sending data out on node(" << node->GetId() << ") pendingDownstream: " << pendingDownstream->getId() << std::endl;
 		this->onOutgoingData(data, *pendingDownstream);
 	}
+	this->onOutgoingData(data, *pendingDownstream);
   }
 }
 
 void
 Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
 {
+	std::cout << "Entered Forwarder::onDataUnsolicited" << std::endl;
   // accept to cache?
   bool acceptToCache = inFace.isLocal();
   if (acceptToCache) {
@@ -788,6 +792,16 @@ Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
 void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
+
+//	  if(false) {
+//		  // TODO: seems all to be ok delete it after debugging
+//		  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
+//		  std::cout << "before Forwarder::onOutgoingData mac -> " << data.getMacAddressPro() << std::endl;
+//		  std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+//	  }
+
+
+
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
     return;
@@ -821,13 +835,14 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 //		std::cout << "string set to data.setMacAddressPro: " << str.str().substr(6) << std::endl;
 //	}
 //
-//  if(false) {
-//	  // TODO: seems all to be ok delete it after debugging
-//	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
-//	  std::cout << "Forwarder::onOutgoingData mac -> " << data.getMacAddressPro() << std::endl;
-//	  std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
-//  }
-//  // TODO traffic manager
+  if(true) {
+	  // TODO: seems all to be ok delete it after debugging
+	  std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::endl;
+	  std::cout << "after Forwarder::onOutgoingData mac -> " << data.getMacAddressPro() << std::endl;
+	  std::cout << "DataMacRoute: " << data.getMacRoute() << std::endl;
+	  std::cout << "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<" << std::endl;
+  }
+  // TODO traffic manager
 
   // send Data
   outFace.sendData(data);

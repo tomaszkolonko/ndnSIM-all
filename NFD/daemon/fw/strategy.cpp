@@ -52,7 +52,7 @@ Strategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
 {
   NFD_LOG_DEBUG("beforeSatisfyInterest pitEntry=" << pitEntry->getName() <<
     " inFace=" << inFace.getId() << " data=" << data.getName());
-  std::cout << "you are within beforeStatisfyInterest() in strategy.cpp" << std::endl;
+  std::cout << "you are within beforeStatisfyInterest() in strategy.cpp  --> --> --> --> --> -->" << std::endl;
   std::cout << "data.getMacAddressPro() : " << data.getMacAddressPro() << std::endl;
 
 	const pit::InRecordCollection& inRecCol = pitEntry->getInRecords();
@@ -70,6 +70,7 @@ Strategy::beforeSatisfyInterest(shared_ptr<pit::Entry> pitEntry,
 	for(pit::OutRecordCollection::const_iterator inIt = outRecCol.begin(); inIt != outRecCol.end(); ++inIt){
 		std::cout << "outRecord face: " << inIt->getFace()->getId() << std::endl;
 	}
+	std::cout << "<-- <-- <-- <-- <-- <-- you are leaving beforeStatisfyInterest() in strategy.cpp" << std::endl;
 	std::cout << std::endl;
 }
 

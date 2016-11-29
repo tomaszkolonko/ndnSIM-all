@@ -347,21 +347,9 @@ StackHelper::createAndRegisterFace(Ptr<Node> node, Ptr<L3Protocol> ndn, Ptr<NetD
     face = DefaultNetDeviceCallback(node, ndn, device);
   }
 
-  // print some information about the node and faces
-  if(debug) {
-    std::cout << "INSIDE StackHelper::createAndRegisterFace" << std::endl;
-    std::cout << "node=" << node->GetId() << std::endl;
-    std::cout << "device=" << device->GetAddress() << std::endl;
-  }
-
-
   if (m_needSetDefaultRoutes) {
     // default route with lowest priority possible
-	if(debug) std::cout << "BEFORE first call to FibHelper::AddRoute()" << std::endl;
-
-	std::cout << "m_needSetDefaultRoutes -> " << face->getId() << std::endl;
     FibHelper::AddRoute(node, "/", face, std::numeric_limits<int32_t>::max());
-    if(debug) std::cout << "AFTER first call to FibHelper::AddRoute()" << std::endl;
   }
   return face;
 }
