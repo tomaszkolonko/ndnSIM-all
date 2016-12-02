@@ -435,7 +435,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   if (pitMatches.begin() == pitMatches.end()) {
     // goto Data unsolicited pipeline
-    this->onDataUnsolicited(inFace, data);
+    // this->onDataUnsolicited(inFace, data);
     return;
   }
 
@@ -527,9 +527,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
   //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
 
-
-//	  std::cout << "...receiving Data is: " << data.getMacRoute() << std::endl;
-
 	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
 	   ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
   }
@@ -554,11 +551,13 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   std::cout << "pitMatches.size() : " << pitMatches.size() << std::endl;
 
+
+  // *************** TAKE PIT ENTRY AND EXTRACT NEEDED FACES ***********************************
+  // *******************************************************************************************
   for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
     // cancel unsatisfy & straggler timer
     this->cancelUnsatisfyAndStragglerTimer(pitEntry);
-
 
     // remember pending downstreams
     const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
@@ -573,6 +572,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
         pendingDownstreams.insert(it->getFace());
       }
     }
+  // *************** TAKE PIT ENTRY AND EXTRACT NEEDED FACES ***********************************
+  // *******************************************************************************************
 
 
     // invoke PIT satisfy callback
@@ -601,11 +602,33 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "BETA pendingDownstream.get()->getId(): " << pendingDownstream.get()->getId() << std::endl;
 	  std::cout << "BETA inFace through which the data came from: " << inFace.getId() << std::endl;
 
+
+	  // ********************** some logic how to add more faces to the downstream *************************************
+	  // ***************************************************************************************************************
+		std::cout << "desiigner: inFace is: " << inFace.getId() << "...." << std::endl;
+		if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
+						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) {
+			std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
+			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+				  std::cout << std::endl;
+				  // OUT RECORD COLLECTION
+				  //std::cout << "outRecordCollection:";
+				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+																 it != outRecords.end(); ++it) {
+					  std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
+					  this->onOutgoingData(data, *it->getFace());
+				  }
+			  }
+		}
+	  // ********************** some logic how to add more faces to the downstream *************************************
+	  // ***************************************************************************************************************
+
+
 	  // data cannot be send through the same face it was received on
 	  if (pendingDownstream.get() == &inFace) {
-		  std::cout << " --> pendingDownstream.get() == &inFace <-- " << std::endl;
-		  // TODO: is it correct to leave continue uncommented?
-		//continue;
+		  std::cout << " --> pendingDownstream.get() == &inFace <--  WHICH IS NOT TOO GOOD" << std::endl;
+		  continue;
 	  }
 	  // std::cout << "you are on node (" << node->GetId() << ") AND PENDINGDOWNSTREAM IS OK ;) inFace: " << inFace.getId() << std::endl;
     // Get the current node and get every NetDevice on it. Then get the FaceId through l3protocol and compare
@@ -642,30 +665,12 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //    	}
 //    }
 
-	// check for any internal faces, if the package is
-	std::cout << "desiigner: inFace is: " << inFace.getId() << "...." << std::endl;
-	if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-					|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) {
-		std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
-		  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-			  std::cout << std::endl;
-			  // OUT RECORD COLLECTION
-			  //std::cout << "outRecordCollection:";
-			  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-			  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-															 it != outRecords.end(); ++it) {
-				  std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
-				  this->onOutgoingData(data, *it->getFace());
-			  }
-			  //std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
-		  }
-	} else {
-		std::cout << "sending data out on node(" << node->GetId() << ") pendingDownstream: " << pendingDownstream->getId() << std::endl;
-		this->onOutgoingData(data, *pendingDownstream);
-	}
-//	std::cout << "@@@ NOT GOOD @@@\n";
-//	this->onOutgoingData(data, *pendingDownstream);
-  }
+
+	std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
+			pendingDownstream->getId() << std::endl;
+	this->onOutgoingData(data, *pendingDownstream);
+	std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
+ }
 }
 
 void

@@ -248,7 +248,7 @@ Consumer::OnData(shared_ptr<const Data> data)
   }
 
   std::cout << "*****************************************************************" << std::endl;
-  std::cout << ";) ;) consumer receiving data for: " << seq << " with hopcount: " << hopCount << std::endl;
+  std::cout << ";) ;) consumer receiving data for: " << seq << " with hopcount: " << hopCount << " and name " << data->getName() << std::endl;
   std::cout << ";) ;) MacRoute of the data is: " << data->getMacRoute() << std::endl;
   std::cout << "*****************************************************************" << std::endl;
 
