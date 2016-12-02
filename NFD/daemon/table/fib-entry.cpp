@@ -43,6 +43,15 @@ Entry::findNextHop(Face& face)
                       });
 }
 
+NextHopList::iterator
+Entry::findNextHop(Face& face, std::string macAddress)
+{
+  return std::find_if(m_nextHops.begin(), m_nextHops.end(),
+                      [&face] (const NextHop& nexthop) {
+                        return (nexthop.getFace().get() == &face && nexthop.getMac() == macAddress);
+                      });
+}
+
 bool
 Entry::hasNextHop(shared_ptr<Face> face) const
 {

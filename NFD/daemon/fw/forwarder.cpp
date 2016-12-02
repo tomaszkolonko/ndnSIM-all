@@ -476,23 +476,19 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // *******************************************************************************************************************
 
 
-  // ****************** Dropping all data that is not from immediate upstream neighbour -- BEGIN ***********************
+  // *************************** Dropping all data that is from lower nodes -- BEGIN ***********************************
   // *******************************************************************************************************************
   bool dropIt = true;
   if(dropIt) {
 	  // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
 	  if(node->GetId() == 0) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:03"  ||
-					data.getMacAddressPro() == "00:00:00:00:00:04" ||
-					data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
+			if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
 				std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
 		if(node->GetId() == 1) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:04" ||
-					data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "producer Mac" ||
-					data.getMacAddressPro().empty()) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro().empty()) {
 				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
@@ -512,7 +508,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			}
 		}
   }
-  // ****************** Dropping all data that is not from immediate upstream neighbour -- END *************************
+  // *************************** Dropping all data that is from lower nodes -- END ***********************************
   // *******************************************************************************************************************
 
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
@@ -528,7 +524,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
 
 	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
-	   ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
+
+	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
