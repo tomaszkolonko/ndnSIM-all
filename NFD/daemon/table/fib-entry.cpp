@@ -24,6 +24,7 @@
  */
 
 #include "fib-entry.hpp"
+#include <regex>
 
 namespace nfd {
 namespace fib {
@@ -43,12 +44,13 @@ Entry::findNextHop(Face& face)
                       });
 }
 
+// Find nextHop by face && macAddress
 NextHopList::iterator
 Entry::findNextHop(Face& face, std::string macAddress)
 {
   return std::find_if(m_nextHops.begin(), m_nextHops.end(),
-                      [&face] (const NextHop& nexthop) {
-                        return (nexthop.getFace().get() == &face && nexthop.getMac() == macAddress);
+                      [&face, macAddress] (const NextHop& nexthop) {
+                        return ((nexthop.getFace().get() == &face) && (nexthop.getMac() == macAddress));
                       });
 }
 
@@ -58,10 +60,26 @@ Entry::hasNextHop(shared_ptr<Face> face) const
   return const_cast<Entry*>(this)->findNextHop(*face) != m_nextHops.end();
 }
 
+// hasNextHop by face && macAddress
+bool
+Entry::hasNextHop(shared_ptr<Face> face, std::string macAddress) const
+{
+  if(std::regex_match (macAddress, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
+	  return const_cast<Entry*>(this)->findNextHop(*face, macAddress) != m_nextHops.end();
+  } else {
+	  return const_cast<Entry*>(this)->findNextHop(*face) != m_nextHops.end();
+  }
+}
+
 void
 Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
 {
   auto it = this->findNextHop(*face);
+  if(std::regex_match (macAddress, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
+	it = this->findNextHop(*face, macAddress);
+  }
+
+
   if (it == m_nextHops.end()) {
     m_nextHops.push_back(fib::NextHop(face));
     it = m_nextHops.end();

@@ -27,6 +27,7 @@
 #define NFD_DAEMON_TABLE_FIB_ENTRY_HPP
 
 #include "fib-nexthop.hpp"
+#include <regex>
 
 namespace nfd {
 
@@ -74,6 +75,11 @@ public:
    */
   bool
   hasNextHop(shared_ptr<Face> face) const;
+
+  /** \return whether there is a NextHop record for face && macAddress
+   */
+  bool
+  hasNextHop(shared_ptr<Face> face, std::string macAddress) const;
 
   /** \brief adds a NextHop record
    *
