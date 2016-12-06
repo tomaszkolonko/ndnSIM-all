@@ -54,33 +54,20 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if(false) printPITOutRecord(pitEntry);
 
 
-    ns3::Address addr;
-    addr = node->GetDevice(0)->GetAddress();
-    std::ostringstream MacToTest;
-    MacToTest << addr;
-
-    std::string tt = MacToTest.str().substr(6);
-
-
-//	if(tt != interest.getMacAddress() && !interest.getMacAddress().empty() && interest.getMacAddress() != "consumer ") {
-//		//std::cout << "dropping interest in MulticastStrategy" << std::endl;
-//		return;
-//	}
-
-
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
 
 	  std::string targetMac; // = it->getMac();
 
-	  switch(node->GetId()) {
-	  case 0: targetMac = "00:00:00:00:00:02"; break;
-	  case 1: targetMac = "00:00:00:00:00:03"; break;
-	  case 2: targetMac = "00:00:00:00:00:04"; break;
-	  case 3: targetMac = "Producer Mac"; break;
-	  default: targetMac = "";
+	  // if FIB entry has been already updated with MacAddress then take it. Otherwise MacAddress is empty.
+	  if(std::regex_match(it->getMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
+		  targetMac = it->getMac();
 	  }
+
+//	  std::cout << "targetMac.empty() = " << targetMac.empty() << std::endl;
+//	  std::cout << "targetMac = " << targetMac << std::endl;
+//	  std::cout << "tomasz\n";
 
 	  if (pitEntry->canForwardTo(*outFace)) {
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());

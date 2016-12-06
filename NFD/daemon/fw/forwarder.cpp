@@ -98,7 +98,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   addr << node->GetDevice(0)->GetAddress();
   std::string currentMacAddress = addr.str().substr(6);
 
-  // If the interest is NOT coming from apps AND it's MAC is not this nodes' MAC drop it immediately.
+  // check if macAddress has been set. If empty it the forwarding is still broadcasting. If there is a Mac it comes from the fib
+  // of the prior node.
   if(interest.getMacAddress() != "consumer " && interest.getMacAddress() != "producer Mac" && interest.getMacAddress() != "unknown"
 	  && !interest.getMacAddress().empty()){
 	  if(currentMacAddress != interest.getMacAddress()) {
@@ -479,30 +480,37 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // *************************** Dropping all data that is from lower nodes -- BEGIN ***********************************
   // *******************************************************************************************************************
   bool dropIt = true;
+
+  // Important to achieve is now the following. Inside nodeB you check the PIT for downstream node. You get the face
+  // but you also want to get a targetMac.... But how do you know the downstream mac???
+  // then the downsstreamMac is attached to the data and then checked in the next node if it is the same... if yes ok
+  // if no drop it immediately ;)
+  // WHY are you doing this? It seems that not dropping the packages leads to congestions and no packages are received.
+  // Dropping the packages here results in all the data being received by the consumer.
+
   if(dropIt) {
 	  // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
 	  if(node->GetId() == 0) {
-			if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
+			if(data.getMacAddressPro() == "producer Mac") {
 				std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
-		if(node->GetId() == 1) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro().empty()) {
-				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
-		if(node->GetId() == 2) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
-					data.getMacAddressPro().empty()) {
-				std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
+//		if(node->GetId() == 1) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
+//				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
+//		if(node->GetId() == 2) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
+//				std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
 		if(node->GetId() == 3) {
 			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
-					data.getMacAddressPro() == "00:00:00:00:00:03" || data.getMacAddressPro().empty()) {
+					data.getMacAddressPro() == "00:00:00:00:00:03") {
 						std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
