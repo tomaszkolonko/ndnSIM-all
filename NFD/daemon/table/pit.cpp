@@ -64,8 +64,8 @@ Pit::~Pit()
 std::pair<shared_ptr<pit::Entry>, bool>
 Pit::insert(const Interest& interest)
 {
-  // first lookup() the Interest Name in the NameTree, which will creates all
-  // the intermedia nodes, starting from the shortest prefix.
+  // first lookup() the Interest Name in the NameTree, which will create all
+  // the intermediate nodes, starting from the shortest prefix.
   shared_ptr<name_tree::Entry> nameTreeEntry = m_nameTree.lookup(interest.getName());
   BOOST_ASSERT(static_cast<bool>(nameTreeEntry));
 
@@ -100,7 +100,7 @@ Pit::findAllDataMatches(const Data& data) const
         matches.emplace_back(pitEntry);
     }
   }
-  std::cout<< "Pit::findAllDataMatches:  << " << matches.size() <<std::endl;
+  // std::cout<< "Pit::findAllDataMatches:  << " << matches.size() <<std::endl;
   return matches;
 }
 

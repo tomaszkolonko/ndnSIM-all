@@ -53,7 +53,6 @@ namespace nfd {
 NFD_LOG_INIT("Forwarder");
 
 using fw::Strategy;
-const bool debug = false;
 
 const Name Forwarder::LOCALHOST_NAME("ndn:/localhost");
 
@@ -76,6 +75,7 @@ Forwarder::~Forwarder()
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
+	bool debug = false;
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
@@ -155,6 +155,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
                               shared_ptr<pit::Entry> pitEntry,
                               const Interest& interest)
 {
+	bool debug = false;
   NFD_LOG_DEBUG("onContentStoreMiss interest=" << interest.getName());
 
   shared_ptr<Face> face = const_pointer_cast<Face>(inFace.shared_from_this());
@@ -174,7 +175,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
 
-  if(false) {
+  if(debug) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE Forwarder::OnContentStoreMiss" << std::endl;
 	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
@@ -186,7 +187,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 	  std::cout << std::endl;
   }
 
-  if(false) {
+  if(debug) {
 	  std::cout << "inRecordCollection: node(" << node->GetId() << ") ";
 	  const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
 	  for (pit::InRecordCollection::const_iterator it = inRecords.begin();
@@ -207,6 +208,7 @@ Forwarder::onContentStoreHit(const Face& inFace,
                              const Interest& interest,
                              const Data& data)
 {
+	bool debug = false;
   NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName());
 
   beforeSatisfyInterest(*pitEntry, *m_csFace, data);
@@ -263,6 +265,7 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               bool wantNewNonce)
 {
+	bool debug = false;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -305,6 +308,7 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               std::string targetMac, int inFaceId, bool wantNewNonce)
 {
+	bool debug = false;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -413,8 +417,11 @@ Forwarder::onInterestFinalize(shared_ptr<pit::Entry> pitEntry, bool isSatisfied,
 void
 Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
-  std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
-  std::cout << data.getName() << std::endl;
+  bool debug = false;
+  if(debug) {
+    std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
+    std::cout << data.getName() << std::endl;
+  }
 
   // receive Data
   NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() << " data=" << data.getName());
@@ -444,7 +451,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // At the moment all data.Mac's are 04 empty or producers
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-  std::cout << "yeah --- 2 --- on node(    "<< node->GetId() <<"    )  pitchMatches.size() is: " << pitMatches.size() << std::endl;
+  if(debug) {
+	  std::cout << "yeah --- 2 --- on node(    "<< node->GetId() <<"    )  pitchMatches.size() is: " << pitMatches.size() << std::endl;
+  }
 
   // ********************* Check all in and out Records of specific PIT::Entry -- BEGIN **********************************
   // *********************************************************************************************************************
@@ -492,26 +501,26 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
 	  if(node->GetId() == 0) {
 			if(data.getMacAddressPro() == "producer Mac") {
-				std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
+				//std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
-//		if(node->GetId() == 1) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
-//				std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
-//				return;
-//			}
-//		}
-//		if(node->GetId() == 2) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
-//				std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
-//				return;
-//			}
-//		}
+		if(node->GetId() == 1) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
+				//std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
+				return;
+			}
+		}
+		if(node->GetId() == 2) {
+			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
+				//std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
+				return;
+			}
+		}
 		if(node->GetId() == 3) {
 			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
 					data.getMacAddressPro() == "00:00:00:00:00:03") {
-						std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
+						//std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
 				return;
 			}
 		}
@@ -554,7 +563,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   std::set<shared_ptr<Face>> pendingDownstreams;
   // foreach PitEntry
 
-  std::cout << "pitMatches.size() : " << pitMatches.size() << std::endl;
+  if(debug) std::cout << "pitMatches.size() : " << pitMatches.size() << std::endl;
 
 
   // *************** TAKE PIT ENTRY AND EXTRACT NEEDED FACES ***********************************
@@ -567,7 +576,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     // remember pending downstreams
     const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
 
-    std::cout << "inRecords.size() for each entry within pitMatches" << inRecords.size() << std::endl;
+    if(debug) std::cout << "inRecords.size() for each entry within pitMatches" << inRecords.size() << std::endl;
 
     for (pit::InRecordCollection::const_iterator it = inRecords.begin();
                                                  it != inRecords.end(); ++it) {
@@ -599,29 +608,32 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 
   // foreach pending downstream
-  std::cout << "ALPHA you are on node(" << node->GetId() << " and the pendingDownstream size is: " << pendingDownstreams.size() << std::endl;
+  if(debug) std::cout << "ALPHA you are on node(" << node->GetId()
+		  << " and the pendingDownstream size is: " << pendingDownstreams.size() << std::endl;
+
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
 		  	  	  it != pendingDownstreams.end(); ++it) {
 	  shared_ptr<Face> pendingDownstream = *it;
 
-	  std::cout << "BETA pendingDownstream.get()->getId(): " << pendingDownstream.get()->getId() << std::endl;
-	  std::cout << "BETA inFace through which the data came from: " << inFace.getId() << std::endl;
-
+	  if(debug) {
+		  std::cout << "BETA pendingDownstream.get()->getId(): " << pendingDownstream.get()->getId() << std::endl;
+		  std::cout << "BETA inFace through which the data came from: " << inFace.getId() << std::endl;
+	  }
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-		std::cout << "desiigner: inFace is: " << inFace.getId() << "...." << std::endl;
+		if(debug) std::cout << "desiigner: inFace is: " << inFace.getId() << "...." << std::endl;
 		if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
 						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) {
-			std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
+			if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
 			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-				  std::cout << std::endl;
+				  if(debug) std::cout << std::endl;
 				  // OUT RECORD COLLECTION
 				  //std::cout << "outRecordCollection:";
 				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
 				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 																 it != outRecords.end(); ++it) {
-					  std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
+					  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
 					  this->onOutgoingData(data, *it->getFace());
 				  }
 			  }
@@ -632,7 +644,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  // data cannot be send through the same face it was received on
 	  if (pendingDownstream.get() == &inFace) {
-		  std::cout << " --> pendingDownstream.get() == &inFace <--  WHICH IS NOT TOO GOOD" << std::endl;
+		  if(debug) std::cout << " --> pendingDownstream.get() == &inFace <--  WHICH IS NOT TOO GOOD" << std::endl;
 		  continue;
 	  }
 	  // std::cout << "you are on node (" << node->GetId() << ") AND PENDINGDOWNSTREAM IS OK ;) inFace: " << inFace.getId() << std::endl;
@@ -671,17 +683,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //    }
 
 
-	std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
+	if(debug) std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
 			pendingDownstream->getId() << std::endl;
 	this->onOutgoingData(data, *pendingDownstream);
-	std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
+	if(debug) std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
  }
 }
 
 void
 Forwarder::onDataUnsolicited(Face& inFace, const Data& data)
 {
-	std::cout << "Entered Forwarder::onDataUnsolicited" << std::endl;
+  // std::cout << "Entered Forwarder::onDataUnsolicited" << std::endl;
   // accept to cache?
   bool acceptToCache = inFace.isLocal();
   if (acceptToCache) {
