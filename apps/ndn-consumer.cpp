@@ -192,6 +192,7 @@ Consumer::SendPacket()
   shared_ptr<Interest> interest = make_shared<Interest>();
   interest->setNonce(m_rand->GetValue(0, std::numeric_limits<uint32_t>::max()));
   interest->setName(*nameWithSequence);
+  // is 1000 by default
   time::milliseconds interestLifeTime(m_interestLifeTime.GetMilliSeconds());
   // std::cout << "time::miliseconds of the Interest send out: " << m_interestLifeTime.GetMilliSeconds() << std::endl;
   interest->setInterestLifetime(interestLifeTime);

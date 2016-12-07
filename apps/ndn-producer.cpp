@@ -113,11 +113,17 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 
   auto data = make_shared<Data>();
   data->setName(dataName);
-  // TODO: find out correct macAddress (you are still within application !!!
+
   data->setMacAddressPro("producer Mac");
   data->setMacRoute("producer Mac");
 
-  data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
+
+  // TODO: is that even correct? Default was only else statement which resulted in FreshnessPeriod being 0
+  if(m_freshness.GetMilliSeconds() == 0) {
+	  data->setFreshnessPeriod(::ndn::time::milliseconds(1000));
+  } else {
+	  data->setFreshnessPeriod(::ndn::time::milliseconds(m_freshness.GetMilliSeconds()));
+  }
 
   data->setContent(make_shared< ::ndn::Buffer>(m_virtualPayloadSize));
 
