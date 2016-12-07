@@ -123,6 +123,12 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
     return;
   }
 
+  if(debug) {
+	  std::cout << std::endl;
+	  std::cout << "you are on node(" << node->GetId() << ") and the interest is: " << interest.getName() << std::endl;
+	  std::cout << "the interest path is: " << interest.getMacAddressPath() << std::endl;
+  }
+
   // cancel unsatisfy & straggler timer
   this->cancelUnsatisfyAndStragglerTimer(pitEntry);
 
@@ -208,7 +214,6 @@ Forwarder::onContentStoreHit(const Face& inFace,
                              const Interest& interest,
                              const Data& data)
 {
-	bool debug = false;
   NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName());
 
   beforeSatisfyInterest(*pitEntry, *m_csFace, data);
@@ -265,7 +270,6 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               bool wantNewNonce)
 {
-	bool debug = false;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -349,11 +353,20 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   ad = node->GetDevice(0)->GetAddress();
   std::ostringstream breadcrumbInterest;
   breadcrumbInterest << ad;
+  std::string breadcrumbInterest_string = breadcrumbInterest.str().substr(6);
+  std::string interest_macAddressPath = interest->getMacAddressPath();
 
-  std::string in = " (in " + std::to_string(node->GetId()) + "/" + std::to_string(inFaceId) + ") ";
-  std::string out = " (out " + std::to_string(node->GetId()) + "/" + std::to_string(outFace.getId()) + ") ";
+  std::size_t found = interest_macAddressPath.find(breadcrumbInterest_string);
 
-  interest->addMacAddressPath(" --> " +  in + breadcrumbInterest.str().substr(6) + out);
+  if(found == std::string::npos) {
+
+	  // don't attach the current Mac again to the Path if it has been attached by a previous
+
+	  std::string in = " (in " + std::to_string(node->GetId()) + "/" + std::to_string(inFaceId) + ") ";
+	  std::string out = " (out " + std::to_string(node->GetId()) + "/" + std::to_string(outFace.getId()) + ") ";
+
+	  interest->addMacAddressPath(" --> " +  in + breadcrumbInterest.str().substr(6) + out);
+  }
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END *****************************
   // *********************************************************************************************
 
@@ -418,8 +431,10 @@ void
 Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
   bool debug = false;
-  if(debug) {
+
+  if(false) {
     std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
+    std::cout << data.getMetaInfo() << std::endl;
     std::cout << data.getName() << std::endl;
   }
 
@@ -441,6 +456,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
 
+  // all packages are dropped if they were not requested before
   if (pitMatches.begin() == pitMatches.end()) {
     // goto Data unsolicited pipeline
     // this->onDataUnsolicited(inFace, data);
