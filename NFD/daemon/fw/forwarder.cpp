@@ -56,6 +56,28 @@ using fw::Strategy;
 
 const Name Forwarder::LOCALHOST_NAME("ndn:/localhost");
 
+
+// Needs to start at 1 otherwise dividing by it will lead to an exception
+static int node0interest = 1;
+static int node1interest = 1;
+static int node2interest = 1;
+static int node3interest = 1;
+
+static int node0interestDropped = 1;
+static int node1interestDropped = 1;
+static int node2interestDropped = 1;
+static int node3interestDropped = 1;
+
+static int node0data = 1;
+static int node1data = 1;
+static int node2data = 1;
+static int node3data = 1;
+
+static int node0dataDropped = 1;
+static int node1dataDropped = 1;
+static int node2dataDropped = 1;
+static int node3dataDropped = 1;
+
 Forwarder::Forwarder()
   : m_faceTable(*this)
   , m_fib(m_nameTree)
@@ -94,6 +116,32 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
+
+  // ******************************************** INTEREST STATS :: START *******************************
+  // ****************************************************************************************************
+  bool interestStatistics = true;
+  if(interestStatistics) {
+
+	  switch(node->GetId()) {
+		  case 0: node0interest++; break;
+		  case 1: node1interest++; break;
+		  case 2: node2interest++; break;
+		  case 3: node3interest++; break;
+		  default: break;
+	  }
+
+	  if(true) {
+		  std::cout << "nodeIn" << std::endl;
+		  std::cout << "node (0) interest counter: " << node0interest << std::endl;
+		  std::cout << "node (1) interest counter: " << node1interest << std::endl;
+		  std::cout << "node (2) interest counter: " << node2interest << std::endl;
+		  std::cout << "node (3) interest counter: " << node3interest << std::endl;
+	  }
+  }
+  // ******************************************** INTEREST STATS :: END *********************************
+  // ****************************************************************************************************
+
+
   std::ostringstream addr;
   addr << node->GetDevice(0)->GetAddress();
   std::string currentMacAddress = addr.str().substr(6);
@@ -106,6 +154,36 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 		  return;
 	  }
   }
+
+  // ******************************************** INTEREST STATS :: START *******************************
+  // ****************************************************************************************************
+  if(interestStatistics) {
+	  switch(node->GetId()) {
+		  case 0: node0interestDropped++; break;
+		  case 1: node1interestDropped++; break;
+		  case 2: node2interestDropped++; break;
+		  case 3: node3interestDropped++; break;
+		  default: break;
+	  }
+
+	  if(true) {
+		  std::cout << "nodeIn" << std::endl;
+		  std::cout << "node (0) interest passed counter: " << node0interestDropped << std::endl;
+		  std::cout << "node (1) interest passed counter: " << node1interestDropped << std::endl;
+		  std::cout << "node (2) interest passed counter: " << node2interestDropped << std::endl;
+		  std::cout << "node (3) interest passed counter: " << node3interestDropped << std::endl;
+	  }
+
+	  if(true) {
+		  std::cout << "vs stat" << std::endl;
+		  std::cout << "node (0) interest passed / all: " << (double)node0interestDropped/node0interest*100 << " %" << std::endl;
+		  std::cout << "node (1) interest passed / all: " << (double)node1interestDropped/node1interest*100 << " %" << std::endl;
+		  std::cout << "node (2) interest passed / all: " << (double)node2interestDropped/node2interest*100 << " %" << std::endl;
+		  std::cout << "node (3) interest passed / all: " << (double)node3interestDropped/node3interest*100 << " %" << std::endl;
+	  }
+  }
+  // ******************************************** INTEREST STATS :: END *********************************
+  // ****************************************************************************************************
 
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
@@ -471,6 +549,29 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  std::cout << "yeah --- 2 --- on node(    "<< node->GetId() <<"    )  pitchMatches.size() is: " << pitMatches.size() << std::endl;
   }
 
+  // ******************************************** DATA STATS :: START ***********************************
+  // ****************************************************************************************************
+  bool dataStatistics = true;
+  if(dataStatistics) {
+	  switch(node->GetId()) {
+		  case 0: node0data++; break;
+		  case 1: node1data++; break;
+		  case 2: node2data++; break;
+		  case 3: node3data++; break;
+		  default: break;
+	  }
+
+	  if(true) {
+		  std::cout << "nodeDa" << std::endl;
+		  std::cout << "node (0) data counter: " << node0data << std::endl;
+		  std::cout << "node (1) data counter: " << node1data << std::endl;
+		  std::cout << "node (2) data counter: " << node2data << std::endl;
+		  std::cout << "node (3) data counter: " << node3data << std::endl;
+	  }
+  }
+  // ******************************************** DATA STATS :: END *******************************
+  // ****************************************************************************************************
+
   // ********************* Check all in and out Records of specific PIT::Entry -- BEGIN **********************************
   // *********************************************************************************************************************
   if(false) {
@@ -513,36 +614,66 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // WHY are you doing this? It seems that not dropping the packages leads to congestions and no packages are received.
   // Dropping the packages here results in all the data being received by the consumer.
 
-  if(dropIt) {
-	  // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
-	  if(node->GetId() == 0) {
-			if(data.getMacAddressPro() == "producer Mac") {
-				//std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
-		if(node->GetId() == 1) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
-				//std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
-		if(node->GetId() == 2) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
-				//std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
-		if(node->GetId() == 3) {
-			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
-					data.getMacAddressPro() == "00:00:00:00:00:03") {
-						//std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
-				return;
-			}
-		}
-  }
-  // *************************** Dropping all data that is from lower nodes -- END ***********************************
+//  if(dropIt) {
+//	   // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
+//	  if(node->GetId() == 0) {
+//			if(data.getMacAddressPro() == "producer Mac") {
+//				//std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
+//		if(node->GetId() == 1) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
+//				//std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
+//		if(node->GetId() == 2) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
+//				//std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
+//		if(node->GetId() == 3) {
+//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
+//					data.getMacAddressPro() == "00:00:00:00:00:03") {
+//						//std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
+//				return;
+//			}
+//		}
+//  }
+  // ***************************** Dropping all data that is from lower nodes -- END ***********************************
   // *******************************************************************************************************************
+
+  // ******************************************** DATA STATS :: START ***********************************
+  // ****************************************************************************************************
+  if(dataStatistics) {
+	  switch(node->GetId()) {
+		  case 0: node0dataDropped++; break;
+		  case 1: node1dataDropped++; break;
+		  case 2: node2dataDropped++; break;
+		  case 3: node3dataDropped++; break;
+		  default: break;
+	  }
+
+	  if(true) {
+		  std::cout << "nodeDa" << std::endl;
+		  std::cout << "node (0) data passed counter: " << node0dataDropped << std::endl;
+		  std::cout << "node (1) data passed counter: " << node1dataDropped << std::endl;
+		  std::cout << "node (2) data passed counter: " << node2dataDropped << std::endl;
+		  std::cout << "node (3) data passed counter: " << node3dataDropped << std::endl;
+	  }
+
+	  if(true) {
+		  std::cout << "vs stat" << std::endl;
+		  std::cout << "node (0) data passed / all: " << (double)node0dataDropped/node0data*100 << " %" << std::endl;
+		  std::cout << "node (1) data passed / all: " << (double)node1dataDropped/node1data*100 << " %" << std::endl;
+		  std::cout << "node (2) data passed / all: " << (double)node2dataDropped/node2data*100 << " %" << std::endl;
+		  std::cout << "node (3) data passed / all: " << (double)node3dataDropped/node3data*100 << " %" << std::endl;
+	  }
+  }
+  // ******************************************** DATA STATS :: END *******************************
+  // ****************************************************************************************************
 
   if(data.getMacAddressPro() == "producer Mac" || data.getMacAddressPro().empty()) {
 	  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());

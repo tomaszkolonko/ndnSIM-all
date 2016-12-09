@@ -46,6 +46,8 @@ namespace ndn {
 
 NS_OBJECT_ENSURE_REGISTERED(Consumer);
 
+static int counter = 0;
+
 TypeId
 Consumer::GetTypeId(void)
 {
@@ -252,6 +254,10 @@ Consumer::OnData(shared_ptr<const Data> data)
   std::cout << ";) ;) consumer receiving data for: " << seq << " with hopcount: " << hopCount << " and name " << data->getName() << std::endl;
   std::cout << ";) ;) MacRoute of the data is: " << data->getMacRoute() << std::endl;
   std::cout << "*****************************************************************" << std::endl;
+
+  // TODO: delete the following two lines after finished testing.
+  counter++;
+  std::cout << "counter of received Data Packages is: " << counter << std::endl;
 
   SeqTimeoutsContainer::iterator entry = m_seqLastDelay.find(seq);
   if (entry != m_seqLastDelay.end()) {
