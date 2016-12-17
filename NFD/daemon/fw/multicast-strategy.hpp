@@ -47,7 +47,7 @@ public:
                        shared_ptr<pit::Entry> pitEntry) DECL_OVERRIDE;
 private:
   virtual void
-  printPITInRecord(const shared_ptr<pit::Entry> pitEntry);
+  printPITInRecord(const shared_ptr<pit::Entry> pitEntry, const ns3::Ptr<ns3::Node> node);
 
   virtual void
   printPITOutRecord(const shared_ptr<pit::Entry> pitEntry);

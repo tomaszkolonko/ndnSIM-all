@@ -50,17 +50,19 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-	if(false) printPITInRecord(pitEntry);
-	if(false) printPITOutRecord(pitEntry);
-
+	if(true) printPITInRecord(pitEntry, node);
+	if(true) printPITOutRecord(pitEntry);
 
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
 
+	  // check if next hop is 256
+
 	  std::string targetMac; // = it->getMac();
 
-	  // if FIB entry has been already updated with MacAddress then take it. Otherwise MacAddress is empty.
+	  // if FIB entry has been already updated with MacAddress then take it for later attachement to
+	  // the interest. Otherwise an empty string will be added to the interest in the forwarder.
 	  if(std::regex_match(it->getMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 		  targetMac = it->getMac();
 	  }
@@ -84,13 +86,14 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 // iterates through all inRecords of ONE pitEntry
 // Check FaceRecord for more options to display
 void
-MulticastStrategy::printPITInRecord(shared_ptr<pit::Entry> pitEntry) {
+MulticastStrategy::printPITInRecord(shared_ptr<pit::Entry> pitEntry, ns3::Ptr<ns3::Node> node) {
 	const pit::InRecordCollection& inRecCol = pitEntry->getInRecords();
 	std::cout << std::endl;
 	std::cout << "MulticastStrategy::printPITInRecord" << std::endl;
 	for(pit::InRecordCollection::const_iterator inIt = inRecCol.begin(); inIt != inRecCol.end(); ++inIt){
 		std::cout << "inRecord interest: " << inIt->getInterest().getName() << std::endl;
 		std::cout << "inRecord face: " << inIt->getFace()->getId() << std::endl;
+		std::cout << "pointer to pitEntry: " << pitEntry << " on node: " << node->GetId() << std::endl;
 	}
 	std::cout << std::endl;
 }
@@ -102,6 +105,8 @@ MulticastStrategy::printPITOutRecord(shared_ptr<pit::Entry> pitEntry) {
 	const pit::OutRecordCollection& outRecCol = pitEntry->getOutRecords();
 	std::cout << std::endl;
 	std::cout << "MulticastStrategy::printPITOutRecord" << std::endl;
+	std::cout << "pointer to pitEntry: " << pitEntry << std::endl;
+	std::cout << "outRecordCollection.size() " << outRecCol.size() << std::endl;
 	for(pit::OutRecordCollection::const_iterator inIt = outRecCol.begin(); inIt != outRecCol.end(); ++inIt){
 		std::cout << "outRecord face: " << inIt->getFace()->getId() << std::endl;
 	}

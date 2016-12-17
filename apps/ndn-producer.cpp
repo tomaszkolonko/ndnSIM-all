@@ -97,7 +97,7 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
 
-  // Logging the Path till the end
+  // Logging the Path till the end but last macAddress is empty. TODO: find out why.
   std::cout << std::endl;
   std::cout << "PRODUCER RECEIVING INTEREST WITH FOLLOWING PATH: " << interest->getMacAddressPath() << " --> >" <<
 		  interest->getMacAddress() << "<" << std::endl;
