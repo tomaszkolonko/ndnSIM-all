@@ -75,14 +75,15 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 4;
+  int nodeNum = 8;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
   std::string traceFile2 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile2";
   std::string traceFile3 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile3";
+  std::string traceFile4 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-8nodes";
 
-  std::string currentTraceFile = traceFile3;
+  std::string currentTraceFile = traceFile4;
 
   CommandLine cmd;
   cmd.AddValue ("traceFile", "Ns2 movement trace file", currentTraceFile);
@@ -168,15 +169,8 @@ main(int argc, char* argv[])
   //std::cout << "testing mac4: " << mac[4] << std::endl;
   std::cout << "**********************************************" << std::endl << std::endl;
 
-  //  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  //  ndn::FibHelper::AddRoute(node[0], "/", 256, 555, mac[1]);
-  //  ndn::FibHelper::AddRoute(node[0], "/", 257, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  //  ndn::FibHelper::AddRoute(node[0], "/test", 256, 555, mac[1]); // mac[1] = 00:00:00:00:00:02 Node[1]
-  //  ndn::FibHelper::AddRoute(node[2], "/", 256, 555, mac[4]); // mac[2] = 00:00:00:00:00:03 Node[2]
-
   // Set BestRoute strategy
   ndn::StrategyChoiceHelper::Install(nodes, "/", "/localhost/nfd/strategy/multicast");
-  // ndn::StrategyChoiceHelper::Install(nodes, "/", "/localhost/nfd/strategy/bestroute");
 
   // 4. Set up applications
   NS_LOG_INFO("Installing Applications");
@@ -191,7 +185,7 @@ main(int argc, char* argv[])
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/");
   producerHelper.SetAttribute("PayloadSize", StringValue("1200"));
-  producerHelper.Install(nodes.Get(3));
+  producerHelper.Install(nodes.Get(7));
 
   if(debug) printNodes(nodes, nodeNum);
 

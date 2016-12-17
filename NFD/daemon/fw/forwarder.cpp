@@ -641,52 +641,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // *******************************************************************************************************************
 
 
-  // *************************** Dropping all data that is from lower nodes -- BEGIN ***********************************
-  // *******************************************************************************************************************
-  // bool dropIt = true;
-
-  // Important to achieve is now the following. Inside nodeB you check the PIT for downstream node. You get the face
-  // but you also want to get a targetMac.... But how do you know the downstream mac???
-  // then the downsstreamMac is attached to the data and then checked in the next node if it is the same... if yes ok
-  // if no drop it immediately ;)
-  // WHY are you doing this? It seems that not dropping the packages leads to congestions and no packages are received.
-  // Dropping the packages here results in all the data being received by the consumer.
-
-//  if(true) {
-//	   // std::cout << ">>>>>>>>>>>>>> you are on node: " << node->GetId() << " and data.Mac is: >"  << data.getMacAddressPro() << "<" << std::endl;
-//	  if(node->GetId() == 0) {
-//			if(data.getMacAddressPro() == "producer Mac") {
-//  	  	  	  manualDropping++; std::cout << "manualDropping: " << manualDropping;
-//				//std::cout << "dropping data because node(0) and " << data.getMacAddressPro() << std::endl;
-//				return;
-//			}
-//		}
-//		if(node->GetId() == 1) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:01") {
-//				//std::cout << "dropping data because node(1) and " << data.getMacAddressPro() << std::endl;
-//  	  	   	  manualDropping++; std::cout << "manualDropping: " << manualDropping;
-//				return;
-//			}
-//		}
-//		if(node->GetId() == 2) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02") {
-//				//std::cout << "dropping data because node(2) and " << data.getMacAddressPro() << std::endl;
-//  	  	  	manualDropping++; std::cout << "manualDropping: " << manualDropping;
-//				return;
-//			}
-//		}
-//		if(node->GetId() == 3) {
-//			if(data.getMacAddressPro() == "00:00:00:00:00:01" || data.getMacAddressPro() == "00:00:00:00:00:02" ||
-//					data.getMacAddressPro() == "00:00:00:00:00:03") {
-//						//std::cout << "dropping data because node(3) and " << data.getMacAddressPro() << std::endl;
-//  	  	  	manualDropping++; std::cout << "manualDropping: " << manualDropping;
-//				return;
-//			}
-//		}
-//  }
-  // ***************************** Dropping all data that is from lower nodes -- END ***********************************
-  // *******************************************************************************************************************
-
   // ******************************************** DATA STATS :: START ***********************************
   // ****************************************************************************************************
   if(dataStatistics) {
@@ -717,10 +671,11 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // ******************************************** DATA STATS :: END *******************************
   // ****************************************************************************************************
 
+  // some logic on where and how to add new Routes using NO predefined MacAddresses
   if(data.getMacAddressPro() == "producer Mac") {
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
   } else if(data.getMacAddressPro().empty()){
-	  std::cout << "data.getMacAddressPro().empty() == TRUE" << std::endl;
+	  // do nothing. That only happens at configuration time and never again.
   } else {
 
   //	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
