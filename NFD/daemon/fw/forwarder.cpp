@@ -478,7 +478,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 //  pointer of interest /test/prefix/%FE%00 outFace: 261 0x12dbb60
 //  pointer of interest2 /test/prefix/%FE%00 outFace: 261 0x12f0380
 
-  if(debug) {
+  if(false) {
 	  std::cout << "pointer of interest " << interest->getName() << " outFace: " << outFace.getId() <<  " " << interest << std::endl;
 	  std::cout << "pointer of interest2 " << interest2->getName() << " outFace: " << outFace.getId() << " " << interest2 << std::endl;
   }
@@ -890,11 +890,20 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	std::ostringstream str;
 	str << netDevice->GetAddress();
+	std::string breadcrumb_string = str.str().substr(6);
+	std::string data_macRoute =  data.getMacRoute();
 
-	if(debug) std::cout << "pointer to netDevice : " << netDevice << " with address: " << str.str() << std::endl;
+	// check if this device's mac address has been added already to the interest. If yes the position of the
+	// start position will be returned if the madAddress has not yet been added to the interest the function
+	// will return std::string::npos
+	std::size_t found = data_macRoute.find(breadcrumb_string);
 
-	const_cast<Data&>(data).setMacAddressPro(str.str().substr(6));
-	const_cast<Data&>(data).addMacRoute(" --> " + str.str().substr(6));
+	if(found == std::string::npos) {
+		if(debug) std::cout << "pointer to netDevice : " << netDevice << " with address: " << str.str() << std::endl;
+
+		const_cast<Data&>(data).setMacAddressPro(breadcrumb_string);
+		const_cast<Data&>(data).addMacRoute(" --> " + breadcrumb_string);
+	}
 
   // TODO traffic manager
 
