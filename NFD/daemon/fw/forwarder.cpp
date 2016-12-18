@@ -790,7 +790,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 					  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
 					  // beware that outRecordCollection is of PIT::ENTRY
 					  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
-					  this->onOutgoingData(data, *it->getFace());
+
+					  // extra logic to take only every second face for forwarding.
+					  if((node->GetId() % 2) == 0) {
+						  if(it->getFace()->getId() % 2 == 0) {
+							  this->onOutgoingData(data, *it->getFace());
+						  }
+					  } else {
+						  this->onOutgoingData(data, *it->getFace());
+					  }
+
+					  //this->onOutgoingData(data, *it->getFace());
 
 				  }
 			  }
