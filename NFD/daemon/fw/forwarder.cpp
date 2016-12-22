@@ -101,6 +101,8 @@ void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
 	bool debug = false;
+	std::cout << " ++ Forwarder::onIncomingInterest() inFaceId : " << inFace.getId() << std::endl;
+
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
@@ -404,6 +406,8 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   NFD_LOG_DEBUG("onOutgoingInterest face=" << outFace.getId() <<
                 " interest=" << pitEntry->getName());
 
+  std::cout << " ++ Forwarder::onOutgoingInterest() inFaceId : " << inFaceId << std::endl;
+
   // scope control
   if (pitEntry->violatesScope(outFace)) {
     NFD_LOG_DEBUG("onOutgoingInterest face=" << outFace.getId() <<
@@ -672,8 +676,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // ****************************************************************************************************
 
   // some logic on where and how to add new Routes using NO predefined MacAddresses
+  std::cout << " +- " << inFace.getId() << std::endl;
   if(data.getMacAddressPro() == "producer Mac") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getMacAddressPro());
+	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 12, data.getMacAddressPro());
   } else if(data.getMacAddressPro().empty()){
 	  // do nothing. That only happens at configuration time and never again.
   } else {
@@ -688,7 +693,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
 
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getMacAddressPro());
+	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
@@ -774,37 +779,37 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-		if(inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) {
-			if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
-			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-				  if(debug) std::cout << std::endl;
-				  // OUT RECORD COLLECTION
-				  //std::cout << "outRecordCollection:";
-				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-				  std::cout << "OutRecordCollection.size() -> " << outRecords.size() << std::endl;
-				  std::cout << "for the follwing pitEntry: " << pitEntry << " on node " << node->GetId() << std::endl;
-				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-																 it != outRecords.end(); ++it) {
-					  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
-					  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
-					  // beware that outRecordCollection is of PIT::ENTRY
-					  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
-
-					  // extra logic to take only every second face for forwarding.
-					  if((node->GetId() % 2) == 0) {
-						  if(it->getFace()->getId() % 2 == 0) {
-							  this->onOutgoingData(data, *it->getFace());
-						  }
-					  } else {
-						  this->onOutgoingData(data, *it->getFace());
-					  }
-
-					  //this->onOutgoingData(data, *it->getFace());
-
-				  }
-			  }
-		}
+	//		if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
+	//						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) && pendingDownstream.get() == &inFace) {
+	//			if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
+	//			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+	//				  if(debug) std::cout << std::endl;
+	//				  // OUT RECORD COLLECTION
+	//				  //std::cout << "outRecordCollection:";
+	//				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+	//				  std::cout << "OutRecordCollection.size() -> " << outRecords.size() << std::endl;
+	//				  std::cout << "for the follwing pitEntry: " << pitEntry << " on node " << node->GetId() << std::endl;
+	//				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+	//																 it != outRecords.end(); ++it) {
+	//					  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
+	//					  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
+	//					  // beware that outRecordCollection is of PIT::ENTRY
+	//					  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
+	//
+	//					  // extra logic to take only every second face for forwarding.
+	//					  if((node->GetId() % 2) == 0) {
+	//						  if(it->getFace()->getId() % 2 == 0) {
+	//							  this->onOutgoingData(data, *it->getFace());
+	//						  }
+	//					  } else {
+	//						  // this->onOutgoingData(data, *it->getFace());
+	//					  }
+	//
+	//					  //this->onOutgoingData(data, *it->getFace());
+	//
+	//				  }
+	//			  }
+	//		}
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
 
@@ -850,8 +855,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 //    }
 
 
-	if(debug) std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
-			pendingDownstream->getId() << std::endl;
+//	if(debug) std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
+//			pendingDownstream->getId() << std::endl;
 	this->onOutgoingData(data, *pendingDownstream);
 	if(debug) std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
  }

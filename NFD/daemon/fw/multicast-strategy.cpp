@@ -53,6 +53,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if(true) printPITInRecord(pitEntry, node);
 	if(true) printPITOutRecord(pitEntry);
 
+	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
+
 	ns3::Address ad;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 	  shared_ptr<Face> outFace = it->getFace();
@@ -67,9 +69,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		  targetMac = it->getMac();
 	  }
 
-//	  std::cout << "targetMac.empty() = " << targetMac.empty() << std::endl;
-//	  std::cout << "targetMac = " << targetMac << std::endl;
-//	  std::cout << "tomasz\n";
 
 	  if (pitEntry->canForwardTo(*outFace)) {
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
