@@ -241,37 +241,56 @@ public: // Name and guiders
   }
 
   const std::string
-  getMacAddress() const
+  getInterestTargetMacAddress() const
   {
-	  return m_macAddress;
+	  return m_interestTargetMacAddress;
   }
 
   Interest&
-  setMacAddress(const std::string mac)
+  setInterestTargetMacAddress(const std::string mac)
   {
-	  m_macAddress = mac;
+	  m_interestTargetMacAddress = mac;
 	  m_wire.reset();
 	  return *this;
   }
 
   bool
-  hasMacAddress() const
+  hasInterestTargetMacAddress() const
   {
-	  return !m_macAddress.empty();
+	  return !m_interestTargetMacAddress.empty();
   }
 
+  const std::string
+  getInterestOriginMacAddress() const
+  {
+	  return m_interestOriginMacAddress;
+  }
+
+  Interest&
+  setInterestOriginMacAddress(const std::string mac)
+  {
+	  m_interestOriginMacAddress = mac;
+	  m_wire.reset();
+	  return *this;
+  }
+
+  bool
+  hasInterestOriginMacAddress() const
+  {
+	  return !m_interestOriginMacAddress.empty();
+  }
 
   const std::string
   getMacAddressPath() const
   {
-	  return m_macAddressPath;
+	  return m_macInterestRoute;
   }
 
 
   Interest&
   addMacAddressPath(const std::string mac)
   {
-	  m_macAddressPath.append(mac);
+	  m_macInterestRoute.append(mac);
 	  m_wire.reset();
 	  return *this;
   }
@@ -279,7 +298,7 @@ public: // Name and guiders
   bool
   hasMacAddressPath() const
   {
-	  return !m_macAddressPath.empty();
+	  return !m_macInterestRoute.empty();
   }
 
   /** @brief Check if Nonce set
@@ -482,8 +501,10 @@ private:
   Selectors m_selectors;
   mutable Block m_nonce;
   time::milliseconds m_interestLifetime;
-  std::string m_macAddress;
-  std::string m_macAddressPath;
+  std::string m_interestTargetMacAddress;
+  std::string m_interestOriginMacAddress;
+
+  std::string m_macInterestRoute;
 
   mutable Block m_link;
   size_t m_selectedDelegationIndex;

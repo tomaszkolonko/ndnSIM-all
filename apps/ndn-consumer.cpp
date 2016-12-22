@@ -202,7 +202,7 @@ Consumer::SendPacket()
 
   // The strategy knows, that this interest has been just created and that
   // it is inside the consumer node
-  interest->setMacAddress("consumer ");
+  interest->setInterestTargetMacAddress("consumer ");
   interest->addMacAddressPath("consumer");
 
 // leads to 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<ndn::Block::Error> >'
@@ -252,7 +252,7 @@ Consumer::OnData(shared_ptr<const Data> data)
 
   std::cout << "*****************************************************************" << std::endl;
   std::cout << ";) ;) consumer receiving data for: " << seq << " with hopcount: " << hopCount << " and name " << data->getName() << std::endl;
-  std::cout << ";) ;) MacRoute of the data is: " << data->getMacRoute() << std::endl;
+  std::cout << ";) ;) MacRoute of the data is: " << data->getMacDataRoute() << std::endl;
   std::cout << "*****************************************************************" << std::endl;
 
   // TODO: delete the following two lines after finished testing.

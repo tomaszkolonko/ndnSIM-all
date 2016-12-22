@@ -88,10 +88,13 @@ enum {
   LinkDelegation = 31,
   SelectedDelegation = 32,
 
-  MacData = 33,
-  MacDataRoute = 34,
-  MacInterest = 35,
-  MacInterestRoute = 36,
+  DataOriginMacAddress = 33,
+  DataTargetMacAddress = 34,
+  MacDataRoute = 35,
+
+  InterestTargetMacAddress = 36,
+  InterestOriginMacAddress = 37,
+  MacInterestRoute = 38,
 
 
   AppPrivateBlock1 = 128,

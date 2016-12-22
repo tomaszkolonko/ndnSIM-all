@@ -306,18 +306,17 @@ public:
 
 public: // Mac setters and getters
   const std::string
-  getMacAddressPro() const
+  getDataOriginMacAddress() const
   {
-  	  return m_macAddressPro;
+  	  return m_dataOriginMacAddress;
   }
 
   Data&
-  setMacAddressPro(const std::string mac)
+  setDataOriginMacAddress(const std::string mac)
   {
-
 	  m_wire.reset();
 	  m_fullName.clear();
-  	  m_macAddressPro = mac;
+	  m_dataOriginMacAddress = mac;
   	  //m_wire.reset();
   	  return *this;
   }
@@ -329,29 +328,45 @@ public: // Mac setters and getters
 //  }
 
   const std::string
-  getMacRoute() const
+  getDataTargetMacAddress() const
   {
-  	  return m_macRoute;
+  	  return m_dataTargetMacAddress;
   }
 
   Data&
-  setMacRoute(const std::string macRoute)
+  setDataTargetMacAddress(const std::string mac)
+  {
+	  m_wire.reset();
+	  m_fullName.clear();
+	  m_dataTargetMacAddress = mac;
+  	  //m_wire.reset();
+  	  return *this;
+  }
+
+  const std::string
+  getMacDataRoute() const
+  {
+  	  return m_macDataRoute;
+  }
+
+  Data&
+  setMacDataRoute(const std::string macRoute)
   {
 	  m_wire.reset();
 	  m_fullName.clear();
 
-	  m_macRoute = macRoute;
+	  m_macDataRoute = macRoute;
   	  //m_wire.reset();
   	  return *this;
   }
 
   Data&
-  addMacRoute(const std::string macRoute)
+  addMacDataRoute(const std::string macRoute)
   {
 	  m_wire.reset();
 	  m_fullName.clear();
 
-	  m_macRoute.append(macRoute);
+	  m_macDataRoute.append(macRoute);
 	  //m_wire.reset();
 	  return *this;
   }
@@ -381,8 +396,10 @@ private:
   MetaInfo m_metaInfo;
   mutable Block m_content;
   Signature m_signature;
-  std::string m_macAddressPro;
-  std::string m_macRoute;
+  std::string m_dataOriginMacAddress;
+  std::string m_dataTargetMacAddress;
+
+  std::string m_macDataRoute;
 
   mutable Block m_wire;
   mutable Name m_fullName;

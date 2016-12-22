@@ -57,7 +57,8 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
   //            Name
   //            MetaInfo
   //			MacDataRoute
-  //			MacData
+  //			DataTargetMacAddress
+  //			DataOriginMacAddress
   //            Content
   //            Signature
 
@@ -83,11 +84,14 @@ Data::wireEncode(EncodingImpl<TAG>& encoder, bool unsignedPortion/* = false*/) c
   // MetaInfo
   totalLength += getMetaInfo().wireEncode(encoder);
 
-  // Mac Address on Data package
-  totalLength += prependStringBlock(encoder, tlv::MacData, m_macAddressPro);
+  // Origin Mac Address on Data package
+  totalLength += prependStringBlock(encoder, tlv::DataOriginMacAddress, m_dataOriginMacAddress);
+
+  // Target Mac Address on Data package
+  totalLength += prependStringBlock(encoder, tlv::DataTargetMacAddress, m_dataTargetMacAddress);
 
   // Mac Route on Data package
-  totalLength += prependStringBlock(encoder, tlv::MacDataRoute, m_macRoute);
+  totalLength += prependStringBlock(encoder, tlv::MacDataRoute, m_macDataRoute);
 
   // Name
   totalLength += getName().wireEncode(encoder);
@@ -148,7 +152,8 @@ Data::wireDecode(const Block& wire)
 
   // Data ::= DATA-TLV TLV-LENGTH
   //            Name
-  //			MacAddressPro
+  //			DataOriginMacAddress
+  //			DataTargetMacAddress
   //            MetaInfo
   //            Content
   //            Signature
@@ -157,17 +162,24 @@ Data::wireDecode(const Block& wire)
   // Name
   m_name.wireDecode(m_wire.get(tlv::Name));
 
-  // Mac Data
-  Block::element_const_iterator val = m_wire.find(tlv::MacData);
-  val = m_wire.find(tlv::MacData);
+  // Origin Mac Data
+  Block::element_const_iterator val = m_wire.find(tlv::DataOriginMacAddress);
+  val = m_wire.find(tlv::DataOriginMacAddress);
   if(val != m_wire.elements_end()) {
-	  m_macAddressPro = readString(*val);
+	  m_dataOriginMacAddress = readString(*val);
+  }
+
+  // Target Mac Data
+  val = m_wire.find(tlv::DataTargetMacAddress);
+  val = m_wire.find(tlv::DataTargetMacAddress);
+  if(val != m_wire.elements_end()) {
+	  m_dataTargetMacAddress = readString(*val);
   }
 
   // Mac Data Route
   val = m_wire.find(tlv::MacDataRoute);
   if(val != m_wire.elements_end()) {
-	  m_macRoute = readString(*val);
+	  m_macDataRoute = readString(*val);
   }
 
   // MetaInfo
@@ -363,8 +375,9 @@ std::ostream&
 operator<<(std::ostream& os, const Data& data)
 {
   os << "Name: " << data.getName() << "\n";
-  os << "MacData: " << data.getMacAddressPro() << "\n";
-  os << "MacDataRoute: " << data.getMacRoute() << "\n";
+  os << "dataOriginMacAddress: " << data.getDataOriginMacAddress() << "\n";
+  os << "dataTargetMacAddress: " << data.getDataTargetMacAddress() << "\n";
+  os << "MacDataRoute: " << data.getMacDataRoute() << "\n";
   os << "MetaInfo: " << data.getMetaInfo() << "\n";
   os << "Content: (size: " << data.getContent().value_size() << ")\n";
   os << "Signature: (type: " << data.getSignature().getType() <<

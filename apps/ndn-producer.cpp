@@ -100,7 +100,7 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
   // Logging the Path till the end but last macAddress is empty. TODO: find out why.
   std::cout << std::endl;
   std::cout << "PRODUCER RECEIVING INTEREST WITH FOLLOWING PATH: " << interest->getMacAddressPath() << " --> >" <<
-		  interest->getMacAddress() << "<" << std::endl;
+		  interest->getInterestTargetMacAddress() << "<" << std::endl;
 
   NS_LOG_FUNCTION(this << interest);
 
@@ -114,8 +114,8 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
   auto data = make_shared<Data>();
   data->setName(dataName);
 
-  data->setMacAddressPro("producer Mac");
-  data->setMacRoute("producer Mac");
+  data->setDataOriginMacAddress("producer Mac");
+  data->setMacDataRoute("producer Mac");
 
 
   // TODO: is that even correct? Default was only else statement which resulted in FreshnessPeriod being 0

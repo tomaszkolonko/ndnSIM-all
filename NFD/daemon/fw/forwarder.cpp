@@ -155,9 +155,10 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   // check if macAddress has been set. If empty it the forwarding is still broadcasting. If there is a Mac it comes from the fib
   // of the prior node.
-  if(interest.getMacAddress() != "consumer " && interest.getMacAddress() != "producer Mac" && interest.getMacAddress() != "unknown"
-	  && !interest.getMacAddress().empty()){
-	  if(currentMacAddress != interest.getMacAddress()) {
+  if(interest.getInterestTargetMacAddress() != "consumer " && interest.getInterestTargetMacAddress() != "producer Mac"
+	&& interest.getInterestTargetMacAddress() != "unknown"
+	&& !interest.getInterestTargetMacAddress().empty()){
+	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
 		  return;
 	  }
   }
@@ -487,7 +488,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 	  std::cout << "pointer of interest2 " << interest2->getName() << " outFace: " << outFace.getId() << " " << interest2 << std::endl;
   }
 
-  interest2->setMacAddress(targetMac);
+  interest2->setInterestTargetMacAddress(targetMac);
   outFace.sendInterest(*interest2);
   ++m_counters.getNOutInterests();
 }
@@ -677,9 +678,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   // some logic on where and how to add new Routes using NO predefined MacAddresses
   std::cout << " +- " << inFace.getId() << std::endl;
-  if(data.getMacAddressPro() == "producer Mac") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 12, data.getMacAddressPro());
-  } else if(data.getMacAddressPro().empty()){
+  if(data.getDataOriginMacAddress() == "producer Mac") {
+	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 12, data.getDataOriginMacAddress());
+  } else if(data.getDataOriginMacAddress().empty()){
 	  // do nothing. That only happens at configuration time and never again.
   } else {
 
@@ -693,7 +694,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
 
-	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getMacAddressPro());
+	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getDataOriginMacAddress());
   }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
@@ -906,7 +907,7 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 	std::ostringstream str;
 	str << netDevice->GetAddress();
 	std::string breadcrumb_string = str.str().substr(6);
-	std::string data_macRoute =  data.getMacRoute();
+	std::string data_macRoute =  data.getMacDataRoute();
 
 	// check if this device's mac address has been added already to the interest. If yes the position of the
 	// start position will be returned if the madAddress has not yet been added to the interest the function
@@ -916,8 +917,8 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 	if(found == std::string::npos) {
 		if(debug) std::cout << "pointer to netDevice : " << netDevice << " with address: " << str.str() << std::endl;
 
-		const_cast<Data&>(data).setMacAddressPro(breadcrumb_string);
-		const_cast<Data&>(data).addMacRoute(" --> " + breadcrumb_string);
+		const_cast<Data&>(data).setDataOriginMacAddress(breadcrumb_string);
+		const_cast<Data&>(data).addMacDataRoute(" --> " + breadcrumb_string);
 	}
 
   // TODO traffic manager

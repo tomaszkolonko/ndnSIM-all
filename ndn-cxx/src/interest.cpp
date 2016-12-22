@@ -223,8 +223,9 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
   //                Selectors?
   //                Nonce
   //                InterestLifetime?
-  //				MacInterest
   //				MacInterestRoute
+  //				InterestOriginMacAddress
+  //				InterestTargetMacAddress
   //                Link?
   //                SelectedDelegation?
 
@@ -242,12 +243,16 @@ Interest::wireEncode(EncodingImpl<TAG>& encoder) const
     BOOST_ASSERT(!hasSelectedDelegation());
   }
 
-  if (hasMacAddress()) {
-	  totalLength += prependStringBlock(encoder, tlv::MacInterest, m_macAddress);
+  if (hasInterestTargetMacAddress()) {
+	  totalLength += prependStringBlock(encoder, tlv::InterestTargetMacAddress, m_interestTargetMacAddress);
+  }
+
+  if (hasInterestOriginMacAddress()) {
+  	  totalLength += prependStringBlock(encoder, tlv::InterestOriginMacAddress, m_interestOriginMacAddress);
   }
 
   if (hasMacAddressPath()) {
-	  totalLength += prependStringBlock(encoder, tlv::MacInterestRoute, m_macAddressPath);
+	  totalLength += prependStringBlock(encoder, tlv::MacInterestRoute, m_macInterestRoute);
   }
   // InterestLifetime
   if (getInterestLifetime() >= time::milliseconds::zero() &&
@@ -310,7 +315,8 @@ Interest::wireDecode(const Block& wire)
   //                Name
   //                Selectors?
   //                Nonce
-  //				MacInterest
+  //				InterestTargetMacAddress
+  //				InterestOriginMacAddress
   //				MacInterestRoute
   //                InterestLifetime?
   //                Link?
@@ -334,16 +340,22 @@ Interest::wireDecode(const Block& wire)
   // Nonce
   m_nonce = m_wire.get(tlv::Nonce);
 
-  // Mac Interest
-  val = m_wire.find(tlv::MacInterest);
+  // Mac InterestTarget
+  val = m_wire.find(tlv::InterestTargetMacAddress);
   if(val != m_wire.elements_end()) {
-	  m_macAddress = readString(*val);
+	  m_interestTargetMacAddress = readString(*val);
+  }
+
+  // Mac InterestOrigin
+  val = m_wire.find(tlv::InterestOriginMacAddress);
+  if(val != m_wire.elements_end()) {
+	  m_interestOriginMacAddress = readString(*val);
   }
 
   // Mac Interest Route
   val = m_wire.find(tlv::MacInterestRoute);
   if(val != m_wire.elements_end()) {
-	  m_macAddressPath = readString(*val);
+	  m_macInterestRoute = readString(*val);
   }
 
   // InterestLifetime
