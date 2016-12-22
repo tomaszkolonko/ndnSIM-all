@@ -79,7 +79,6 @@ static int node2dataDropped = 1;
 static int node3dataDropped = 1;
 
 static int loopDropping = 1;
-static int manualDropping = 1;
 
 Forwarder::Forwarder()
   : m_faceTable(*this)
@@ -101,7 +100,9 @@ void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
 	bool debug = false;
-	std::cout << " ++ Forwarder::onIncomingInterest() inFaceId : " << inFace.getId() << std::endl;
+	// std::cout << " ++ Forwarder::onIncomingInterest() inFaceId : " << inFace.getId() << std::endl;
+	// std::cout << " ---- Forwarder::onIncomingInterest() interest.getInterestOriginMacAddress() " << interest.getInterestOriginMacAddress()
+	//		<< std::endl;
 
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
@@ -195,6 +196,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
+
 
   // If the an interest with the same nonce has passed this node already, the pit entry
   // will be updated BUT further processing of this interest will be stopped immediately.
@@ -458,6 +460,8 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 
 	  interest->addMacAddressPath(" --> " +  in + breadcrumbInterest.str().substr(6) + out);
   }
+
+  interest->setInterestOriginMacAddress(breadcrumbInterest_string);
   // ***************** ADDING MAC ADDRESS TO PATH ON INTEREST :: END *****************************
   // *********************************************************************************************
 
@@ -584,6 +588,27 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // At the moment all data.Mac's are 04 empty or producers
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+ns3::Address add;
+add = node->GetDevice(0)->GetAddress();
+std::ostringstream yeah;
+yeah << add;
+std::string this_shit = yeah.str().substr(6);
+
+
+
+  // ************************ DROPPING OF DATA ****************************************************
+  // **********************************************************************************************
+// TODO: DOES NOT WORK
+  std::cout << "tomaszz dropping shit: " << data.getDataTargetMacAddress() << std::endl;
+  if(!data.getDataTargetMacAddress().empty()) {
+	  std::cout <<" tomaszzz say NOT empty \n";
+	  if(data.getDataTargetMacAddress() != this_shit) {
+		  // DROP DATA
+		  return;
+	  }
+  }
+
+
   std::cout << "node( " << node->GetId() << ")" << std::endl;
   std::cout << "* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * <\n";
 
@@ -717,10 +742,12 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   if(debug) std::cout << "pitMatches.size() : " << pitMatches.size() << std::endl;
 
-
+  // TODO probably only valid when one pitEntry in pitMatches
+  std::string dataTargetMac;
   // *************** TAKE PIT ENTRY AND EXTRACT NEEDED FACES ***********************************
   // *******************************************************************************************
   for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+	  dataTargetMac = pitEntry->getInterest().getInterestOriginMacAddress();
 
     // cancel unsatisfy & straggler timer
     this->cancelUnsatisfyAndStragglerTimer(pitEntry);
@@ -735,7 +762,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
       if (it->getExpiry() > time::steady_clock::now()) {
     	  // TODO: here seems to be a problem. Rarely a face (256) is added to pendingDownstream.
     	  // TODO: find out why? BECAUSE THE SAME PIT ENTRY IS USED AND DELETED FEW LINES DOWN
-    	  std::cout << "pendingDownstreams.instert(it->getFace()) :  " << it->getFace()->getId() << std::endl;
+    	  // std::cout << "pendingDownstreams.instert(it->getFace()) :  " << it->getFace()->getId() << std::endl;
         pendingDownstreams.insert(it->getFace());
       }
     }
@@ -780,37 +807,46 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-	//		if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-	//						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) && pendingDownstream.get() == &inFace) {
-	//			if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
-	//			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-	//				  if(debug) std::cout << std::endl;
-	//				  // OUT RECORD COLLECTION
-	//				  //std::cout << "outRecordCollection:";
-	//				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-	//				  std::cout << "OutRecordCollection.size() -> " << outRecords.size() << std::endl;
-	//				  std::cout << "for the follwing pitEntry: " << pitEntry << " on node " << node->GetId() << std::endl;
-	//				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-	//																 it != outRecords.end(); ++it) {
-	//					  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
-	//					  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
-	//					  // beware that outRecordCollection is of PIT::ENTRY
-	//					  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
-	//
-	//					  // extra logic to take only every second face for forwarding.
-	//					  if((node->GetId() % 2) == 0) {
-	//						  if(it->getFace()->getId() % 2 == 0) {
-	//							  this->onOutgoingData(data, *it->getFace());
-	//						  }
-	//					  } else {
-	//						  // this->onOutgoingData(data, *it->getFace());
-	//					  }
-	//
-	//					  //this->onOutgoingData(data, *it->getFace());
-	//
-	//				  }
-	//			  }
-	//		}
+			if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
+							|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263) && pendingDownstream.get() == &inFace) {
+				if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
+				  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
+
+					  std::string blabla = pitEntry->getInterest().getInterestOriginMacAddress();
+
+					  if(debug) std::cout << std::endl;
+					  // OUT RECORD COLLECTION
+					  //std::cout << "outRecordCollection:";
+					  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+					  std::cout << "OutRecordCollection.size() -> " << outRecords.size() << std::endl;
+					  std::cout << "for the follwing pitEntry: " << pitEntry << " on node " << node->GetId() << std::endl;
+					  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+																	 it != outRecords.end(); ++it) {
+						  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
+						  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
+						  // beware that outRecordCollection is of PIT::ENTRY
+						  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
+
+						  // extra logic to take only every second face for forwarding.
+						  if((node->GetId() % 2) == 0) {
+							  if(it->getFace()->getId() % 2 == 0) {
+								  // TODO: terrible logic
+								  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+								  dataWithNewTargetMac->setDataTargetMacAddress(blabla);
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+							  }
+						  } else {
+							  // TODO: terrible logic
+							  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+							  dataWithNewTargetMac->setDataTargetMacAddress(blabla);
+							  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+						  }
+
+						  //this->onOutgoingData(data, *it->getFace());
+
+					  }
+				  }
+			}
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
 
