@@ -277,7 +277,8 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 	  std::cout << "within ONE fibEntry for prefix: \"" << fibEntry->getPrefix() << "\" on node (" << node->GetId()
 												<< ") looking at nextHop entries...." << std::endl;
 	  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-		  std::cout << "    - > Get fibEntry outFace" << it->getFace()->getId() << "   Cost: " << it->getCost() << "   Mac: " << it->getMac() << std::endl;
+		  std::cout << "    - > Get fibEntry outFace" << it->getFace()->getId() << "   Cost: " << it->getCost()
+				  << "   Mac: >" << it->getMac() << "<" << std::endl;
 	  }
 	  std::cout << std::endl;
   }
@@ -552,6 +553,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
     std::cout << "data.getMetaInfo(): " << data.getMetaInfo() << std::endl;
     std::cout << "data.getName(): " << data.getName() << std::endl;
+    std::cout << "data.getDataOriginMacAddress(): " << data.getDataOriginMacAddress() << std::endl;
+    std::cout << "data.getDataTargetMacAddress(): " << data.getDataTargetMacAddress() << std::endl;
   }
 
   // receive Data
@@ -590,24 +593,50 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 ns3::Address add;
 add = node->GetDevice(0)->GetAddress();
-std::ostringstream yeah;
-yeah << add;
-std::string this_shit = yeah.str().substr(6);
+std::ostringstream tmpLocalMac;
+tmpLocalMac << add;
+std::string localMac = tmpLocalMac.str().substr(6);
 
 
 
   // ************************ DROPPING OF DATA ****************************************************
   // **********************************************************************************************
-// TODO: DOES NOT WORK
-  std::cout << "tomaszz dropping shit: " << data.getDataTargetMacAddress() << std::endl;
-  if(!data.getDataTargetMacAddress().empty()) {
+
+  if(!data.getDataTargetMacAddress().empty() && data.getDataTargetMacAddress() != "producer Mac"
+		  && data.getDataTargetMacAddress() != "control command") {
 	  std::cout <<" tomaszzz say NOT empty \n";
-	  if(data.getDataTargetMacAddress() != this_shit) {
-		  // DROP DATA
-		  return;
+	  if(data.getDataTargetMacAddress() == localMac) {
+		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
+		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
+		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
+		  std::cout << " AddRoute /test fast 111 " << std::endl;
+		  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getDataOriginMacAddress());
+	  } else {
+		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
+		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
+		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
+		  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
+		  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 222, data.getDataOriginMacAddress());
 	  }
   }
 
+  if(data.getDataTargetMacAddress() == "producer Mac") {
+	  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
+	  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
+	  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
+	  std::cout << " AddRoute / immediate 12" << std::endl;
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
+  }
+
+  if(data.getDataTargetMacAddress().empty()){
+	  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
+	  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
+	  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
+	  std::cout << " Do Nothing" << std::endl;
+  }
+
+
+  std::cout << " yyy " << std::endl;
 
   std::cout << "node( " << node->GetId() << ")" << std::endl;
   std::cout << "* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * <\n";
@@ -702,25 +731,25 @@ std::string this_shit = yeah.str().substr(6);
   // ****************************************************************************************************
 
   // some logic on where and how to add new Routes using NO predefined MacAddresses
-  std::cout << " +- " << inFace.getId() << std::endl;
-  if(data.getDataOriginMacAddress() == "producer Mac") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 12, data.getDataOriginMacAddress());
-  } else if(data.getDataOriginMacAddress().empty()){
-	  // do nothing. That only happens at configuration time and never again.
-  } else {
-
-  //	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
-  //	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-  //
-  //	  // https://groups.google.com/forum/#!topic/ns-3-users/g4kgUdXmVUg
-  //
-  //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
-  //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
-
-	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
-
-	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getDataOriginMacAddress());
-  }
+//  std::cout << " +- " << inFace.getId() << std::endl;
+//  if(data.getDataOriginMacAddress() == "producer Mac") {
+//	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 12, data.getDataOriginMacAddress());
+//  } else if(data.getDataOriginMacAddress().empty()){
+//	  // do nothing. That only happens at configuration time and never again.
+//  } else {
+//
+//  //	  ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
+//  //	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
+//  //
+//  //	  // https://groups.google.com/forum/#!topic/ns-3-users/g4kgUdXmVUg
+//  //
+//  //	  ns3::ndn::NetDeviceFace* p_netDF = new ns3::ndn::NetDeviceFace(node, netDevice);
+//  //	  l3->addFace((shared_ptr<ns3::ndn::Face>)p_netDF);
+//
+//	   // ns3::ndn::FibHelper::RemoveRoute(node, "/test", inFace.getId());
+//
+//	  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getDataOriginMacAddress());
+//  }
 
   // Remove Ptr<Packet> from the Data before inserting into cache, serving two purposes
   // - reduce amount of memory used by cached entries
@@ -812,7 +841,7 @@ std::string this_shit = yeah.str().substr(6);
 				if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
 				  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
-					  std::string blabla = pitEntry->getInterest().getInterestOriginMacAddress();
+					  std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
 
 					  if(debug) std::cout << std::endl;
 					  // OUT RECORD COLLECTION
@@ -828,18 +857,21 @@ std::string this_shit = yeah.str().substr(6);
 						  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
 
 						  // extra logic to take only every second face for forwarding.
+						  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
 						  if((node->GetId() % 2) == 0) {
 							  if(it->getFace()->getId() % 2 == 0) {
 								  // TODO: terrible logic
-								  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
-								  dataWithNewTargetMac->setDataTargetMacAddress(blabla);
+								  dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
 								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
 							  }
-						  } else {
-							  // TODO: terrible logic
-							  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
-							  dataWithNewTargetMac->setDataTargetMacAddress(blabla);
-							  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+						  }
+
+						  if((node->GetId() % 2) == 1) {
+							  if(it->getFace()->getId() % 2 == 1) {
+								  // TODO: terrible logic
+								  dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+							  }
 						  }
 
 						  //this->onOutgoingData(data, *it->getFace());
@@ -950,14 +982,20 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 	// will return std::string::npos
 	std::size_t found = data_macRoute.find(breadcrumb_string);
 
+	const_cast<Data&>(data).setDataOriginMacAddress(breadcrumb_string);
+
 	if(found == std::string::npos) {
 		if(debug) std::cout << "pointer to netDevice : " << netDevice << " with address: " << str.str() << std::endl;
 
-		const_cast<Data&>(data).setDataOriginMacAddress(breadcrumb_string);
 		const_cast<Data&>(data).addMacDataRoute(" --> " + breadcrumb_string);
 	}
 
   // TODO traffic manager
+
+
+
+  std::cout << "Origin: " << data.getDataOriginMacAddress() << std::endl;
+  std::cout << "Target: " << data.getDataTargetMacAddress() << std::endl;
 
   // send Data
   outFace.sendData(data);

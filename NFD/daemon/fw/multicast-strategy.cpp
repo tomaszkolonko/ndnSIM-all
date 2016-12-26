@@ -50,8 +50,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-	if(true) printPITInRecord(pitEntry, node);
-	if(true) printPITOutRecord(pitEntry);
+	if(false) printPITInRecord(pitEntry, node);
+	if(false) printPITOutRecord(pitEntry);
 
 	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
 
