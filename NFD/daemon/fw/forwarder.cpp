@@ -156,10 +156,11 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   // check if macAddress has been set. If empty it the forwarding is still broadcasting. If there is a Mac it comes from the fib
   // of the prior node.
-  if(interest.getInterestTargetMacAddress() != "consumer " && interest.getInterestTargetMacAddress() != "producer Mac"
-	&& interest.getInterestTargetMacAddress() != "unknown"
+  if(interest.getInterestTargetMacAddress() != "consumer" && interest.getInterestTargetMacAddress() != "producer Mac"
+	&& interest.getInterestTargetMacAddress() != "unknown" && interest.getInterestTargetMacAddress() != "control command"
 	&& !interest.getInterestTargetMacAddress().empty()){
 	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
+		  std::cout << "dropping interest since " << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
 		  return;
 	  }
   }
@@ -208,8 +209,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   if (hasDuplicateNonce) {
     // goto Interest loop pipeline which does nothing at the moment.
     this->onInterestLoop(inFace, interest, pitEntry);
-    loopDropping++;
-    std::cout << "loopDropping: " << loopDropping << " "	;
+    // loopDropping++;
+    // std::cout << "loopDropping: " << loopDropping << " \n";
     // drop the package
     return;
   }

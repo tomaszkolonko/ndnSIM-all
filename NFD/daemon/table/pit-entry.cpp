@@ -194,5 +194,36 @@ Entry::hasUnexpiredOutRecords() const
     [&now] (const OutRecord& outRecord) { return outRecord.getExpiry() >= now; });
 }
 
+// ************************************* added some logic for macs ***********************************
+// ***************************************************************************************************
+
+OriginMacCollection::iterator
+Entry::insertOrUpdateOriginMacRecord(shared_ptr<Face> face, const Interest& interest)
+{
+  auto it = std::find_if(m_inRecords.begin(), m_inRecords.end(),
+    [&face] (const InRecord& inRecord) { return inRecord.getFace() == face; });
+  if (it == m_inRecords.end()) {
+    m_inRecords.emplace_front(face);
+    it = m_inRecords.begin();
+  }
+
+  it->update(interest);
+  return it;
+}
+
+OriginMacCollection::const_iterator
+Entry::getOriginMacRecord(const Face& face) const
+{
+  return std::find_if(m_inRecords.begin(), m_inRecords.end(),
+    [&face] (const InRecord& inRecord) { return inRecord.getFace().get() == &face; });
+}
+
+void
+Entry::deleteOriginMacRecord()
+{
+	m_originMacRecords.clear();
+}
+
+
 } // namespace pit
 } // namespace nfd
