@@ -124,6 +124,10 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
+  // TODO: DELETE THIS BUT CORRECT
+  std::cout << "you are on node(" << node->GetId() << ") " << std::endl;
+  std::cout << "interest get Origin mac is: " << interest.getInterestOriginMacAddress() << std::endl;
+
 
   // ******************************************** INTEREST STATS :: START *******************************
   // ****************************************************************************************************
@@ -198,6 +202,21 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
+  // HERE ITS WRONG
+//  std::cout << "local MAC from node: " << currentMacAddress << std::endl;
+//  std::cout << "from interest: " << interest.getInterestOriginMacAddress() << std::endl;
+//  std::cout << "from pitEntry origin: " << pitEntry->getInterest().getInterestOriginMacAddress() << std::endl;
+//  std::cout << "from pitEntry target: " << pitEntry->getInterest().getInterestTargetMacAddress() << std::endl;
+
+  std::list<std::string> whatever = pitEntry->getOriginMacRecords();
+  std::cout << "whatever.size():  " << whatever.size() << std::endl;
+  std::list<std::string>::const_iterator iterator;
+  for(iterator = whatever.begin(); iterator != whatever.end(); iterator++){
+	  std::cout << "whatever shit: " << *iterator << std::endl;
+  }
+
+
+  // std::cout << "qwer" << std::endl;
 
   // If the an interest with the same nonce has passed this node already, the pit entry
   // will be updated BUT further processing of this interest will be stopped immediately.
@@ -272,7 +291,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
 
-  if(true) {
+  if(false) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE Forwarder::OnContentStoreMiss" << std::endl;
 	  const fib::NextHopList& nexthops = fibEntry->getNextHops();
@@ -843,10 +862,15 @@ std::string localMac = tmpLocalMac.str().substr(6);
 				if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
 				  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
-					  std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
+					  // TODO: gives back the wrong mac address (same as target...
+					  // std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
+
+					  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
+					  std::list<std::string>::const_iterator stringIterator;
+
 
 					  // TODO: delete this
-					  std::cout << "OK google: targetMac is: " << targetMac << std::endl;
+					  // std::cout << "OK google: targetMac is: " << targetMacs. << std::endl;
 					  std::cout << "OK google: localMac is: " << localMac << std::endl;
 					  std::cout << "that was on node (" << node->GetId() << ")" << std::endl;
 
@@ -870,16 +894,21 @@ std::string localMac = tmpLocalMac.str().substr(6);
 						  if((node->GetId() % 2) == 0) {
 							  if(it->getFace()->getId() % 2 == 0) {
 								  // TODO: terrible logic
-								  dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+									  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+									  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  }
+
 							  }
 						  }
 
 						  if((node->GetId() % 2) == 1) {
 							  if(it->getFace()->getId() % 2 == 1) {
 								  // TODO: terrible logic
-								  dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+									  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+									  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  }
 							  }
 						  }
 
