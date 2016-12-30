@@ -78,7 +78,7 @@ static int node1dataDropped = 1;
 static int node2dataDropped = 1;
 static int node3dataDropped = 1;
 
-static int loopDropping = 1;
+// static int loopDropping = 1;
 
 Forwarder::Forwarder()
   : m_faceTable(*this)
@@ -259,6 +259,7 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 
   // insert InRecord
   pitEntry->insertOrUpdateInRecord(face, interest);
+  pitEntry->insertOrUpdateOriginMacRecord(interest.getInterestOriginMacAddress(), interest);
 
   // set PIT unsatisfy timer
   this->setUnsatisfyTimer(pitEntry);
@@ -403,7 +404,7 @@ void
 Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
                               std::string targetMac, int inFaceId, bool wantNewNonce)
 {
-	bool debug = false;
+  bool debug = false;
   if (outFace.getId() == INVALID_FACEID) {
     NFD_LOG_WARN("onOutgoingInterest face=invalid interest=" << pitEntry->getName());
     return;
@@ -489,7 +490,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 //  pointer of interest /test/prefix/%FE%00 outFace: 261 0x12dbb60
 //  pointer of interest2 /test/prefix/%FE%00 outFace: 261 0x12f0380
 
-  if(false) {
+  if(debug) {
 	  std::cout << "pointer of interest " << interest->getName() << " outFace: " << outFace.getId() <<  " " << interest << std::endl;
 	  std::cout << "pointer of interest2 " << interest2->getName() << " outFace: " << outFace.getId() << " " << interest2 << std::endl;
   }
@@ -844,6 +845,11 @@ std::string localMac = tmpLocalMac.str().substr(6);
 
 					  std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
 
+					  // TODO: delete this
+					  std::cout << "OK google: targetMac is: " << targetMac << std::endl;
+					  std::cout << "OK google: localMac is: " << localMac << std::endl;
+					  std::cout << "that was on node (" << node->GetId() << ")" << std::endl;
+
 					  if(debug) std::cout << std::endl;
 					  // OUT RECORD COLLECTION
 					  //std::cout << "outRecordCollection:";
@@ -858,6 +864,8 @@ std::string localMac = tmpLocalMac.str().substr(6);
 						  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
 
 						  // extra logic to take only every second face for forwarding.
+
+						  // the only TWO places where the dataTargetMac is set !!!!
 						  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
 						  if((node->GetId() % 2) == 0) {
 							  if(it->getFace()->getId() % 2 == 0) {
@@ -954,53 +962,49 @@ void
 Forwarder::onOutgoingData(const Data& data, Face& outFace)
 {
 	bool debug = false;
-  if (outFace.getId() == INVALID_FACEID) {
-    NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
-    return;
-  }
-  NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() << " data=" << data.getName());
+	if (outFace.getId() == INVALID_FACEID) {
+		NFD_LOG_WARN("onOutgoingData face=invalid data=" << data.getName());
+	return;
+	}
+	NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() << " data=" << data.getName());
 
-  // /localhost scope control
-  bool isViolatingLocalhost = !outFace.isLocal() &&
-                              LOCALHOST_NAME.isPrefixOf(data.getName());
-  if (isViolatingLocalhost) {
-    NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() <<
-                  " data=" << data.getName() << " violates /localhost");
-    // (drop)
-    return;
-  }
+	// /localhost scope control
+	bool isViolatingLocalhost = !outFace.isLocal() &&
+							  LOCALHOST_NAME.isPrefixOf(data.getName());
+	if (isViolatingLocalhost) {
+		NFD_LOG_DEBUG("onOutgoingData face=" << outFace.getId() <<
+				  " data=" << data.getName() << " violates /localhost");
+		// (drop)
+		return;
+	}
 
 	// goto outgoing Data pipeline
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	std::ostringstream str;
 	str << netDevice->GetAddress();
-	std::string breadcrumb_string = str.str().substr(6);
+	std::string this_NetDevice_Mac = str.str().substr(6);
 	std::string data_macRoute =  data.getMacDataRoute();
 
 	// check if this device's mac address has been added already to the interest. If yes the position of the
 	// start position will be returned if the madAddress has not yet been added to the interest the function
 	// will return std::string::npos
-	std::size_t found = data_macRoute.find(breadcrumb_string);
+	std::size_t found = data_macRoute.find(this_NetDevice_Mac);
 
-	const_cast<Data&>(data).setDataOriginMacAddress(breadcrumb_string);
+	// the only place where DataOriginMacAddress is set !!!!
+	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
 
 	if(found == std::string::npos) {
 		if(debug) std::cout << "pointer to netDevice : " << netDevice << " with address: " << str.str() << std::endl;
 
-		const_cast<Data&>(data).addMacDataRoute(" --> " + breadcrumb_string);
+		const_cast<Data&>(data).addMacDataRoute(" --> " + this_NetDevice_Mac);
 	}
 
-  // TODO traffic manager
+	// TODO traffic manager
 
-
-
-  std::cout << "Origin: " << data.getDataOriginMacAddress() << std::endl;
-  std::cout << "Target: " << data.getDataTargetMacAddress() << std::endl;
-
-  // send Data
-  outFace.sendData(data);
-  ++m_counters.getNOutDatas();
+	// send Data
+	outFace.sendData(data);
+	++m_counters.getNOutDatas();
 }
 
 static inline bool

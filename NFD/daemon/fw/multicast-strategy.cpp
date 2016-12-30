@@ -52,6 +52,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
+	if(true) printPITOriginMacRecord(pitEntry);
 
 	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
 
@@ -110,6 +111,18 @@ MulticastStrategy::printPITOutRecord(shared_ptr<pit::Entry> pitEntry) {
 		std::cout << "outRecord face: " << inIt->getFace()->getId() << std::endl;
 	}
 	std::cout << std::endl;
+}
+
+void
+MulticastStrategy::printPITOriginMacRecord(shared_ptr<pit::Entry> pitEntry) {
+	const pit::OriginMacCollection& originMacCol = pitEntry->getOriginMacRecords();
+	std::cout << std::endl;
+	std::cout << "Multicaststrategy::printPITMacRecord" << std::endl;
+	std::cout << "pointer to pitEntry: " << pitEntry << std::endl;
+	std::cout << "originMacCollection.size() " << originMacCol.size() << std::endl;
+	for(pit::OriginMacCollection::const_iterator macIt = originMacCol.begin(); macIt != originMacCol.end(); macIt++) {
+		std::cout << "saved origin Mac is: " << *macIt << std::endl;
+	}
 }
 
 } // namespace fw

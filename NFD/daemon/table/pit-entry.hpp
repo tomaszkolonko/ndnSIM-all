@@ -48,6 +48,10 @@ typedef std::list<InRecord>  InRecordCollection;
  */
 typedef std::list<OutRecord> OutRecordCollection;
 
+/** \brief represents an unordered collection of interest.getOriginMacAddresses
+ */
+typedef std::list<std::string> OriginMacCollection;
+
 /** \brief indicates where duplicate Nonces are found
  */
 enum DuplicateNonceWhere {
@@ -163,6 +167,28 @@ public: // OutRecord
   bool
   hasUnexpiredOutRecords() const;
 
+public: // OriginMacRecords
+  const OriginMacCollection&
+  getOriginMacRecords() const;
+
+  /** \brief inserts a OriginMacRecord, and updates it with interest
+   *
+   *  If OriginMacRecord for Mac exists, the existing one is updated.
+   *  \return an iterator to the OriginMacRecord
+   */
+  OriginMacCollection::iterator
+  insertOrUpdateOriginMacRecord(std::string mac, const Interest& interest);
+
+  /** \brief get the OriginMacAddress for face
+   *  \return an iterator to the OriginMacRecord, or .end if it does not exist
+   */
+  OriginMacCollection::const_iterator
+  getOriginMacRecord(std::string mac) const;
+
+  /// deletes one OriginMacRecord for face if exists
+  void
+  deleteOriginMacRecord();
+
 public:
   scheduler::EventId m_unsatisfyTimer;
   scheduler::EventId m_stragglerTimer;
@@ -171,6 +197,7 @@ private:
   shared_ptr<const Interest> m_interest;
   InRecordCollection m_inRecords;
   OutRecordCollection m_outRecords;
+  OriginMacCollection m_originMacRecords;
 
   static const Name LOCALHOST_NAME;
   static const Name LOCALHOP_NAME;
@@ -197,6 +224,12 @@ inline const OutRecordCollection&
 Entry::getOutRecords() const
 {
   return m_outRecords;
+}
+
+inline const OriginMacCollection&
+Entry::getOriginMacRecords() const
+{
+	return m_originMacRecords;
 }
 
 } // namespace pit

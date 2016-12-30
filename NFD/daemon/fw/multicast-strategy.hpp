@@ -52,6 +52,9 @@ private:
   virtual void
   printPITOutRecord(const shared_ptr<pit::Entry> pitEntry);
 
+  virtual void
+  printPITOriginMacRecord(const shared_ptr<pit::Entry> pitEntry);
+
 public:
   static const Name STRATEGY_NAME;
 };
