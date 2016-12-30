@@ -631,13 +631,13 @@ std::string localMac = tmpLocalMac.str().substr(6);
 		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 		  std::cout << " AddRoute /test fast 111 " << std::endl;
-		  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 111, data.getDataOriginMacAddress());
+		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
 		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
 		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 		  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-		  ns3::ndn::FibHelper::AddRoute(node, "/test", inFace.getId(), 222, data.getDataOriginMacAddress());
+		  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 	  }
   }
 

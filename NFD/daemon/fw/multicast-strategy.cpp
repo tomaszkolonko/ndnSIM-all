@@ -35,6 +35,8 @@ const Name MulticastStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/multica
 NFD_REGISTER_STRATEGY(MulticastStrategy);
 
 const bool debug = false;
+static int yes = 0;
+static int no = 0;
 
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
@@ -72,8 +74,12 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 
 	  if (pitEntry->canForwardTo(*outFace)) {
+		  yes++;
+		  std::cout << "yes count : " << yes << std::endl;
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
+		  no++;
+		  std::cout << "no count : " << no << std::endl;
 		if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
 	  }
 	}
