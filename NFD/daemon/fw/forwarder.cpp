@@ -165,7 +165,9 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 	&& !interest.getInterestTargetMacAddress().empty()){
 	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
 		  std::cout << "dropping interest since " << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
-		  return;
+		  // dropping interests if they have a targetMac && targetMac is not current's NetDevice Mac !!!!
+		  // many different routes are being not considered anymore !!!
+		  //return;
 	  }
   }
 

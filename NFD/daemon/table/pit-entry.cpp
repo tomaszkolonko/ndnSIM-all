@@ -55,6 +55,7 @@ Entry::canForwardTo(const Face& face) const
 {
   time::steady_clock::TimePoint now = time::steady_clock::now();
 
+  // 1) eligible if face is not already an upstream (unexpired ourRecord exists in PIT)
   bool hasUnexpiredOutRecord = std::any_of(m_outRecords.begin(), m_outRecords.end(),
     [&face, &now] (const OutRecord& outRecord) {
       return outRecord.getFace().get() == &face && outRecord.getExpiry() >= now;
@@ -63,6 +64,7 @@ Entry::canForwardTo(const Face& face) const
     return false;
   }
 
+  // 2) eligible if it is not the sole downstream (another inRecord exists in PIT)
   bool hasUnexpiredOtherInRecord = std::any_of(m_inRecords.begin(), m_inRecords.end(),
     [&face, &now] (const InRecord& inRecord) {
       return inRecord.getFace().get() != &face && inRecord.getExpiry() >= now;
@@ -71,6 +73,7 @@ Entry::canForwardTo(const Face& face) const
     return false;
   }
 
+  // 3) eligible if not violating scope
   return !this->violatesScope(face);
 }
 
