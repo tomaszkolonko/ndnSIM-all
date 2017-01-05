@@ -124,11 +124,6 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  // TODO: DELETE THIS BUT CORRECT
-  std::cout << "you are on node(" << node->GetId() << ") " << std::endl;
-  std::cout << "interest get Origin mac is: " << interest.getInterestOriginMacAddress() << std::endl;
-
-
   // ******************************************** INTEREST STATS :: START *******************************
   // ****************************************************************************************************
   bool interestStatistics = false;
@@ -158,13 +153,15 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   addr << node->GetDevice(0)->GetAddress();
   std::string currentMacAddress = addr.str().substr(6);
 
+  // TODO: maybe you shouldn't be dropping interests at all.... or if you are dropping them with another logic
+
   // check if macAddress has been set. If empty it the forwarding is still broadcasting. If there is a Mac it comes from the fib
   // of the prior node.
   if(interest.getInterestTargetMacAddress() != "consumer" && interest.getInterestTargetMacAddress() != "producer Mac"
 	&& interest.getInterestTargetMacAddress() != "unknown" && interest.getInterestTargetMacAddress() != "control command"
 	&& !interest.getInterestTargetMacAddress().empty()){
 	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
-		  std::cout << "dropping interest since " << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
+		  // std::cout << "dropping interest since " << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
 		  // dropping interests if they have a targetMac && targetMac is not current's NetDevice Mac !!!!
 		  // many different routes are being not considered anymore !!!
 		  //return;
@@ -204,22 +201,6 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
-  // HERE ITS WRONG
-//  std::cout << "local MAC from node: " << currentMacAddress << std::endl;
-//  std::cout << "from interest: " << interest.getInterestOriginMacAddress() << std::endl;
-//  std::cout << "from pitEntry origin: " << pitEntry->getInterest().getInterestOriginMacAddress() << std::endl;
-//  std::cout << "from pitEntry target: " << pitEntry->getInterest().getInterestTargetMacAddress() << std::endl;
-
-  std::list<std::string> whatever = pitEntry->getOriginMacRecords();
-  std::cout << "whatever.size():  " << whatever.size() << std::endl;
-  std::list<std::string>::const_iterator iterator;
-  for(iterator = whatever.begin(); iterator != whatever.end(); iterator++){
-	  std::cout << "whatever shit: " << *iterator << std::endl;
-  }
-
-
-  // std::cout << "qwer" << std::endl;
-
   // If the an interest with the same nonce has passed this node already, the pit entry
   // will be updated BUT further processing of this interest will be stopped immediately.
 
@@ -236,13 +217,9 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
     return;
   }
 
-  if(debug) {
-	  std::cout << std::endl;
-	  std::cout << "you are on node(" << node->GetId() << ") and the interest is: " << interest.getName() << std::endl;
-	  std::cout << "the interest path is: " << interest.getMacAddressPath() << std::endl;
-  }
-
   // cancel unsatisfy & straggler timer
+  // unsatisfy timer fires when the PIT entry expires
+  // straggler timer fires when the PIT entry can be deleted because it has been satisfied or rejected
   this->cancelUnsatisfyAndStragglerTimer(pitEntry);
 
   // is pending?
@@ -288,11 +265,9 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   // FIB lookup
   shared_ptr<fib::Entry> fibEntry = m_fib.findLongestPrefixMatch(*pitEntry);
 
-  // Displays all the nextHops for a certain prefix on a certain node IMPORTANT
-  // at the moment all new routes get the 04 MAC address which is a big problem
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-
+  // seems to be correct !!!!
   if(false) {
 	  std::cout << std::endl;
 	  std::cout << "INSIDE Forwarder::OnContentStoreMiss" << std::endl;
@@ -305,16 +280,6 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 	  }
 	  std::cout << std::endl;
   }
-//
-//  if(debug) {
-//	  std::cout << "inRecordCollection: node(" << node->GetId() << ") ";
-//	  const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
-//	  for (pit::InRecordCollection::const_iterator it = inRecords.begin();
-//													 it != inRecords.end(); ++it) {
-//		  std::cout << "inside onContentstoreMiss: " << it->getFace()->getId() << "; ";
-//	  }
-//  }
-
 
   // dispatch to strategy
   this->dispatchToStrategy(pitEntry, bind(&Strategy::afterReceiveInterest, _1,
@@ -414,8 +379,6 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   // insert OutRecord
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest);
 
-  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-
   // send Interest
   outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
@@ -490,7 +453,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   // *********************************************************************************************
 
 
-  shared_ptr<Interest> interest2 = make_shared<Interest>(*interest);
+  // shared_ptr<Interest> interest2 = make_shared<Interest>(*interest);
 
   // Sample Output of this:
   // Explanation: 	you have an interest and a copied interest pointing to two different locations.
@@ -511,13 +474,13 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
 //  pointer of interest /test/prefix/%FE%00 outFace: 261 0x12dbb60
 //  pointer of interest2 /test/prefix/%FE%00 outFace: 261 0x12f0380
 
-  if(debug) {
-	  std::cout << "pointer of interest " << interest->getName() << " outFace: " << outFace.getId() <<  " " << interest << std::endl;
-	  std::cout << "pointer of interest2 " << interest2->getName() << " outFace: " << outFace.getId() << " " << interest2 << std::endl;
-  }
+//  if(debug) {
+//	  std::cout << "pointer of interest " << interest->getName() << " outFace: " << outFace.getId() <<  " " << interest << std::endl;
+//	  std::cout << "pointer of interest2 " << interest2->getName() << " outFace: " << outFace.getId() << " " << interest2 << std::endl;
+//  }
 
-  interest2->setInterestTargetMacAddress(targetMac);
-  outFace.sendInterest(*interest2);
+  interest->setInterestTargetMacAddress(targetMac);
+  outFace.sendInterest(*interest);
   ++m_counters.getNOutInterests();
 }
 
@@ -626,7 +589,7 @@ std::string localMac = tmpLocalMac.str().substr(6);
   // **********************************************************************************************
 
   if(!data.getDataTargetMacAddress().empty() && data.getDataTargetMacAddress() != "producer Mac"
-		  && data.getDataTargetMacAddress() != "control command") {
+		  && data.getDataTargetMacAddress() != "control command" && data.getDataTargetMacAddress() != "not set") {
 	  std::cout <<" tomaszzz say NOT empty \n";
 	  if(data.getDataTargetMacAddress() == localMac) {
 		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
@@ -639,7 +602,7 @@ std::string localMac = tmpLocalMac.str().substr(6);
 		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 		  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-		  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
+		  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 2222, data.getDataOriginMacAddress());
 	  }
   }
 
@@ -656,6 +619,7 @@ std::string localMac = tmpLocalMac.str().substr(6);
 	  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 	  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 	  std::cout << " Do Nothing" << std::endl;
+	  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 444);
   }
 
 
@@ -963,10 +927,12 @@ std::string localMac = tmpLocalMac.str().substr(6);
 //    	}
 //    }
 
-
+	shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+	std::string targetMac = "not set";
+	dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
 //	if(debug) std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
 //			pendingDownstream->getId() << std::endl;
-	this->onOutgoingData(data, *pendingDownstream);
+	this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream);
 	if(debug) std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
  }
 }

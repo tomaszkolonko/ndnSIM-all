@@ -33,6 +33,8 @@
 
 NS_LOG_COMPONENT_DEFINE("ndn.Producer");
 
+static int counter = 0;
+
 namespace ns3 {
 namespace ndn {
 
@@ -96,6 +98,8 @@ void
 Producer::OnInterest(shared_ptr<const Interest> interest)
 {
   App::OnInterest(interest); // tracing inside
+  counter++;
+  std::cout << "interest packages received @ producer: " << counter << std::endl;
 
   // Logging the Path till the end but last macAddress is empty. TODO: find out why.
   std::cout << std::endl;
