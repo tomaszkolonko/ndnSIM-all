@@ -176,14 +176,14 @@ main(int argc, char* argv[])
   NS_LOG_INFO("Installing Applications");
 
   ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
-  consumerHelper.SetPrefix("/test/prefix");
+  consumerHelper.SetPrefix("/test");
   consumerHelper.SetAttribute("Frequency", DoubleValue(5.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
   consumer.Stop(Seconds(10));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
-  producerHelper.SetPrefix("/");
+  producerHelper.SetPrefix("/test");
   producerHelper.SetAttribute("PayloadSize", StringValue("1200"));
   producerHelper.Install(nodes.Get(7));
 

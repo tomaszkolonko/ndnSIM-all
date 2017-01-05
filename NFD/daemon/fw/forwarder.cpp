@@ -535,7 +535,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
   bool debug = false;
 
-  if(true) {
+  if(debug) {
     std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
     std::cout << "data.getMetaInfo(): " << data.getMetaInfo() << std::endl;
     std::cout << "data.getName(): " << data.getName() << std::endl;
@@ -551,7 +551,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // /localhost scope control
   bool isViolatingLocalhost = !inFace.isLocal() &&
                               LOCALHOST_NAME.isPrefixOf(data.getName());
-  std::cout << "isViolatingLocalhost: " << isViolatingLocalhost << std::endl;
+  // std::cout << "isViolatingLocalhost: " << isViolatingLocalhost << std::endl;
   if (isViolatingLocalhost) {
     NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() <<
                   " data=" << data.getName() << " violates /localhost");
@@ -562,7 +562,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // PIT match
   pit::DataMatchResult pitMatches = m_pit.findAllDataMatches(data);
 
-  std::cout << "First: pitMatches.size(): " << pitMatches.size() << std::endl;
+  // std::cout << "First: pitMatches.size(): " << pitMatches.size() << std::endl;
 
   // all packages are dropped if they were not requested before
   if (pitMatches.begin() == pitMatches.end()) {
@@ -571,7 +571,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
     return;
   }
 
-  std::cout << "Second: pitMatches.size(): " << pitMatches.size() << std::endl;
+  // std::cout << "Second: pitMatches.size(): " << pitMatches.size() << std::endl;
 
   // Try to achieve 3 hops as it should be during the scenario -> follow breadcrumbs!!!
   // At the moment all data.Mac's are 04 empty or producers
@@ -583,7 +583,12 @@ std::ostringstream tmpLocalMac;
 tmpLocalMac << add;
 std::string localMac = tmpLocalMac.str().substr(6);
 
-
+// DOES NOT WORK LIKE THAT
+Name name;
+name = data.getName();
+std::ostringstream tmpName;
+tmpName << name;
+std::string localName = tmpName.str().substr(0,5);
 
   // ************************ DROPPING OF DATA ****************************************************
   // **********************************************************************************************
@@ -591,46 +596,47 @@ std::string localMac = tmpLocalMac.str().substr(6);
   if(!data.getDataTargetMacAddress().empty() && data.getDataTargetMacAddress() != "producer Mac"
 		  && data.getDataTargetMacAddress() != "control command" && data.getDataTargetMacAddress() != "not set") {
 	  std::cout <<" tomaszzz say NOT empty \n";
+	  // WITHOUT THIS ONLY 17/40 data arrive at consumer
 	  if(data.getDataTargetMacAddress() == localMac) {
 		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
 		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 		  std::cout << " AddRoute /test fast 111 " << std::endl;
+		  std::cout << " data.getName(): " << data.getName() << std::endl;
+		  std::cout << " localName(): " << localName << std::endl;
 		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
+		  // WITHOUT THIS ONLY 19/40 data arrive at consumer
 		  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
 		  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 		  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 		  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-		  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 2222, data.getDataOriginMacAddress());
+		  std::cout << " data.getName(): " << data.getName() << std::endl;
+		  std::cout << " localName(): " << localName << std::endl;
+		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 	  }
   }
 
+  // HAS NO INFLUENCE IF ONLY "/" BUT i thought it has influence if add route is /test... apparently not...
   if(data.getDataTargetMacAddress() == "producer Mac") {
 	  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
 	  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 	  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 	  std::cout << " AddRoute / immediate 12" << std::endl;
+	  std::cout << " data.getName(): " << data.getName() << std::endl;
+	  std::cout << " localName(): " << localName << std::endl;
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
   }
 
+  // OBVIOUSLY NO INFLUENCE JUST FOR TESTING
   if(data.getDataTargetMacAddress().empty()){
 	  std::cout << " data.getDataOriginMacAddress(): >" << data.getDataOriginMacAddress() << "<" << std::endl;
 	  std::cout << " data.getDataTargetMacAddress(): >" << data.getDataTargetMacAddress() << "<" << std::endl;
 	  std::cout << " localMac                      : >" << localMac << "<" << std::endl;
 	  std::cout << " Do Nothing" << std::endl;
+	  std::cout << " data.getName(): " << data.getName() << std::endl;
+	  std::cout << " localName(): " << localName << std::endl;
 	  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 444);
-  }
-
-
-  std::cout << " yyy " << std::endl;
-
-  std::cout << "node( " << node->GetId() << ")" << std::endl;
-  std::cout << "* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * <\n";
-
-
-  if(debug) {
-	  std::cout << "yeah --- 2 --- on node(    "<< node->GetId() <<"    )  pitchMatches.size() is: " << pitMatches.size() << std::endl;
   }
 
   // ******************************************** DATA STATS :: START ***********************************

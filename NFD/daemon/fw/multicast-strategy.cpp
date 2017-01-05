@@ -54,7 +54,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
-	if(true) printPITOriginMacRecord(pitEntry);
+	if(false) printPITOriginMacRecord(pitEntry);
 
 	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
 
