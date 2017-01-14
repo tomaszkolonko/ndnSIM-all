@@ -65,5 +65,11 @@ NextHop::getMac() const
   return m_mac;
 }
 
+void
+NextHop::incrementCost()
+{
+	++m_cost;
+}
+
 } // namespace fib
 } // namespace nfd

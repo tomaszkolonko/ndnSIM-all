@@ -171,7 +171,6 @@ Data::wireDecode(const Block& wire)
 
   // Target Mac Data
   val = m_wire.find(tlv::DataTargetMacAddress);
-  val = m_wire.find(tlv::DataTargetMacAddress);
   if(val != m_wire.elements_end()) {
 	  m_dataTargetMacAddress = readString(*val);
   }

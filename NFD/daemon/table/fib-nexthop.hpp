@@ -56,6 +56,9 @@ public:
   std::string
   getMac() const;
 
+  void
+  incrementCost();
+
 private:
   shared_ptr<Face> m_face;
   uint64_t m_cost;

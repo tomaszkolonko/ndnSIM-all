@@ -49,6 +49,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
                    shared_ptr<fib::Entry> fibEntry,
                    shared_ptr<pit::Entry> pitEntry)
 {
+	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
@@ -59,7 +60,18 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
 
 	ns3::Address ad;
-	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+
+	int i = 0;
+	std::cout << "ttt int i = " << i << std::endl;
+	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
+
+		// send only to the best three nextHops
+		if(i >= 3) break;
+
+		const_cast<fib::NextHop&>(*it).incrementCost();
+		std::cout << "nextHop.cost(): " << it->getCost() << std::endl;
+
+
 	  shared_ptr<Face> outFace = it->getFace();
 
 	  // check if next hop is 256
@@ -78,6 +90,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		  std::cout << "yes count : " << yes << std::endl;
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
+		  i--;
 		  no++;
 		  std::cout << "no count : " << no << std::endl;
 		if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
