@@ -55,6 +55,9 @@ private:
   virtual void
   printPITOriginMacRecord(const shared_ptr<pit::Entry> pitEntry);
 
+  virtual void
+  printFIBTargetMacRecord(const shared_ptr<fib::Entry> fibEntry);
+
 public:
   static const Name STRATEGY_NAME;
 };

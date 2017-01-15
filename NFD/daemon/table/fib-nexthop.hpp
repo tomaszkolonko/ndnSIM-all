@@ -51,10 +51,10 @@ public:
   getCost() const;
 
   void
-  setMac(std::string mac);
+  setTargetMac(std::string mac);
 
   std::string
-  getMac() const;
+  getTargetMac() const;
 
   void
   incrementCost();
@@ -62,7 +62,7 @@ public:
 private:
   shared_ptr<Face> m_face;
   uint64_t m_cost;
-  std::string m_mac;
+  std::string m_targetMac;
 };
 
 } // namespace fib
