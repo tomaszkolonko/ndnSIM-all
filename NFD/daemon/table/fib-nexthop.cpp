@@ -31,7 +31,7 @@ namespace fib {
 NextHop::NextHop(shared_ptr<Face> face)
   : m_face(face)
   , m_cost(0)
-  , m_mac("not set yet")
+  , m_targetMac("not set yet")
 {
 }
 
@@ -54,15 +54,15 @@ NextHop::getCost() const
 }
 
 void
-NextHop::setMac(std::string mac)
+NextHop::setTargetMac(std::string mac)
 {
-  m_mac = mac;
+  m_targetMac = mac;
 }
 
 std::string
-NextHop::getMac() const
+NextHop::getTargetMac() const
 {
-  return m_mac;
+  return m_targetMac;
 }
 
 void

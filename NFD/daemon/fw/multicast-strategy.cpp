@@ -52,36 +52,37 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+	std::cout << "you are on node (" << node->GetId() << ") " << std::endl;
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
 	if(false) printPITOriginMacRecord(pitEntry);
-
-	std::cout << " ++ inside MulticastStrategy::afterReceiveInterest() inFace ID: " << inFace.getId() << std::endl;
+	if(true) printFIBTargetMacRecord(fibEntry);
 
 	ns3::Address ad;
 
 	int i = 0;
-	std::cout << "ttt int i = " << i << std::endl;
+	//std::cout << "ttt int i = " << i << std::endl;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 
 		// send only to the best three nextHops
 		if(i >= 3) break;
 
-		const_cast<fib::NextHop&>(*it).incrementCost();
-		std::cout << "nextHop.cost(): " << it->getCost() << std::endl;
-
-
 	  shared_ptr<Face> outFace = it->getFace();
-
-	  // check if next hop is 256
 
 	  std::string targetMac; // = it->getMac();
 
 	  // if FIB entry has been already updated with MacAddress then take it for later attachement to
 	  // the interest. Otherwise an empty string will be added to the interest in the forwarder.
-	  if(std::regex_match(it->getMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
-		  targetMac = it->getMac();
+
+	  std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << std::endl;
+
+	  // TODO: sometimes current mac and target mac are the same... find out why...
+	  std::cout << "the target Mac was: " << interest.getInterestTargetMacAddress() << std::endl;
+	  std::cout << "the new target Mac is: " << it->getTargetMac() << std::endl;
+	  if(std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
+		  const_cast<fib::NextHop&>(*it).incrementCost();
+		  targetMac = it->getTargetMac();
 	  }
 
 
@@ -141,6 +142,21 @@ MulticastStrategy::printPITOriginMacRecord(shared_ptr<pit::Entry> pitEntry) {
 	std::cout << "originMacCollection.size() " << originMacCol.size() << std::endl;
 	for(pit::OriginMacCollection::const_iterator macIt = originMacCol.begin(); macIt != originMacCol.end(); macIt++) {
 		std::cout << "saved origin Mac is: " << *macIt << std::endl;
+	}
+}
+
+void
+MulticastStrategy::printFIBTargetMacRecord(shared_ptr<fib::Entry> fibEntry) {
+	std::vector<fib::NextHop> NextHopList = fibEntry->getNextHops();
+	std::cout << std::endl;
+	std::cout << "586" << std::endl;
+	std::cout << "Multicaststrategy::printFIBTargetMacRecord" << std::endl;
+	std::cout << "pointer to fibEntry: " << fibEntry << std::endl;
+	std::cout << "fib::NextHop vector size: " << NextHopList.size() << std::endl;
+
+	int index = 1;
+	for(std::vector<fib::NextHop>::iterator it = NextHopList.begin(); it != NextHopList.end(); ++it, index++) {
+		std::cout << index << ") it->getTargetMac(): " << it->getTargetMac() << " cost: " << it->getCost() << std::endl;
 	}
 }
 

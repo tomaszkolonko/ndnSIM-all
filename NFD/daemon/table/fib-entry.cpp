@@ -50,7 +50,7 @@ Entry::findNextHop(Face& face, std::string macAddress)
 {
   return std::find_if(m_nextHops.begin(), m_nextHops.end(),
                       [&face, macAddress] (const NextHop& nexthop) {
-                        return ((nexthop.getFace().get() == &face) && (nexthop.getMac() == macAddress));
+                        return ((nexthop.getFace().get() == &face) && (nexthop.getTargetMac() == macAddress));
                       });
 }
 
@@ -88,7 +88,7 @@ Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
   // now it refers to the NextHop for face
 
   it->setCost(cost);
-  it->setMac(macAddress);
+  it->setTargetMac(macAddress);
   this->sortNextHops();
 }
 

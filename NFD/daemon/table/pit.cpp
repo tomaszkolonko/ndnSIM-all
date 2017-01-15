@@ -82,7 +82,6 @@ Pit::insert(const Interest& interest)
   }
 
   shared_ptr<pit::Entry> entry = make_shared<pit::Entry>(interest);
-  std::cout << "within PIT::insert " << entry->getInterest().getInterestOriginMacAddress() << std::endl;
   nameTreeEntry->insertPitEntry(entry);
   m_nItems++;
   return { entry, true };

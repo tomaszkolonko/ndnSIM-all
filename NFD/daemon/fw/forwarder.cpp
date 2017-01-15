@@ -99,11 +99,6 @@ Forwarder::~Forwarder()
 void
 Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 {
-	// bool debug = false;
-	// std::cout << " ++ Forwarder::onIncomingInterest() inFaceId : " << inFace.getId() << std::endl;
-	// std::cout << " ---- Forwarder::onIncomingInterest() interest.getInterestOriginMacAddress() " << interest.getInterestOriginMacAddress()
-	//		<< std::endl;
-
   // receive Interest
   NFD_LOG_DEBUG("onIncomingInterest face=" << inFace.getId() <<
                 " interest=" << interest.getName());
@@ -153,20 +148,15 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   addr << node->GetDevice(0)->GetAddress();
   std::string currentMacAddress = addr.str().substr(6);
 
-  // TODO: maybe you shouldn't be dropping interests at all.... or if you are dropping them with another logic
-
-  // check if macAddress has been set. If empty it the forwarding is still broadcasting. If there is a Mac it comes from the fib
-  // of the prior node.
-  if(interest.getInterestTargetMacAddress() != "consumer" && interest.getInterestTargetMacAddress() != "producer Mac"
-	&& interest.getInterestTargetMacAddress() != "unknown" && interest.getInterestTargetMacAddress() != "control command"
-	&& !interest.getInterestTargetMacAddress().empty()){
+  // check if interest has a MacAddress and if yes if it is the same as the current MacAddress...
+  if(std::regex_match(interest.getInterestTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
-		  // std::cout << "dropping interest since " << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
-		  // dropping interests if they have a targetMac && targetMac is not current's NetDevice Mac !!!!
-		  // many different routes are being not considered anymore !!!
-		  return;
+		  // TODO: if dropping then 5 interests reach the PRODUCER
+		  // return;
 	  }
   }
+
+  // TODO: do you want to set the interestTargetMacAddress to empty again? It has been checked....
 
   // ******************************************** INTEREST STATS :: START *******************************
   // ****************************************************************************************************
@@ -201,7 +191,7 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
-  // If the an interest with the same nonce has passed this node already, the pit entry
+  // If an interest with the same nonce has passed this node already, the pit entry
   // will be updated BUT further processing of this interest will be stopped immediately.
 
   // detect duplicate Nonce
@@ -267,16 +257,18 @@ Forwarder::onContentStoreMiss(const Face& inFace,
 
   ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-  if(node->GetId() == 7) {
+  ////////////////////////// DELETE /////////////////////////////////
+  std::ostringstream addr;
+  addr << node->GetDevice(0)->GetAddress();
+  std::string currentMacAddress = addr.str().substr(6);
 
-	  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
-	  std::list<std::string>::const_iterator stringIterator;
+  std::cout << "current Device Mac is: " << currentMacAddress << std::endl;
+  std::cout << "interest.TargetMac is: " << interest.getInterestTargetMacAddress() << std::endl;
 
-	  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-		  std::cout << "node (" << node->GetId() << ")" << std::endl;
-		  std::cout << "ANGEL: " << *stringIterator << std::endl;
-	  }
-  }
+  std::cout << "333" << std::endl;
+
+  ////////////////////////// DELETE /////////////////////////////////
+
   // dispatch to strategy
   this->dispatchToStrategy(pitEntry, bind(&Strategy::afterReceiveInterest, _1,
                                           cref(inFace), cref(interest), fibEntry, pitEntry));
@@ -454,7 +446,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   // Sample Output of this:
   // Explanation: 	you have an interest and a copied interest pointing to two different locations.
   //				They won't be changed but iterated over and over again leading to interests having
-  //				very long MadAddressPath variables... The don't loop within the node but this mac
+  //				very long MacAddressPath variables... The don't loop within the node but this mac
   //				is written to the field again and again for ever outFace.
 
 //  pointer of interest /test/prefix/%FE%00 outFace: 256 0x12dbb60
@@ -531,14 +523,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 {
   bool debug = false;
 
-  if(debug) {
-    std::cout << "\n* > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > * > *\n";
-    std::cout << "data.getMetaInfo(): " << data.getMetaInfo() << std::endl;
-    std::cout << "data.getName(): " << data.getName() << std::endl;
-    std::cout << "data.getDataOriginMacAddress(): " << data.getDataOriginMacAddress() << std::endl;
-    std::cout << "data.getDataTargetMacAddress(): " << data.getDataTargetMacAddress() << std::endl;
-  }
-
   // receive Data
   NFD_LOG_DEBUG("onIncomingData face=" << inFace.getId() << " data=" << data.getName());
   const_cast<Data&>(data).setIncomingFaceId(inFace.getId());
@@ -612,7 +596,6 @@ std::string fullDataName = tmpName.str().substr(0);
 		  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
 		  std::cout << " data.getName(): " << data.getName() << std::endl;
 		  std::cout << " localName(): " << localName << std::endl;
-		  return;
 		  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 	  }
   }
@@ -818,102 +801,50 @@ std::string fullDataName = tmpName.str().substr(0);
   }
 
   // foreach pending downstream
-  if(debug) std::cout << "ALPHA you are on node(" << node->GetId()
-		  << " and the pendingDownstream size is: " << pendingDownstreams.size() << std::endl;
-
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
 		  	  	  it != pendingDownstreams.end(); ++it) {
 	  shared_ptr<Face> pendingDownstream = *it;
 
-	  if(debug) {
-		  std::cout << "BETA pendingDownstream.get()->getId(): " << pendingDownstream.get()->getId() << std::endl;
-		  std::cout << "BETA inFace through which the data came from: " << inFace.getId() << std::endl;
-	  }
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-			if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-							|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263)) {
-				if(debug) std::cout << "WITHIN IF: : pitMatches.size() : : " << pitMatches.size() << std::endl;
-				  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-					  std::cout << "<<+" << pitEntry << std::endl;
+		if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
+						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263)) {
+			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
-					  // TODO: gives back the wrong mac address (same as target...
-					  // std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
+				  // TODO: gives back the wrong mac address (same as target...
+				  // std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
+				  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
+				  std::list<std::string>::const_iterator stringIterator;
 
-					  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
-					  std::list<std::string>::const_iterator stringIterator;
-					  if(node->GetId() == 7) {
-						  std::cout << "littlebit" << targetMacs.size() << std::endl;
-					  }
-					  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+				  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
 
-					  std::cout << "flyhigh you are on node(" << node->GetId() << ")" << std::endl;
-					  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-						  std::cout << "target mac: " << *stringIterator << std::endl;
-					  }
+				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+																 it != outRecords.end(); ++it) {
+					  if((node->GetId() % 2) == 0) {
+						  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 263) {
+							  // TODO: fix logic
+							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+							  }
 
-					  if(node->GetId() == 7) {
-						  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-							  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-							  std::cout << "node (" << node->GetId() << ")" << std::endl;
-							  std::cout << "yyxx" << *stringIterator << std::endl;
-							  this->onOutgoingData(*dataWithNewTargetMac, inFace);
 						  }
 					  }
 
-
-					  if(debug) std::cout << std::endl;
-					  // OUT RECORD COLLECTION
-					  //std::cout << "outRecordCollection:";
-					  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-					  std::cout << "OutRecordCollection.size() -> " << outRecords.size() << std::endl;
-					  std::cout << "for the follwing pitEntry: " << pitEntry << " on node " << node->GetId() << std::endl;
-					  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-																	 it != outRecords.end(); ++it) {
-						  if(debug) std::cout << "sending data out on node(" << node->GetId() << ") WITHIN NODE it->getFace(): " << it->getFace()->getId() << std::endl;
-						  // pitEntry->canForwardTo(*it->getFace()) leads always to FALSE
-						  // beware that outRecordCollection is of PIT::ENTRY
-						  // inside MulticastStrategy NextHops of FIB given to pitEntry->canForwardTo(fib::nextHops...)
-
-						  // extra logic to take only every second face for forwarding.
-
-						  // the only TWO places where the dataTargetMac is set !!!!
-
-						  if((node->GetId() % 2) == 0) {
-							  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 263) {
-								  // TODO: terrible logic
-								  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-									  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-									  if(node->GetId() == 7) {
-										  std::cout << "node (" << node->GetId() << ")" << std::endl;
-										  std::cout << "yyxx" << *stringIterator << std::endl;
-									  }
-									  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
-								  }
-
+					  if((node->GetId() % 2) == 1) {
+						  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 263) {
+							  // TODO: fix logic
+							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
 							  }
 						  }
-
-						  if((node->GetId() % 2) == 1) {
-							  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 263) {
-								  // TODO: terrible logic
-								  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-									  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-									  if(node->GetId() == 7) {
-										  std::cout << "node (" << node->GetId() << ")" << std::endl;
-										  std::cout << "yyxx" << *stringIterator << std::endl;
-									  }
-									  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
-								  }
-							  }
-						  }
-
-						  //this->onOutgoingData(data, *it->getFace());
-
 					  }
 				  }
-			}
+			  }
+		}
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
 
@@ -923,48 +854,13 @@ std::string fullDataName = tmpName.str().substr(0);
 		  if(debug) std::cout << " --> pendingDownstream.get() == &inFace <--  WHICH IS NOT TOO GOOD" << std::endl;
 		  continue;
 	  }
-	  // std::cout << "you are on node (" << node->GetId() << ") AND PENDINGDOWNSTREAM IS OK ;) inFace: " << inFace.getId() << std::endl;
-    // Get the current node and get every NetDevice on it. Then get the FaceId through l3protocol and compare
-    // it to the downstream face if it matches attach it to the MacField in data for next node
-    // ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
-//    for(u_int i = 0; i < node->GetNDevices(); i++) {
-//    	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(i);
-//    	ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
-//    	// TODO: Problem here is that you have more faces for faceToCheck not only one!!!!!!!!!!!!!!!!
-//    	// What about the faceTable?
-//    	shared_ptr<Face> faceToCheck = l3->getFaceByNetDevice(netDevice);
-//		ad = netDevice->GetAddress();
-//		std::ostringstream str;
-//		str << ad;
-//    	// If true then attach the Mac of the NetDevice to the data package in order to put it into FIB on next node
-//    	if(faceToCheck->getId() == pendingDownstream->getId()) {
-//    		shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
-//    		dataWithNewMac->setMacAddressPro(str.str().substr(6));
-//    		dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
-////    		if(true	) {
-////    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-////    		  std::cout << "you are on node (" << node->GetId() << ")" << std::endl;
-////    		  std::cout << "Mac on the NEW data package is: " << dataWithNewMac->getMacAddressPro() << std::endl;
-////    		  std::cout << "It should be the same as one of the nodes NetDevice Macs" << std::endl;;
-////    		  std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-////    		}
-//    		this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
-//    	} else {
-//    	    shared_ptr<Data> dataWithNewMac = make_shared<Data>(data);
-//    	    dataWithNewMac->setMacAddressPro(str.str().substr(6));
-//    	    dataWithNewMac->addMacRoute(" --> " + str.str().substr(6));
-//    	    this->onOutgoingData(*dataWithNewMac, *pendingDownstream);
-//    	}
-//    }
-//
-//	shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
-//	std::string targetMac = "not set";
-//	dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
-////	if(debug) std::cout << "sending data out on node(" << node->GetId() << ") regular *pendingDownstream with it->getFace(): " <<
-////			pendingDownstream->getId() << std::endl;
-//	this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream);
-//	if(debug) std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
+	  std::cout << "345: inFace: " << inFace.getId() << std::endl;
+	shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+	std::string targetMac = "not set";
+	dataWithNewTargetMac->setDataTargetMacAddress(targetMac);
+	this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream);
+	if(debug) std::cout << "\n* < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < * < *\n";
  }
 }
 
