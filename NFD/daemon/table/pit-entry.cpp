@@ -203,7 +203,6 @@ Entry::hasUnexpiredOutRecords() const
 OriginMacCollection::iterator
 Entry::insertOrUpdateOriginMacRecord(std::string mac, const Interest& interest)
 {
-	std::cout << "zupp" << m_originMacRecords.size() << std::endl;
   auto it = std::find_if(m_originMacRecords.begin(), m_originMacRecords.end(),
     [mac] (const std::string this_mac) { return this_mac == mac; });
 
@@ -212,11 +211,6 @@ Entry::insertOrUpdateOriginMacRecord(std::string mac, const Interest& interest)
     it = m_originMacRecords.begin();
   }
 
-  std::cout << "zapp" << m_originMacRecords.size() << std::endl;
-
-  // probably we won't need that since the update only updates nonce and time and these were already done
-  // with updating the face JUST a millisecond before !!!
-  // it->update(interest);
   return it;
 }
 

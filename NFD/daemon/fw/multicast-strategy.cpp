@@ -37,6 +37,7 @@ NFD_REGISTER_STRATEGY(MulticastStrategy);
 const bool debug = false;
 static int yes = 0;
 static int no = 0;
+static int shouldNotHappnen = 0;
 
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
@@ -56,10 +57,13 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
-	if(false) printPITOriginMacRecord(pitEntry);
+	if(true) printPITOriginMacRecord(pitEntry);
 	if(true) printFIBTargetMacRecord(fibEntry);
 
 	ns3::Address ad;
+	std::ostringstream addr;
+	addr << node->GetDevice(0)->GetAddress();
+	std::string currentMacAddress = addr.str().substr(6);
 
 	int i = 0;
 	//std::cout << "ttt int i = " << i << std::endl;
@@ -79,7 +83,14 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	  // TODO: sometimes current mac and target mac are the same... find out why...
 	  std::cout << "the target Mac was: " << interest.getInterestTargetMacAddress() << std::endl;
+	  std::cout << "currentMacAddress: " << currentMacAddress << std::endl;
 	  std::cout << "the new target Mac is: " << it->getTargetMac() << std::endl;
+
+	  if(interest.getInterestTargetMacAddress() == it->getTargetMac()) {
+		  std::cout << "should not happen yo: " << shouldNotHappnen++ << std::endl;
+		  this->rejectPendingInterest(pitEntry);
+	  }
+
 	  if(std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 		  const_cast<fib::NextHop&>(*it).incrementCost();
 		  targetMac = it->getTargetMac();
