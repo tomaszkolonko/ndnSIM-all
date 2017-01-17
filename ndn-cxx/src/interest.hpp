@@ -38,7 +38,7 @@ class Data;
 /** @var const unspecified_duration_type DEFAULT_INTEREST_LIFETIME;
  *  @brief default value for InterestLifetime
  */
-const time::milliseconds DEFAULT_INTEREST_LIFETIME = time::milliseconds(4000);
+const time::milliseconds DEFAULT_INTEREST_LIFETIME = time::milliseconds(10000);
 
 /** @brief represents an Interest packet
  */
