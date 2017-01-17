@@ -111,6 +111,11 @@ private:
   NextHopList::iterator
   findNextHop(Face& face, std::string macAddress);
 
+  /** @note This method is non-const because normal iterator is needed by callers.
+     */
+  NextHopList::iterator
+  findNextHopWithoutFace(std::string macAddress);
+
   /// sorts the nexthop list
   void
   sortNextHops();

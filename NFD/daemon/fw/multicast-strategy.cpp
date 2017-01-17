@@ -50,15 +50,23 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
                    shared_ptr<fib::Entry> fibEntry,
                    shared_ptr<pit::Entry> pitEntry)
 {
+	int pp = 0;
 	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	std::cout << "you are on node (" << node->GetId() << ") " << std::endl;
+	//std::cout << "you are on node (" << node->GetId() << ") " << std::endl;
 
-	if(false) printPITInRecord(pitEntry, node);
-	if(false) printPITOutRecord(pitEntry);
-	if(true) printPITOriginMacRecord(pitEntry);
-	if(true) printFIBTargetMacRecord(fibEntry);
+//	if(false) printPITInRecord(pitEntry, node);
+//	if(false) printPITOutRecord(pitEntry);
+//	if(true) printPITOriginMacRecord(pitEntry);
+//	if(true) printFIBTargetMacRecord(fibEntry);
+	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+		 std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()<< " size of next hops: " << nexthops.size() << " with target mac ad: " << it->getTargetMac() << "--" << std::endl;
+
+		if (std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
+			pp=1;
+		}
+	}
 
 	ns3::Address ad;
 	std::ostringstream addr;
@@ -66,11 +74,12 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	std::string currentMacAddress = addr.str().substr(6);
 
 	int i = 0;
+	if (pp==1){
 	//std::cout << "ttt int i = " << i << std::endl;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
-
+		 std::cout << "4765: NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()<< " size of next hops: " << nexthops.size() << " with target mac ad: " << it->getTargetMac() << "--" << std::endl;
 		// send only to the best three nextHops
-		if(i >= 3) break;
+		if(i >= 1) break;
 
 	  shared_ptr<Face> outFace = it->getFace();
 
@@ -79,15 +88,15 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	  // if FIB entry has been already updated with MacAddress then take it for later attachement to
 	  // the interest. Otherwise an empty string will be added to the interest in the forwarder.
 
-	  std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << std::endl;
-
-	  // TODO: sometimes current mac and target mac are the same... find out why...
-	  std::cout << "the target Mac was: " << interest.getInterestTargetMacAddress() << std::endl;
-	  std::cout << "currentMacAddress: " << currentMacAddress << std::endl;
-	  std::cout << "the new target Mac is: " << it->getTargetMac() << std::endl;
+//	  std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << std::endl;
+//
+//	  // TODO: sometimes current mac and target mac are the same... find out why...
+//	  std::cout << "the target Mac was: " << interest.getInterestTargetMacAddress() << std::endl;
+//	  std::cout << "currentMacAddress: " << currentMacAddress << std::endl;
+//	  std::cout << "the new target Mac is: " << it->getTargetMac() << std::endl;
 
 	  if(interest.getInterestTargetMacAddress() == it->getTargetMac()) {
-		  std::cout << "should not happen yo: " << shouldNotHappnen++ << std::endl;
+		 // std::cout << "should not happen yo: " << shouldNotHappnen++ << std::endl;
 		  this->rejectPendingInterest(pitEntry);
 	  }
 
@@ -99,16 +108,25 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	  if (pitEntry->canForwardTo(*outFace)) {
 		  yes++;
-		  std::cout << "yes count : " << yes << std::endl;
+
+		  std::cout << "yes count : " << yes << " target mac from MULTICAST: " << targetMac << std::endl;
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
 		  i--;
 		  no++;
-		  std::cout << "no count : " << no << std::endl;
+		//  std::cout << "no count : " << no << std::endl;
 		if(debug) std::cout << "INSIDE MulticastStrategy::afterReceiveInterest can NOT forward to outFace" << std::endl;
 	  }
 	}
-
+	}
+	else if (pp==0)
+	{
+		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+			shared_ptr<Face> outFace = it->getFace();
+			std::string targetMac;
+			if (pitEntry->canForwardTo(*outFace)){this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());}
+	}
+	}
 	if (!pitEntry->hasUnexpiredOutRecords()) {
 	  this->rejectPendingInterest(pitEntry);
 	}

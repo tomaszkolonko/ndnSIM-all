@@ -54,6 +54,16 @@ Entry::findNextHop(Face& face, std::string macAddress)
                       });
 }
 
+// Find nextHop by macAddress only
+NextHopList::iterator
+Entry::findNextHopWithoutFace(std::string macAddress)
+{
+  return std::find_if(m_nextHops.begin(), m_nextHops.end(),
+                      [macAddress] (const NextHop& nexthop) {
+                        return (nexthop.getTargetMac() == macAddress);
+                      });
+}
+
 bool
 Entry::hasNextHop(shared_ptr<Face> face) const
 {
@@ -76,7 +86,7 @@ Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
 {
   auto it = this->findNextHop(*face);
   if(std::regex_match (macAddress, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
-	it = this->findNextHop(*face, macAddress);
+	it = this->findNextHopWithoutFace(macAddress);
   }
 
 

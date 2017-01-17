@@ -149,16 +149,15 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   std::string currentMacAddress = addr.str().substr(6);
 
   // check if interest has a MacAddress and if yes if it is the same as the current MacAddress...
-  std::cout << " you are on node (" << node->GetId() << std::endl;
   if(std::regex_match(interest.getInterestTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(currentMacAddress != interest.getInterestTargetMacAddress()) {
 		  // TODO: if dropping then 5 interests reach the PRODUCER
 
-		  std::cout << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
+		  // std::cout << currentMacAddress << " != " << interest.getInterestTargetMacAddress() << std::endl;
 		  return;
 	  }
   }
-  std::cout << currentMacAddress << " == " << interest.getInterestTargetMacAddress() << std::endl;
+  // std::cout << currentMacAddress << " == " << interest.getInterestTargetMacAddress() << std::endl;
 
   // TODO: do you want to set the interestTargetMacAddress to empty again? It has been checked....
   // const_cast<Interest&>(interest).setInterestTargetMacAddress("not set anymore");
@@ -546,6 +545,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  if(data.getDataTargetMacAddress() == localMac) {
 		  // std::cout << " AddRoute /test fast 111 " << std::endl;
+
 		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
 		  // std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
@@ -669,7 +669,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  dataTargetMac = pitEntry->getOriginMacRecords();
 
     // cancel unsatisfy & straggler timer
-    this->cancelUnsatisfyAndStragglerTimer(pitEntry);
+    // this->cancelUnsatisfyAndStragglerTimer(pitEntry);
 
     // remember pending downstreams
     const pit::InRecordCollection& inRecords = pitEntry->getInRecords();
