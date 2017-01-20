@@ -120,7 +120,7 @@ Producer::OnInterest(shared_ptr<const Interest> interest)
 
   data->setDataOriginMacAddress("producer Mac");
   data->setMacDataRoute("producer Mac");
-  data->setDataTargetMacAddress("blabla");
+  data->setDataTargetMacAddress("lowerLayerOfProducer");
 
 
   // TODO: is that even correct? Default was only else statement which resulted in FreshnessPeriod being 0

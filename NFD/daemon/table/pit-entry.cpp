@@ -171,6 +171,22 @@ Entry::insertOrUpdateOutRecord(shared_ptr<Face> face, const Interest& interest)
   return it;
 }
 
+// ************************************* added some logic for macs ***********************************
+// ***************************************************************************************************
+OriginMacCollection::iterator
+Entry::insertOrUpdateOriginMacRecord(std::string mac, const Interest& interest)
+{
+  auto it = std::find_if(m_originMacRecords.begin(), m_originMacRecords.end(),
+    [mac] (const std::string this_mac) { return this_mac == mac; });
+
+  if (it == m_originMacRecords.end()) {
+	  m_originMacRecords.emplace_front(mac);
+    it = m_originMacRecords.begin();
+  }
+
+  return it;
+}
+
 OutRecordCollection::const_iterator
 Entry::getOutRecord(const Face& face) const
 {
@@ -195,23 +211,6 @@ Entry::hasUnexpiredOutRecords() const
 
   return std::any_of(m_outRecords.begin(), m_outRecords.end(),
     [&now] (const OutRecord& outRecord) { return outRecord.getExpiry() >= now; });
-}
-
-// ************************************* added some logic for macs ***********************************
-// ***************************************************************************************************
-
-OriginMacCollection::iterator
-Entry::insertOrUpdateOriginMacRecord(std::string mac, const Interest& interest)
-{
-  auto it = std::find_if(m_originMacRecords.begin(), m_originMacRecords.end(),
-    [mac] (const std::string this_mac) { return this_mac == mac; });
-
-  if (it == m_originMacRecords.end()) {
-	  m_originMacRecords.emplace_front(mac);
-    it = m_originMacRecords.begin();
-  }
-
-  return it;
 }
 
 OriginMacCollection::const_iterator

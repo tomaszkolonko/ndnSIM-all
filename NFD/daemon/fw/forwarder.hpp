@@ -186,6 +186,11 @@ PUBLIC_WITH_TESTS_ELSE_PRIVATE: // pipelines
   VIRTUAL_WITH_TESTS void
   onOutgoingData(const Data& data, Face& outFace);
 
+  /** \brief outgoing Data pipeline
+   */
+  VIRTUAL_WITH_TESTS void
+  onOutgoingData(const Data& data, Face& outFace, std::string mac);
+
 PROTECTED_WITH_TESTS_ELSE_PRIVATE:
   VIRTUAL_WITH_TESTS void
   setUnsatisfyTimer(shared_ptr<pit::Entry> pitEntry);

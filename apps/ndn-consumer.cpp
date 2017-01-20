@@ -203,6 +203,7 @@ Consumer::SendPacket()
   // The strategy knows, that this interest has been just created and that
   // it is inside the consumer node
   interest->setInterestOriginMacAddress("consumer");
+  interest->setInterestTargetMacAddress("consumerTargetMac");
   interest->addMacAddressPath("consumer");
 
 // leads to 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<ndn::Block::Error> >'
