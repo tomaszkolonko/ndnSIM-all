@@ -29,7 +29,7 @@
 namespace ndn {
 namespace nfd {
 
-const time::milliseconds CommandOptions::DEFAULT_TIMEOUT(10000);
+const time::milliseconds CommandOptions::DEFAULT_TIMEOUT(10000000);
 const Name CommandOptions::DEFAULT_PREFIX("ndn:/localhost/nfd");
 
 CommandOptions::CommandOptions()

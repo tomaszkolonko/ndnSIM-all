@@ -265,8 +265,10 @@ Forwarder::onContentStoreHit(const Face& inFace,
 {
   NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName());
   shared_ptr<Face> face = const_pointer_cast<Face>(inFace.shared_from_this());
+
   pitEntry->insertOrUpdateInRecord(face, interest);
-    pitEntry->insertOrUpdateOriginMacRecord(interest.getInterestOriginMacAddress(), interest);
+  pitEntry->insertOrUpdateOriginMacRecord(interest.getInterestOriginMacAddress(), interest);
+
   beforeSatisfyInterest(*pitEntry, *m_csFace, data);
   this->dispatchToStrategy(pitEntry, bind(&Strategy::beforeSatisfyInterest, _1,
                                           pitEntry, cref(*m_csFace), cref(data)));
@@ -276,7 +278,7 @@ Forwarder::onContentStoreHit(const Face& inFace,
 
   // set PIT straggler timer
   this->setStragglerTimer(pitEntry, true, data.getFreshnessPeriod());
-//data.setDataTargetMacAddress(interest.getInterestOriginMacAddress());
+  //data.setDataTargetMacAddress(interest.getInterestOriginMacAddress());
   // goto outgoing Data pipeline
   this->onOutgoingData(data, *const_pointer_cast<Face>(inFace.shared_from_this()), interest.getInterestOriginMacAddress());
 }
@@ -369,7 +371,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace,
   NFD_LOG_DEBUG("onOutgoingInterest face=" << outFace.getId() <<
                 " interest=" << pitEntry->getName());
 
-  std::cout << " ++ Forwarder::onOutgoingInterest() inFaceId : " << inFaceId << " target mac: " << targetMac << std::endl;
+  // std::cout << " ++ Forwarder::onOutgoingInterest() inFaceId : " << inFaceId << " target mac: " << targetMac << std::endl;
 
   // scope control
   if (pitEntry->violatesScope(outFace)) {
@@ -529,27 +531,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		return;
 	}
 
-	if(data.getDataTargetMacAddress() == "00:00:00:00:00:01") {
-	  std::cout << std::endl;
-	  std::cout << "node (" << node->GetId() << std::endl;
-	  std::cout << "Apparently something for node 0.2 has arrived...." << std::endl;
-	  std::cout << "data.name: " << data.getName() << std::endl;
-	  std::cout << "data.getTargetMac: " << data.getDataTargetMacAddress() << std::endl;
-	  std::cout << "data.getOriginMac: " << data.getDataOriginMacAddress() << std::endl;
-	  std::cout << "data.route: " << data.getMacDataRoute() << std::endl;
-	  std::cout << std::endl;
-	}
 
-	  if(node->GetId() == 0) {
-		  std::cout << std::endl;
-		  std::cout << "you reached node 3!3.2" << std::endl;
-		  std::cout << "data.name: " << data.getName() << std::endl;
-		  std::cout << "data.getTargetMac: " << data.getDataTargetMacAddress() << std::endl;
-		  std::cout << "data.getOriginMac: " << data.getDataOriginMacAddress() << std::endl;
-		  std::cout << "data.route: " << data.getMacDataRoute() << std::endl;
-		  std::cout << "before dropping" << std::endl;
-		  std::cout << std::endl;
-	  }
 
 	  ns3::Ptr<ns3::ndn::L3Protocol> l3 = node->GetObject<ns3::ndn::L3Protocol>();
 	  shared_ptr<Face> AppFace = l3->getFaceById(263);
@@ -562,25 +544,23 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
 		  // std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-		  // return;
-		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 22222, data.getDataOriginMacAddress());
+		  return;
+		  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 22222, data.getDataOriginMacAddress());
 	  }
   } else if(data.getDataTargetMacAddress() == "lowerLayerOfProducer" && node->GetId() == 7) {
   	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
   } else if(data.getDataTargetMacAddress() == "consumer"){
 	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
 	  //this->onOutgoingData(data, *AppFace);
-
-	  std::cout << "node: " << node->GetId() << std::endl;
-	  std::cout << "what happens here?" << std::endl;
-	  std::cout << "data.name: " << data.getName() << std::endl;
-	  std::cout << "data.getTargetMac: " << data.getDataTargetMacAddress() << std::endl;
-	  std::cout << "data.getOriginMac: " << data.getDataOriginMacAddress() << std::endl;
-	  std::cout << "data.route: " << data.getMacDataRoute() << std::endl;
-	  std::cout << "after dropping" << std::endl;
-
-
 	  std::cout << "piu" << std::endl;
+  }
+
+  if(node->GetId() == 0) {
+	  std::cout << "node : 0" << std::endl;
+	  std::cout << "name: " << data.getName() << std::endl;
+	  std::cout << "data coming from: " << data.getDataOriginMacAddress() << std::endl;
+	  std::cout << "date going to: " << data.getDataTargetMacAddress() << std::endl;
+	  std::cout << "eiriniiiiiiii" << std::endl;
   }
 
   // ******************************************** DATA STATS :: START ***********************************
@@ -754,7 +734,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace(), *stringIterator);
 								  //break;
 							  }
 
@@ -766,7 +746,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace(), *stringIterator);
 								  //break;
 							  }
 						  }
@@ -790,7 +770,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 		 dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
 			if (std::regex_match(*stringIterator, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
-				this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream );
+				this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream, *stringIterator);
 			 //continue;
 			}
 	 }
@@ -838,13 +818,6 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 
 	// goto outgoing Data pipeline
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-
-	std::cout << "node: " << node->GetId() << std::endl;
-	std::cout << "data: " << data.getName() << std::endl;
-	std::cout << "coming from: " << data.getDataOriginMacAddress() << std::endl;
-	std::cout << "going to: " << data.getDataTargetMacAddress() << std::endl;
-	std::cout << "thomodore" << std::endl;
-
 	ns3::Ptr<ns3::NetDevice> netDevice = node->GetDevice(0);
 	std::ostringstream str;
 	str << netDevice->GetAddress();

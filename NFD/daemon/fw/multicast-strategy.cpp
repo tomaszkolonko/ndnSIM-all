@@ -37,7 +37,6 @@ NFD_REGISTER_STRATEGY(MulticastStrategy);
 const bool debug = false;
 static int yes = 0;
 static int no = 0;
-static int shouldNotHappnen = 0;
 
 MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
   : Strategy(forwarder, name)
@@ -58,7 +57,9 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
-	if(true) printPITOriginMacRecord(pitEntry);
+	if(node->GetId() == 0){
+		if(true) printPITOriginMacRecord(pitEntry);
+	}
 	if(false) printFIBTargetMacRecord(fibEntry);
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		 std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()
@@ -79,9 +80,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if (pp==1){
 	//std::cout << "ttt int i = " << i << std::endl;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
-		 std::cout << "4765: NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()<< " size of next hops: " << nexthops.size() << " with target mac ad: " << it->getTargetMac() << "--" << std::endl;
 		// send only to the best three nextHops
-		if(i >= 3) break;
+		if(i >= 2) break;
 
 	  shared_ptr<Face> outFace = it->getFace();
 
@@ -89,8 +89,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	  // if the targetMac of the interest is the same as of the targetMac of the NextHop, the interest will loop.
 	  if(interest.getInterestTargetMacAddress() == it->getTargetMac()) {
-		  std::cout << "xxx should not happen yo: " << shouldNotHappnen++ << std::endl;
-		  // find a new nexthop!
 		  i--;
 		  continue;
 		  // this->rejectPendingInterest(pitEntry);
@@ -104,8 +102,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 	  if (pitEntry->canForwardTo(*outFace)) {
 		  yes++;
-
-		  std::cout << "yes count : " << yes << " target mac from MULTICAST: " << targetMac << std::endl;
 		this->sendInterest(pitEntry, outFace, targetMac, inFace.getId());
 	  } else {
 		  // find a new nexthop!
