@@ -1,0 +1,133 @@
+%
+% University of Berne
+%
+% Bachelor Thesis Template
+% Thomas Kolonko 20.01.2017
+%
+
+\documentclass[11pt,a4paper,twoside,]{rvsbachelor}
+
+\usepackage[latin1]{inputenc}
+\usepackage{graphicx}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\usepackage[a4paper,twoside]{geometry}
+
+\sloppy
+
+%% Additional packages
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% for source code highlighting
+% \usepackage{listings}
+% \lstloadlanguages{tcl, Perl}
+% \lstset{language=tcl, commentstyle=\it, basicstyle=\tiny, keywordstyle=\bf, breaklines=true, frame=single}
+
+% multiple figures with same general caption
+\usepackage{subfigure}
+\setcounter{lofdepth}{2}  
+
+% offers more possibilities in captions
+\usepackage{caption}
+
+% Commands for package caption
+% - caption
+\renewcommand{\captionfont}{\small}
+\renewcommand{\captionlabelfont}{\bfseries}
+
+% offers rotation of figures, ...
+\usepackage{rotating}
+
+% to support correct hyphenaten, add words with -
+% \hyphenation{test-case}
+
+% If a page has no content, make it an empty page (without page numbers ....)
+\makeatletter
+\def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
+	\hbox{}
+	\thispagestyle{empty}
+	\newpage
+\fi\fi}
+\makeatother
+
+
+
+% check whether we are running pdflatex
+\newif\ifpdf
+\ifx\pdfoutput\undefined
+\pdffalse % we are not running pdflatex
+\DeclareGraphicsExtensions{.eps}
+\else
+\pdfoutput=1 % we are running pdflatex
+\pdfcompresslevel=9     % compression level for text and image;
+\pdftrue
+\DeclareGraphicsExtensions{.pdf}
+\fi
+\ifpdf
+%to make table of contents and index appear in bookmarks
+\usepackage{tocbibind}
+%refs also as links
+\usepackage[pdftex,plainpages=false]{hyperref}
+%plainpages=false: enable links although page numbering is reset after title
+%backref, pagebackref]{hyperref}
+%\usepackage[pdftex]{color}
+%\usepackage[pdftex]{thumbpdf}
+\else
+%url must be escaped. (this works fine in dvi)
+\usepackage{url}
+\fi
+
+
+\author{Thomas Kolonko}
+\title{Multipath Transmission for Content-Centric Networking in Vehicular ad-hoc Networks}
+\date{2017}
+
+\begin{document}
+\maketitle
+\thispagestyle{empty}
+\mbox{}
+
+\newpage
+\pagenumbering{roman}
+\tableofcontents{}
+\listoffigures{}
+\listoftables{}
+% if you have some code listing, you can include a list of all your listings
+% \lstlistoflistings{}
+
+
+
+% if you want to thank somebody for the support during your studies make it here
+\chapter*{Acknowledgment}
+On this page I would like to thank everybody who supported me to write this bachelor thesis.
+First I would like to thank my coach Eirini Kalogeiton. She supported me trough the whole process of writing this thesis, spend many hours for pair programming sessions and gave valueable inputs when nothing seemed to work anymore.
+After that I would like to thank Prof. Dr. Torsten Braun who allowed me to write this thesis in his research group. I am also very grateful for the resources that were generously provided by the reasearch group of Prof. Braun.
+
+\begin{abstract}
+Content-Centric Networking (CCN) is a new network approach where the focus lies on the names and not on the host identifiers. This new network approach comes with many benefits.
+
+What did I try to do
+
+What did I achieve
+\end{abstract}
+
+\cleardoublepage
+\setcounter{page}{1}	% Reset page numbering to 1
+\pagenumbering{arabic}	% Arabic page numbers
+
+% Advice: split up your thesis in multiple files, i.e. one file for one section
+\input{1-Intro}
+\input{2-RelatedWork}
+\input{3-ndnSIM}
+\input{4-DesignAndImplementation}
+\input{5-Evaluation}
+\input{6-Conclusion}
+\input{7-Appendix}
+
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{IEEEabrv,bachelorthesis}
+
+
+\end{document}
