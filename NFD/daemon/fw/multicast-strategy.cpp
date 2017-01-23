@@ -81,7 +81,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	//std::cout << "ttt int i = " << i << std::endl;
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 		// send only to the best three nextHops
-		if(i >= 2) break;
+		if(i >= 3) break;
 
 	  shared_ptr<Face> outFace = it->getFace();
 

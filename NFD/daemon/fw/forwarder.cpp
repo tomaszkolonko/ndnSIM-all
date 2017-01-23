@@ -243,8 +243,16 @@ Forwarder::onContentStoreMiss(const Face& inFace,
   shared_ptr<Face> face = const_pointer_cast<Face>(inFace.shared_from_this());
 
   // insert InRecord
+  // Mac Address are getting added correctly per interest.name !!!!
   pitEntry->insertOrUpdateOriginMacRecord(interest.getInterestOriginMacAddress(), interest);
   pitEntry->insertOrUpdateInRecord(face, interest);
+
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+
+  if(node->GetId() == 7) {
+	  std::cout << "************** you are on node 7 **************" << std::endl;
+// TODO
+  }
 
   // set PIT unsatisfy timer
   this->setUnsatisfyTimer(pitEntry);
@@ -265,6 +273,11 @@ Forwarder::onContentStoreHit(const Face& inFace,
 {
   NFD_LOG_DEBUG("onContentStoreHit interest=" << interest.getName());
   shared_ptr<Face> face = const_pointer_cast<Face>(inFace.shared_from_this());
+
+
+  // TODO
+  ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
+  std::cout << "WHY WOULD YOU END UP HERE ??? on node(" << node->GetId() << ")" << std::endl;
 
   pitEntry->insertOrUpdateInRecord(face, interest);
   pitEntry->insertOrUpdateOriginMacRecord(interest.getInterestOriginMacAddress(), interest);
@@ -544,8 +557,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
 		  // std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-		  return;
-		  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 22222, data.getDataOriginMacAddress());
+		  //return;
+		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 22222, data.getDataOriginMacAddress());
 	  }
   } else if(data.getDataTargetMacAddress() == "lowerLayerOfProducer" && node->GetId() == 7) {
   	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
@@ -708,6 +721,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   }
 
 
+  ns3::Ptr<ns3::ndn::L3Protocol> l33 = node->GetObject<ns3::ndn::L3Protocol>();
+  AppFace = l33->getFaceById(257);
+
   // foreach pending downstream
   for (std::set<shared_ptr<Face> >::iterator it = pendingDownstreams.begin();
 		  	  	  it != pendingDownstreams.end(); ++it) {
@@ -716,44 +732,49 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-		if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263)) {
-			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
-				  // TODO: gives back the wrong mac address (same as target...
-				  // std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
-				  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
-				  std::list<std::string>::const_iterator stringIterator;
+		  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 
-				  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+			  std::list<std::string> targetMacs = pitEntry->getOriginMacRecords();
+			  std::list<std::string>::const_iterator stringIterator;
 
-				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
-				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
-																 it != outRecords.end(); ++it) {
-					  if((node->GetId() % 2) == 0) {
-						  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 263) {
-							  // TODO: fix logic
-							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace(), *stringIterator);
-								  //break;
-							  }
-
-						  }
-					  }
-
-					  if((node->GetId() % 2) == 1) {
-						  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 263) {
-							  // TODO: fix logic
-							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
-								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
-								  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace(), *stringIterator);
-								  //break;
-							  }
-						  }
-					  }
-				  }
+			  int index = 0;
+			  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+			  std::cout << "node: " << node->GetId() << " and data.name() : " << data.getName() << std::endl;
+			  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); ++stringIterator, ++index) {
+				  std::cout << "pitEntry Nr. " << index << " with Origin Mac: " << *stringIterator << std::endl;
+				  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+				  this->onOutgoingData(*dataWithNewTargetMac, *AppFace);
 			  }
-		}
+
+//			  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
+//
+//			  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+//			  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
+//															 it != outRecords.end(); ++it) {
+//				  if((node->GetId() % 2) == 0) {
+//					  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 263) {
+//						  // TODO: get rid of the face logic which is wrong anyway
+//						  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+//							  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+//							  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+//							  //break;
+//						  }
+//
+//					  }
+//				  }
+//
+//				  if((node->GetId() % 2) == 1) {
+//					  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 263) {
+//						  // TODO: get rid of the face logic which is wrong anyway
+//						  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
+//							  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
+//							  this->onOutgoingData(*dataWithNewTargetMac, *it->getFace());
+//							  //break;
+//						  }
+//					  }
+//				  }
+//			  }
+		  }
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
 
@@ -770,7 +791,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 		 dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
 			if (std::regex_match(*stringIterator, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
-				this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream, *stringIterator);
+				this->onOutgoingData(*dataWithNewTargetMac, *pendingDownstream);
 			 //continue;
 			}
 	 }
