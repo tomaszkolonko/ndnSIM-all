@@ -19,3 +19,4 @@
 \contentsline {section}{\numberline {6.1}Summary and Conclusion}{6}{section.6.1}
 \contentsline {section}{\numberline {6.2}Future Work}{6}{section.6.2}
 \contentsline {chapter}{\numberline {7}Appendix}{7}{chapter.7}
+\contentsline {chapter}{Bibliography}{8}{chapter*.5}
