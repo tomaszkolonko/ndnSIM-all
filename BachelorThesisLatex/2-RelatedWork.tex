@@ -19,14 +19,14 @@ Two big differences of TCP/IP and CNN are the strategy layer and the security la
 
 \subsection{CCN/NDN Node Model}
 
-In CCN there are no clients and servers anymore but \textbf{Consumers} and \textbf{Producers}. Consumers request some information by sending out an \textbf{Interest}. This interest packet consists of a content name, some selectors and a nonce. The interest is being forwarded according to the node's strategy it passes until it reaches a node that can satisfy the interest. If a node can satisfy the received interest, it will respond with a \textbf{data} package consisting of the same content name as the interest, a signature, signed info and the data. The data will be be sent back towards the consumer. The node having the requested information is called producer.
+In CCN there are no clients and servers anymore but \textbf{Consumers} and \textbf{Producers}. Consumers request some information by sending out an \textbf{Interest}. This interest packet consists of a content name, some selectors and a nonce. The interest is being forwarded according to the node's strategy it passes until it reaches a node that can satisfy the interest. If a node can satisfy the received interest, it will respond with a \textbf{data} package consisting of the same content name as the interest, a signature, signed info and the data. The data will be be sent back towards the consumer. The node having the requested information is called producer (it generates the data) (TODO:is an intermidiate node that does NOT generate it but supports it also a producer???).
 
 \begin{figure}[h]
 \includegraphics[scale=1]{chapter-2/InterestAndData}
 \centering
 \end{figure}
 
-The most important tables for the routing are called pending interest table (PIT), forwarding information base (FIB), and the content store (CS) and will be explained in the follwing subchapters.
+The most important tables for routing the interest to the producer and the data back to the consumer are called pending interest table (PIT), forwarding information base (FIB), and the content store (CS). They will be explained in the follwing subchapters.
 
 \subsubsection{PIT}
 
