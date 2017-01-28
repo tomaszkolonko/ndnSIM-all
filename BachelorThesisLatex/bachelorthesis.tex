@@ -9,6 +9,7 @@
 
 \usepackage[latin1]{inputenc}
 \usepackage{graphicx}
+\graphicspath{ {./images/} }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage[a4paper,twoside]{geometry}
@@ -51,7 +52,6 @@
 \makeatother
 
 
-
 % check whether we are running pdflatex
 \newif\ifpdf
 \ifx\pdfoutput\undefined
@@ -61,7 +61,7 @@
 \pdfoutput=1 % we are running pdflatex
 \pdfcompresslevel=9     % compression level for text and image;
 \pdftrue
-\DeclareGraphicsExtensions{.pdf}
+\DeclareGraphicsExtensions{.pdf,.png,.jpg}
 \fi
 \ifpdf
 %to make table of contents and index appear in bookmarks
