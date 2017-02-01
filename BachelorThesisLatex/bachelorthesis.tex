@@ -107,11 +107,15 @@ After that I would like to thank Prof. Dr. Torsten Braun who allowed me to write
 \begin{abstract}
 Content-Centric Networking (CCN) is a new network approach based on the information-centric networking paradigme (ICN), which tries to provide a more secure, flexible and scalable network. CCN does not operate on a host-to-host basis but emphasizes the content itself by making it directly addressable and routable. Knowledge of the topology is therefore not required as the routing is based on the names of the content and happens only locally on the intermediate nodes. This allows much more efficient communication in highly mobile and dynamic environments, where no static topology is given, and devices enter and leave a given area very frequently.
 
-\\
+\vspace{5mm} %5mm vertical space
 
 In this thesis a new routing strategy for VANET's has been developed in ndnSIM version 2.0 wihtin the ns-3 network simulator. The current implementation supports only routing based on incoming and outgoing faces. Since Wifi and other forms of wireless networking braodcast data by design, a new mechanism has been introduced for forwarding and discriminating by mac addresses. Two new fields have been added to the interest and data packages for orignal and target mac addresses. FIB tables were extended with the new mac address fields in order to forward the interests to the correct upstream nodes. PIT tables were also extended so that the data could follow the interests way back to the requesting consumer. A new strategy has been implemented for flooding the interest if the FIB entries have not yet been populated with known mac addresses and to forward specifically hop by hop if the FIB entries showed actual intermediate target nodes with lower costs. (TODO: add some info about the multiple netDevices when done)
-\\
+
+\vspace{5mm} %5mm vertical space
+
 The scenario was implemented and evaluated using the ns-3 network simulator. Simulation with 100 nodes werde conducted for 21 times and ...... (TODO: finish this part as soon as you have some results)
+
+(TODO: CHANGE WORDING from Amadeo14 BEGIN) -> Performance evaluation is carried by means of ndnSIM, the official NDN simulator, that is overhauled for use in realistic wireless ad-hoc environments. Results collected under variable traffic loads and topologies provide insights into the behavious of both forwarding approaches and help to derive a set of recomendations that are crucial to teh successful design of a forwarding strategy for named data ad-hoc wireless networking <- (TODO: CHANGE WORDING from Amadeo14 END)
 \end{abstract}
 
 \cleardoublepage
