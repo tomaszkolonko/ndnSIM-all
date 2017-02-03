@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.1.23)  1 FEB 2017 23:42
+This is pdfTeX, Version 3.14159265-2.6-1.40.16 (TeX Live 2015/Debian) (preloaded format=pdflatex 2017.1.23)  3 FEB 2017 09:56
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -436,75 +436,78 @@ pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has
 been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.9 \newpage
-             [1
+l.12 
+      [1
 
-]pdfTeX warning (ext4): destination with the same identifier (name{page.2}) has
- been already used, duplicate ignored
+]) (./2-RelatedWork.texpdfTeX warning (ext4): destination with the same identif
+ier (name{page.2}) has been already used, duplicate ignored
 <to be read again> 
                    \relax 
-l.14 \newpage
-              [2]) (./2-RelatedWork.tex [3]
+l.1 \chapter
+            {Related Work} [2]
 Chapter 2.
-[4
+[3
 
-] <./images/chapter-2/NetworkStack.jpg, id=191, 518.93875pt x 257.96375pt>
+] <./images/chapter-2/NetworkStack.jpg, id=186, 518.93875pt x 257.96375pt>
 File: ./images/chapter-2/NetworkStack.jpg Graphic file (type jpg)
 
 <use ./images/chapter-2/NetworkStack.jpg>
 Package pdftex.def Info: ./images/chapter-2/NetworkStack.jpg used on input line
  19.
 (pdftex.def)             Requested size: 311.36565pt x 154.77943pt.
- [5 <./images/chapter-2/NetworkStack.jpg>] <./images/chapter-2/InterestAndData.
-png, id=198, 256.96pt x 108.405pt>
+ [4 <./images/chapter-2/NetworkStack.jpg>] <./images/chapter-2/InterestAndData.
+png, id=194, 256.96pt x 108.405pt>
 File: ./images/chapter-2/InterestAndData.png Graphic file (type png)
 
 <use ./images/chapter-2/InterestAndData.png>
 Package pdftex.def Info: ./images/chapter-2/InterestAndData.png used on input l
 ine 34.
 (pdftex.def)             Requested size: 256.95937pt x 108.40472pt.
- [6 <./images/chapter-2/InterestAndData.png>]
-<./images/chapter-2/SimpleInterestForwarding.png, id=206, 381.425pt x 493.845pt
+
+Underfull \vbox (badness 5563) has occurred while \output is active []
+
+ [5 <./images/chapter-2/InterestAndData.png>]
+<./images/chapter-2/SimpleInterestForwarding.png, id=201, 381.425pt x 493.845pt
 >
 File: ./images/chapter-2/SimpleInterestForwarding.png Graphic file (type png)
  <use ./images/chapter-2/SimpleInterestForwarding.png>
 Package pdftex.def Info: ./images/chapter-2/SimpleInterestForwarding.png used o
-n input line 65.
+n input line 57.
 (pdftex.def)             Requested size: 152.56729pt x 197.53448pt.
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 3108) has occurred while \output is active []
 
- [7]
-[8 <./images/chapter-2/SimpleInterestForwarding.png>] [9] [10]
-<./images/chapter-2/VANETecosystem.png, id=229, 818.05624pt x 655.44875pt>
+ [6]
+[7 <./images/chapter-2/SimpleInterestForwarding.png>] [8] [9]
+<./images/chapter-2/VANETecosystem.png, id=224, 818.05624pt x 655.44875pt>
 File: ./images/chapter-2/VANETecosystem.png Graphic file (type png)
 
 <use ./images/chapter-2/VANETecosystem.png>
 Package pdftex.def Info: ./images/chapter-2/VANETecosystem.png used on input li
-ne 99.
+ne 91.
 (pdftex.def)             Requested size: 327.21669pt x 262.17485pt.
 
 Underfull \vbox (badness 2809) has occurred while \output is active []
 
- [11 <./images/chapter-2/VANETecosystem.png>]) (./3-ndnSIM.tex [12]
+ [10 <./images/chapter-2/VANETecosystem.png>]) (./3-ndnSIM.tex [11]
 Chapter 3.
-) (./4-DesignAndImplementation.tex [13
+) (./4-DesignAndImplementation.tex [12
 
 ]
 Chapter 4.
-) (./5-Evaluation.tex [14
+) (./5-Evaluation.tex [13
 
 ]
 Chapter 5.
-) (./6-Conclusion.tex [15
+) (./6-Conclusion.tex [14
 
 ]
 Chapter 6.
-) (./7-Appendix.tex [16
+) (./7-Appendix.tex [15
 
 ]
 Chapter 7.
-) (./8-Bibliography.tex [17
+) (./8-Bibliography.tex [16
 
 ]
 Underfull \hbox (badness 1348) in paragraph at lines 26--27
@@ -515,7 +518,7 @@ Avail-able: https://named-
 )
 No file bachelorthesis.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 140.
-[18
+[17
 
 ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 140.
@@ -523,26 +526,26 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 140.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 140.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 140.
 Package rerunfilecheck Info: File `bachelorthesis.out' has not changed.
-(rerunfilecheck)             Checksum: 0587E283F16632287F82CB152C14CC0A;1545.
+(rerunfilecheck)             Checksum: 25C3A0FF68D45FA78C61894789EE5A2E;1527.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 140.
  ) 
 Here is how much of TeX's memory you used:
- 7225 strings out of 493029
- 110698 string characters out of 6136234
- 203846 words of memory out of 5000000
- 10579 multiletter control sequences out of 15000+600000
+ 7228 strings out of 493029
+ 110768 string characters out of 6136234
+ 204881 words of memory out of 5000000
+ 10583 multiletter control sequences out of 15000+600000
  25549 words of font info for 47 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,7n,38p,1399b,354s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,7n,38p,1472b,354s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texliv
 e/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/share/texlive/texmf-dist
 /fonts/type1/urw/helvetic/uhvr8a.pfb></usr/share/texlive/texmf-dist/fonts/type1
 /urw/times/utmb8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmr
 8a.pfb></usr/share/texlive/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on bachelorthesis.pdf (27 pages, 551665 bytes).
+Output written on bachelorthesis.pdf (26 pages, 552705 bytes).
 PDF statistics:
- 306 PDF objects out of 1000 (max. 8388607)
- 262 compressed objects within 3 object streams
- 63 named destinations out of 1000 (max. 500000)
+ 302 PDF objects out of 1000 (max. 8388607)
+ 259 compressed objects within 3 object streams
+ 62 named destinations out of 1000 (max. 500000)
  229 words of extra memory for PDF output out of 10000 (max. 10000000)
 
