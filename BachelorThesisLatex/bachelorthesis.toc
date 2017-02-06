@@ -17,13 +17,19 @@
 \contentsline {subsection}{\numberline {2.1.5}Network Security}{8}{subsection.2.1.5}
 \contentsline {section}{\numberline {2.2}VANETs}{10}{section.2.2}
 \contentsline {chapter}{\numberline {3}ndnSIM}{12}{chapter.3}
-\contentsline {section}{\numberline {3.1}Simulation Environment}{12}{section.3.1}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{13}{chapter.4}
-\contentsline {section}{\numberline {4.1}Problem Description}{13}{section.4.1}
-\contentsline {section}{\numberline {4.2}Multipath Approach}{13}{section.4.2}
-\contentsline {chapter}{\numberline {5}Evaluation}{14}{chapter.5}
-\contentsline {chapter}{\numberline {6}Conclusion}{15}{chapter.6}
-\contentsline {section}{\numberline {6.1}Summary and Conclusion}{15}{section.6.1}
-\contentsline {section}{\numberline {6.2}Future Work}{15}{section.6.2}
-\contentsline {chapter}{\numberline {7}Appendix}{16}{chapter.7}
-\contentsline {chapter}{Bibliography}{17}{chapter*.12}
+\contentsline {section}{\numberline {3.1}Design overview}{12}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Face abstraction}{13}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Content Store abstraction}{14}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Pending Interest Table (PIT) abstraction}{14}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Forwarding Information Base (FIB) abstraction}{15}{subsection.3.1.4}
+\contentsline {subsection}{\numberline {3.1.5}Forwarding Strategy abstraction}{16}{subsection.3.1.5}
+\contentsline {section}{\numberline {3.2}Simulation Environment}{16}{section.3.2}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{18}{chapter.4}
+\contentsline {section}{\numberline {4.1}Problem Description}{18}{section.4.1}
+\contentsline {section}{\numberline {4.2}Multipath Approach}{18}{section.4.2}
+\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}
+\contentsline {chapter}{\numberline {6}Conclusion}{20}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusion}{20}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{20}{section.6.2}
+\contentsline {chapter}{\numberline {7}Appendix}{21}{chapter.7}
+\contentsline {chapter}{Bibliography}{22}{chapter*.18}
