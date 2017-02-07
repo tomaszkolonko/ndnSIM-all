@@ -65,7 +65,7 @@ Consumer::GetTypeId(void)
 
       .AddAttribute("RetxTimer",
                     "Timeout defining how frequent retransmission timeouts should be checked",
-                    StringValue("50ms"),
+                    StringValue("500ms"),
                     MakeTimeAccessor(&Consumer::GetRetxTimer, &Consumer::SetRetxTimer),
                     MakeTimeChecker())
 

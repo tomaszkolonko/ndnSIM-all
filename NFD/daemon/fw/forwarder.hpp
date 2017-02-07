@@ -187,6 +187,11 @@ PUBLIC_WITH_TESTS_ELSE_PRIVATE: // pipelines
   onOutgoingData(const Data& data, Face& outFace);
 
   /** \brief outgoing Data pipeline
+  */
+  VIRTUAL_WITH_TESTS void
+  onOutgoingData(const Data& data, Face& outFace, const std::string mac, const std::string initial_mac);
+
+  /** \brief outgoing Data pipeline
    */
   VIRTUAL_WITH_TESTS void
   onOutgoingData(const Data& data, Face& outFace, std::string mac);

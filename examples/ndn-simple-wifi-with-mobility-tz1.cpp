@@ -127,7 +127,7 @@ main(int argc, char* argv[])
 
   // 1. Install Wifi
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
-  // NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
   // 2. Install Mobility model
   Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
@@ -145,7 +145,7 @@ main(int argc, char* argv[])
 
   // AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric);
 
-  std::string mac[(nodeNum)];
+  std::string mac[(2*nodeNum)];
   Address ad;
   Address ad2;
 
@@ -155,18 +155,16 @@ main(int argc, char* argv[])
 	  str << ad;
 	  mac[n] = str.str().substr(6);
 
-//	  ad2 = node[n]->GetDevice(1)->GetAddress();
-//	  std::ostringstream str2;
-//	  str2 << ad2;
-//	  mac[n+nodeNum] = str2.str().substr(6);
+	  ad2 = node[n]->GetDevice(1)->GetAddress();
+	  std::ostringstream str2;
+	  str2 << ad2;
+	  mac[n+nodeNum] = str2.str().substr(6);
   }
 
   std::cout << std::endl << "**********************************************" << std::endl;
-  std::cout << "testing mac0: " << mac[0] << std::endl;
-  std::cout << "testing mac1: " << mac[1] << std::endl;
-  std::cout << "testing mac2: " << mac[2] << std::endl;
-  std::cout << "testing mac3: " << mac[3] << std::endl;
-  //std::cout << "testing mac4: " << mac[4] << std::endl;
+  for(int n = 0; n < 2*nodeNum; n++) {
+	  std::cout << "testing mac" << n << ": " << mac[n] << std::endl;
+  }
   std::cout << "**********************************************" << std::endl << std::endl;
 
   // Set BestRoute strategy
@@ -177,7 +175,7 @@ main(int argc, char* argv[])
 
   ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix("/test");
-  consumerHelper.SetAttribute("Frequency", DoubleValue(5.0));
+  consumerHelper.SetAttribute("Frequency", DoubleValue(1.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
   consumer.Stop(Seconds(10));

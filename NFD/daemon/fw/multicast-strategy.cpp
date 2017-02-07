@@ -53,14 +53,14 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	//std::cout << "you are on node (" << node->GetId() << ") " << std::endl;
 
 	if(false) printPITInRecord(pitEntry, node);
 	if(false) printPITOutRecord(pitEntry);
 	if(node->GetId() == 0){
 		if(true) printPITOriginMacRecord(pitEntry);
 	}
-	if(false) printFIBTargetMacRecord(fibEntry);
+	if(true) printFIBTargetMacRecord(fibEntry);
+
 	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 		 std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()
 				 << " size of next hops: " << nexthops.size() << " with target mac ad: " << it->getTargetMac()
@@ -71,10 +71,14 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		}
 	}
 
-	ns3::Address ad;
-	std::ostringstream addr;
+	ns3::Address ad, ad2;
+	std::ostringstream addr, addr2;
+
 	addr << node->GetDevice(0)->GetAddress();
+	addr2 << node->GetDevice(1)->GetAddress();
+
 	std::string currentMacAddress = addr.str().substr(6);
+	std::string currentMacAddress2 = addr2.str().substr(6);
 
 	int i = 0;
 	if (pp==1){
