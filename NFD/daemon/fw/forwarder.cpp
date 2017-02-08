@@ -479,6 +479,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   std::string localMac = tmpLocalMac.str().substr(6);
   std::string localMac2 = tmpLocalMac2.str().substr(6);
 
+  // unsigned int sema = 0;
+
 
   Name name;
   name = data.getName();
@@ -494,10 +496,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // ************************ DROPPING OF DATA ****************************************************
   // **********************************************************************************************
 
+  if (std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))
+	  && !(node->GetId()==0 || node->GetId()==7)){
+	  return;
+  }
+
+std::cout << "6675: data.getDataTargetMacAddress: " << data.getDataTargetMacAddress() << std::endl;
   if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if (node->GetId()!=7){
 		  if(data.getDataTargetMacAddress() == localMac || data.getDataTargetMacAddress() == localMac2) {
-			//  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
+			  std::cout << " AddRoute / fast 111 " << data.getDataOriginMacAddress() << std::endl;
+			ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 			//   shared_ptr<fib::Entry> fibEntry = m_fib.findLongestPrefixMatch("/");
 			   //const fib::NextHopList& nexthops = fibEntry->getNextHops();
 			 //  std::cout << " AddRoute /test fast 111 " << fibEntry->getPrefix() << " cost: " << nexthops.size()<< std::endl;
@@ -506,26 +515,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	//		   }
 
 		  } else {
-			  // std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
-			   return;
+			  std::cout << " AddRoute /test slow 222 " << data.getDataOriginMacAddress() << std::endl;
+			  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
+			  return;
 			  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 		  }
-	  } else if (node->GetId()==7) {
-		  //	ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
+	  } else if (node->GetId() == 7 && data.getDataTargetMacAddress() == "lowerLayerOfProducer") {
+		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
 	  }
-  } else if (std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))
-  	  && !(node->GetId()==0 || node->GetId()==7)){
-	  return;
   }
 
-  // HAS NO INFLUENCE IF ONLY "/" BUT i thought it has influence if add route is /test... apparently not...
-  if(data.getDataTargetMacAddress() == "producer Mac") {
-	  // std::cout << " AddRoute / immediate 12" << std::endl;
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
-  }
 
-  // OBVIOUSLY NO INFLUENCE JUST FOR TESTING
-  if(data.getDataTargetMacAddress().empty()) {}
   string initial_mac_target_data = data.getDataTargetMacAddress();
 
   shared_ptr<Data> dataCopyWithoutPacket = make_shared<Data>(data);
@@ -808,23 +808,26 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 	// will return std::string::npos
 	std::size_t found = data_macRoute.find(this_NetDevice_Mac);
 
+	shared_ptr<Data> data2 = make_shared<Data>(data);
+	data2->setDataOriginMacAddress(this_NetDevice_Mac);
+	data2->setDataTargetMacAddress(macAddress);
+
 	// the only place where DataOriginMacAddress is set !!!!
-	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
-	const_cast<Data&>(data).setDataTargetMacAddress(macAddress);
+//	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
+//	const_cast<Data&>(data).setDataTargetMacAddress(macAddress);
 
 	if(found == std::string::npos) {
-		const_cast<Data&>(data).addMacDataRoute("\n\t       --> " + this_NetDevice_Mac);
+		//const_cast<Data&>(data).addMacDataRoute("\n\t       --> " + this_NetDevice_Mac);
+		data2->addMacDataRoute("\n\t       --> " + this_NetDevice_Mac);
 	}
 	// TODO traffic manager
 
 	// send Data
 	if (node->GetId() == 0) {
 		shared_ptr<Face> face= this->getFace(263);
-		outFace.sendData(data);
-	}
-	// send Data
-	else {
-		outFace.sendData(data);
+		outFace.sendData(*data2);
+	} else {
+		outFace.sendData(*data2);
 		++m_counters.getNOutDatas();
 	}
 }
