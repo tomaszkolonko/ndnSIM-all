@@ -120,6 +120,7 @@ protected: // actions
   VIRTUAL_WITH_TESTS void
   sendInterest(shared_ptr<pit::Entry> pitEntry,
                shared_ptr<Face> outFace,
+               std::string originMac,
 			   std::string targetMac,
 			   int inFaceId,
                bool wantNewNonce = false);
@@ -175,11 +176,12 @@ Strategy::sendInterest(shared_ptr<pit::Entry> pitEntry,
 inline void
 Strategy::sendInterest(shared_ptr<pit::Entry> pitEntry,
                        shared_ptr<Face> outFace,
+                       std::string originMac,
 					   std::string targetMac,
 					   int inFaceId,
                        bool wantNewNonce)
 {
-  m_forwarder.onOutgoingInterest(pitEntry, *outFace, targetMac, inFaceId, wantNewNonce);
+  m_forwarder.onOutgoingInterest(pitEntry, *outFace, originMac, targetMac, inFaceId, wantNewNonce);
 }
 
 inline void

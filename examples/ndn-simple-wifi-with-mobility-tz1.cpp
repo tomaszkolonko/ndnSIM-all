@@ -175,7 +175,7 @@ main(int argc, char* argv[])
 
   ndn::AppHelper consumerHelper("ns3::ndn::ConsumerCbr");
   consumerHelper.SetPrefix("/test");
-  consumerHelper.SetAttribute("Frequency", DoubleValue(1.0));
+  consumerHelper.SetAttribute("Frequency", DoubleValue(3.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
   consumer.Stop(Seconds(10));
