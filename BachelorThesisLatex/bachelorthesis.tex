@@ -43,6 +43,10 @@
 % to support correct hyphenaten, add words with -
 % \hyphenation{test-case}
 
+% or minimize the occurences of them
+%http://tex.stackexchange.com/questions/182569/how-to-manually-set-where-a-word-is-split
+\usepackage{microtype}
+
 % If a page has no content, make it an empty page (without page numbers ....)
 \makeatletter
 \def\cleardoublepage{\clearpage\if@twoside \ifodd\c@page\else
