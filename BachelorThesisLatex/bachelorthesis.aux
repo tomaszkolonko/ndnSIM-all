@@ -17,8 +17,8 @@
 \providecommand\HyField@AuxAddToFields[1]{}
 \providecommand\HyField@AuxAddToCoFields[2]{}
 \@writefile{toc}{\contentsline {chapter}{Contents}{i}{chapter*.1}}
-\@writefile{toc}{\contentsline {chapter}{List of Figures}{iii}{chapter*.2}}
-\@writefile{toc}{\contentsline {chapter}{List of Tables}{iv}{chapter*.3}}
+\@writefile{toc}{\contentsline {chapter}{List of Figures}{ii}{chapter*.2}}
+\@writefile{toc}{\contentsline {chapter}{List of Tables}{iii}{chapter*.3}}
 \@writefile{toc}{\contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
@@ -29,52 +29,38 @@
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \@writefile{toc}{\contentsline {section}{\numberline {2.1}Named Data Network / Content Centric Networks}{4}{section.2.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.1}{\ignorespaces TCP/IP protocol stack on the left and CCN protocol stack on the right\relax }}{4}{figure.caption.5}}
+\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
+\newlabel{fig:NetworkStack}{{2.1}{4}{TCP/IP protocol stack on the left and CCN protocol stack on the right\relax }{figure.caption.5}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.1}CCN/NDN Node Model}{5}{subsection.2.1.1}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.2}{\ignorespaces Overview of the packet structure for interests and data messages in NDN\relax }}{5}{figure.caption.6}}
+\newlabel{fig:InterestAndData}{{2.2}{5}{Overview of the packet structure for interests and data messages in NDN\relax }{figure.caption.6}{}}
 \@writefile{toc}{\contentsline {subsubsection}{PIT}{6}{section*.7}}
 \@writefile{toc}{\contentsline {subsubsection}{CS}{6}{section*.8}}
 \@writefile{toc}{\contentsline {subsubsection}{FIB}{6}{section*.9}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.2}Forwarding of an Interest}{6}{subsection.2.1.2}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.3}{\ignorespaces Shows how the data structures are used in order to forward or discard the interest\relax }}{7}{figure.caption.10}}
+\newlabel{fig:SimpleInterestForwarding}{{2.3}{7}{Shows how the data structures are used in order to forward or discard the interest\relax }{figure.caption.10}{}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.3}Transport and Routing}{7}{subsection.2.1.3}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.4}Sequencing}{8}{subsection.2.1.4}}
 \@writefile{toc}{\contentsline {subsection}{\numberline {2.1.5}Network Security}{8}{subsection.2.1.5}}
 \@writefile{toc}{\contentsline {section}{\numberline {2.2}VANETs}{10}{section.2.2}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {3}ndnSIM}{12}{chapter.3}}
+\@writefile{lof}{\contentsline {figure}{\numberline {2.4}{\ignorespaces Different communication agents interacting with each other through different channels\relax }}{10}{figure.caption.11}}
+\newlabel{fig:VANETecosystem}{{2.4}{10}{Different communication agents interacting with each other through different channels\relax }{figure.caption.11}{}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {3}Design and Implementation}{12}{chapter.3}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {3.1}Design overview}{12}{section.3.1}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.1}{\ignorespaces Basic component abstractions in ndnSIM\relax }}{13}{figure.caption.12}}
-\providecommand*\caption@xref[2]{\@setref\relax\@undefined{#1}}
-\newlabel{fig:ndnSIMcomponentAbstraction}{{3.1}{13}{Basic component abstractions in ndnSIM\relax }{figure.caption.12}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.1}Face abstraction}{13}{subsection.3.1.1}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.2}{\ignorespaces Face abstractions around ndn::l3Protocol\relax }}{14}{figure.caption.13}}
-\newlabel{fig:CommunicationLayerAbstraction}{{3.2}{14}{Face abstractions around ndn::l3Protocol\relax }{figure.caption.13}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.2}Content Store abstraction}{14}{subsection.3.1.2}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.3}Pending Interest Table (PIT) abstraction}{14}{subsection.3.1.3}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT data structure\relax }}{15}{figure.caption.14}}
-\newlabel{fig:PITdataStructure}{{3.3}{15}{PIT data structure\relax }{figure.caption.14}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.4}Forwarding Information Base (FIB) abstraction}{15}{subsection.3.1.4}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB data structure\relax }}{15}{figure.caption.15}}
-\newlabel{fig:FIBdataStructure}{{3.4}{15}{FIB data structure\relax }{figure.caption.15}{}}
-\@writefile{toc}{\contentsline {subsection}{\numberline {3.1.5}Forwarding Strategy abstraction}{16}{subsection.3.1.5}}
-\@writefile{toc}{\contentsline {section}{\numberline {3.2}Simulation Environment}{16}{section.3.2}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.5}{\ignorespaces Simulation of a possible scenario\relax }}{17}{figure.caption.16}}
-\newlabel{fig:Simulation}{{3.5}{17}{Simulation of a possible scenario\relax }{figure.caption.16}{}}
-\@writefile{lof}{\contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{17}{figure.caption.17}}
-\newlabel{fig:PITandFIBvis}{{3.6}{17}{PIT and FIB entries in real time\relax }{figure.caption.17}{}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {4}Design and Implementation}{18}{chapter.4}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.1}Problem Description}{12}{section.3.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {3.2}Multipath Approach}{12}{section.3.2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {4}Evaluation}{13}{chapter.4}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {4.1}Problem Description}{18}{section.4.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {4.2}Multipath Approach}{18}{section.4.2}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {5}Evaluation}{19}{chapter.5}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {5}Conclusion}{14}{chapter.5}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {chapter}{\numberline {6}Conclusion}{20}{chapter.6}}
-\@writefile{lof}{\addvspace {10\p@ }}
-\@writefile{lot}{\addvspace {10\p@ }}
-\@writefile{toc}{\contentsline {section}{\numberline {6.1}Summary and Conclusion}{20}{section.6.1}}
-\@writefile{toc}{\contentsline {section}{\numberline {6.2}Future Work}{20}{section.6.2}}
-\@writefile{toc}{\contentsline {chapter}{\numberline {7}Appendix}{21}{chapter.7}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.1}Summary and Conclusion}{14}{section.5.1}}
+\@writefile{toc}{\contentsline {section}{\numberline {5.2}Future Work}{14}{section.5.2}}
+\@writefile{toc}{\contentsline {chapter}{\numberline {6}Appendix}{15}{chapter.6}}
 \@writefile{lof}{\addvspace {10\p@ }}
 \@writefile{lot}{\addvspace {10\p@ }}
 \bibcite{jacobson09}{1}
@@ -87,4 +73,4 @@
 \bibcite{pyviz}{8}
 \bibstyle{IEEEtran}
 \bibdata{IEEEabrv,bachelorthesis}
-\@writefile{toc}{\contentsline {chapter}{Bibliography}{22}{chapter*.18}}
+\@writefile{toc}{\contentsline {chapter}{Bibliography}{16}{chapter*.12}}

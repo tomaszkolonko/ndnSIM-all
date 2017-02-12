@@ -1,12 +1,9 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Basic component abstractions in ndnSIM\relax }}{13}{figure.caption.12}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Face abstractions around ndn::l3Protocol\relax }}{14}{figure.caption.13}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT data structure\relax }}{15}{figure.caption.14}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB data structure\relax }}{15}{figure.caption.15}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Simulation of a possible scenario\relax }}{17}{figure.caption.16}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{17}{figure.caption.17}
+\contentsline {figure}{\numberline {2.1}{\ignorespaces TCP/IP protocol stack on the left and CCN protocol stack on the right\relax }}{4}{figure.caption.5}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Overview of the packet structure for interests and data messages in NDN\relax }}{5}{figure.caption.6}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Shows how the data structures are used in order to forward or discard the interest\relax }}{7}{figure.caption.10}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Different communication agents interacting with each other through different channels\relax }}{10}{figure.caption.11}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

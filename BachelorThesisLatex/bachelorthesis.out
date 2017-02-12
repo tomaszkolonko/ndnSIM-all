@@ -13,20 +13,12 @@
 \BOOKMARK [2][-]{subsection.2.1.4}{Sequencing}{section.2.1}% 13
 \BOOKMARK [2][-]{subsection.2.1.5}{Network Security}{section.2.1}% 14
 \BOOKMARK [1][-]{section.2.2}{VANETs}{chapter.2}% 15
-\BOOKMARK [0][-]{chapter.3}{ndnSIM}{}% 16
-\BOOKMARK [1][-]{section.3.1}{Design overview}{chapter.3}% 17
-\BOOKMARK [2][-]{subsection.3.1.1}{Face abstraction}{section.3.1}% 18
-\BOOKMARK [2][-]{subsection.3.1.2}{Content Store abstraction}{section.3.1}% 19
-\BOOKMARK [2][-]{subsection.3.1.3}{Pending Interest Table \(PIT\) abstraction}{section.3.1}% 20
-\BOOKMARK [2][-]{subsection.3.1.4}{Forwarding Information Base \(FIB\) abstraction}{section.3.1}% 21
-\BOOKMARK [2][-]{subsection.3.1.5}{Forwarding Strategy abstraction}{section.3.1}% 22
-\BOOKMARK [1][-]{section.3.2}{Simulation Environment}{chapter.3}% 23
-\BOOKMARK [0][-]{chapter.4}{Design and Implementation}{}% 24
-\BOOKMARK [1][-]{section.4.1}{Problem Description}{chapter.4}% 25
-\BOOKMARK [1][-]{section.4.2}{Multipath Approach}{chapter.4}% 26
-\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 27
-\BOOKMARK [0][-]{chapter.6}{Conclusion}{}% 28
-\BOOKMARK [1][-]{section.6.1}{Summary and Conclusion}{chapter.6}% 29
-\BOOKMARK [1][-]{section.6.2}{Future Work}{chapter.6}% 30
-\BOOKMARK [0][-]{chapter.7}{Appendix}{}% 31
-\BOOKMARK [0][-]{chapter*.18}{Bibliography}{}% 32
+\BOOKMARK [0][-]{chapter.3}{Design and Implementation}{}% 16
+\BOOKMARK [1][-]{section.3.1}{Problem Description}{chapter.3}% 17
+\BOOKMARK [1][-]{section.3.2}{Multipath Approach}{chapter.3}% 18
+\BOOKMARK [0][-]{chapter.4}{Evaluation}{}% 19
+\BOOKMARK [0][-]{chapter.5}{Conclusion}{}% 20
+\BOOKMARK [1][-]{section.5.1}{Summary and Conclusion}{chapter.5}% 21
+\BOOKMARK [1][-]{section.5.2}{Future Work}{chapter.5}% 22
+\BOOKMARK [0][-]{chapter.6}{Appendix}{}% 23
+\BOOKMARK [0][-]{chapter*.12}{Bibliography}{}% 24
