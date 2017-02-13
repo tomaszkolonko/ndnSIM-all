@@ -1,6 +1,6 @@
 \contentsline {chapter}{Contents}{i}{chapter*.1}
-\contentsline {chapter}{List of Figures}{ii}{chapter*.2}
-\contentsline {chapter}{List of Tables}{iii}{chapter*.3}
+\contentsline {chapter}{List of Figures}{iii}{chapter*.2}
+\contentsline {chapter}{List of Tables}{iv}{chapter*.3}
 \contentsline {chapter}{\numberline {1}Introduction}{1}{chapter.1}
 \contentsline {section}{\numberline {1.1}Motivation}{1}{section.1.1}
 \contentsline {section}{\numberline {1.2}Study Subject}{1}{section.1.2}
@@ -16,12 +16,29 @@
 \contentsline {subsection}{\numberline {2.1.4}Sequencing}{8}{subsection.2.1.4}
 \contentsline {subsection}{\numberline {2.1.5}Network Security}{8}{subsection.2.1.5}
 \contentsline {section}{\numberline {2.2}VANETs}{10}{section.2.2}
-\contentsline {chapter}{\numberline {3}Design and Implementation}{12}{chapter.3}
-\contentsline {section}{\numberline {3.1}Problem Description}{12}{section.3.1}
-\contentsline {section}{\numberline {3.2}Multipath Approach}{12}{section.3.2}
-\contentsline {chapter}{\numberline {4}Evaluation}{13}{chapter.4}
-\contentsline {chapter}{\numberline {5}Conclusion}{14}{chapter.5}
-\contentsline {section}{\numberline {5.1}Summary and Conclusion}{14}{section.5.1}
-\contentsline {section}{\numberline {5.2}Future Work}{14}{section.5.2}
-\contentsline {chapter}{\numberline {6}Appendix}{15}{chapter.6}
-\contentsline {chapter}{Bibliography}{16}{chapter*.12}
+\contentsline {chapter}{\numberline {3}ndnSIM}{12}{chapter.3}
+\contentsline {section}{\numberline {3.1}Design overview}{12}{section.3.1}
+\contentsline {subsection}{\numberline {3.1.1}Face abstraction}{13}{subsection.3.1.1}
+\contentsline {subsection}{\numberline {3.1.2}Content Store abstraction}{14}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.3}Pending Interest Table (PIT) abstraction}{14}{subsection.3.1.3}
+\contentsline {subsection}{\numberline {3.1.4}Forwarding Information Base (FIB) abstraction}{15}{subsection.3.1.4}
+\contentsline {subsection}{\numberline {3.1.5}Forwarding Strategy abstraction}{16}{subsection.3.1.5}
+\contentsline {section}{\numberline {3.2}Simulation Environment}{16}{section.3.2}
+\contentsline {section}{\numberline {3.3}Forwarding by the NDN Forwarding Daemon (NFD)}{18}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Interest Processing Path}{19}{subsection.3.3.1}
+\contentsline {subsubsection}{Incoming Interest Pipeline}{19}{section*.19}
+\contentsline {subsubsection}{ContentStore Miss Pipeline}{21}{section*.21}
+\contentsline {subsubsection}{ContentStore Hit Pipeline}{21}{section*.22}
+\contentsline {subsubsection}{Outgoing Interest Pipeline}{21}{section*.23}
+\contentsline {subsection}{\numberline {3.3.2}Data Processing Path}{21}{subsection.3.3.2}
+\contentsline {subsubsection}{Incoming Data Pipeline}{21}{section*.25}
+\contentsline {subsubsection}{Outgoing Data Pipeline}{21}{section*.27}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{22}{chapter.4}
+\contentsline {section}{\numberline {4.1}Problem Description}{22}{section.4.1}
+\contentsline {section}{\numberline {4.2}Multipath Approach}{22}{section.4.2}
+\contentsline {chapter}{\numberline {5}Evaluation}{23}{chapter.5}
+\contentsline {chapter}{\numberline {6}Conclusion}{24}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusion}{24}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{24}{section.6.2}
+\contentsline {chapter}{\numberline {7}Appendix}{25}{chapter.7}
+\contentsline {chapter}{Bibliography}{26}{chapter*.28}

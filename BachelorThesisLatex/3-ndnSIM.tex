@@ -107,9 +107,91 @@ Figure \ref{fig:PITandFIBvis} shows all the PIT and FIB entries in real time. Fa
 
 \section{Forwarding by the NDN Forwarding Daemon (NFD)}
 
+\vspace{5mm} %5mm vertical space
+
 All the above mentioned modular components and abstractions are implemented and coordinated by the NDN Forwarding Daemon (NFD), which is a network forwarder that implements and evolves with the NDN protocol. NFD is responsible to correctly forward interest and data packages, maintain all basic data structures like CS, PIT and FIB, and implement the packet processing logic. Management interfaces are used by NFD to configure, control and monitor the different components.
 
 \vspace{5mm} %5mm vertical space
 
+Packet processing in NFD is accomplished through forwarding pipelines and forwarding strategies. A forwarding pipeline is an aggregation of different steps that are applied on a packet or a PIT entry. Forwarding pipelines are triggered by specific events like the reception of an Interest, detection of a loop, of when an interest is ready to be forwarded further, etc. A forwarding strategy is attached at the beginning or the end of a pipeline and supports it with information about how and when to forward the interest. Figure \ref{fig:PipelinesAndStrategies} shows the interactions between forwarding pipelines and strategies. For the thesis relevant pipelines will be shortly described.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{chapter-3/PipelinesAndStrategies}
+  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines}
+  \label{fig:PipelinesAndStrategies}
+\end{figure}
+
+Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about failure to satisfy a particular interest). After a pipeline has finished it's processing the package is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
+
+\begin{itemize}
+\item \emph{Interest Processing Path}
+\item \emph{Data Processing Path}
+\item \emph{Nack Processing Path}
+\end{itemize}
+
+The first two paths will be explained further. The nack processing path has not yet been implemented in ndnSIM 2.0 and is under active investigation, therefore it will not be explained.
+
+\subsection{Interest Processing Path}
+
+The interest processing path consists of the following pipelines:
+
+\begin{itemize}
+\item \emph{incoming interest}: Interest has been received through a face and is ready to be processed by the the forwarder
+\item \emph{interest loop}: loop has been detected and interest needs to be dealt with
+\item \emph{content store miss}: incoming interest can't be satisfied by the content store
+\item \emph{content store hit}: incoming interest can be satisfied by CS and does not need further forwarding 
+\item \emph{outgoing interest}: interest is made ready and sent out
+\item \emph{interest reject}: strategy rejects interests according to PIT entries
+\item \emph{interest unsatisfied}: processing unsatisfied PIT entries before timeout
+\item \emph{interest finalize}: deletion of PIT entries
+\end{itemize}
+
+\subsubsection{Incoming Interest Pipeline}
+
+After receiving an interest package through a face implemented in the face class \texttt{Face::onReceiveInterest} the interest is forwarded to the incoming interest pipeline that is implemented in \texttt{Forwarder::onIncomingInterest} method. The input parameters to this method are the interest itself and a reference to the face it was received on. Figure \ref{fig:IncomingInterestPipeline} shows all the steps taken within the pipeline.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{chapter-3/IncomingInterestPipeline}
+  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines}
+  \label{fig:IncomingInterestPipeline}
+\end{figure}
+
+\begin{enumerate}
+\item An interest reaching the node through a non-local face is not allowed to have the \texttt{\\localhost} prefix since this prefix is reserved for localhost communication only. This check is necessary because interests with the \texttt{\\localhost} prefix can be used to configure the node and make unwanted changes. The compliant forwarder has no reason to send such a interest to a non-local face.
+\item Next the name of the interest with it's nonce is checked against the dead nonce list. That happens before the PIT entry is created for the incoming interest (resolves Bug 1953 and supplements the regular nonce checking through PIT entries). If the tuple of interest and nonce have been processed already, the incoming interest has been looped and will be handed off to the interest loop pipeline.
+\item Using the name and the selectors of the interest the PIT is searched for matches. If no match can be found a new PIT entry is created, otherwise an existing PIT entry is updated with the new information mainly the inFace and timers. In Figure \ref{fig:SimpleInterestForwarding} of chapter 2 the CS was checked first, then the PIT was searched and created if necessary. NFD has a slightly different approach. It is expected that the CS will be much larger then the PIT. A search in the CS may take much longer than a PIT lookup, and if a pending interest is present the CS lookup can be omitted saving time and resources.
+\item The nonce of the interest is checked against the nonces in the PIT and if a loop or multi-path arrival is detected the interest will be handed off to the interest loop pipeline. If no loop or multi-path arrival is detected the forwarding process is continued.
+\item Since a new valid interest arrived and the PIT entries got updated, the current unsatisfy timer (fires when the PIT entry expires) and the straggler timer (fires when PIT entry is no longer needed after it has been satisfied or rejected) are cancelled.
+\item The step checks if the interest is pending. That means if the PIT entry has already another in-record from the same or different face.
+\item If there is no PIT entry a CS lookup is needed in order to satisfy the interest (ContentStore hit) or forward it(ContentStore miss). If there is already a pending interest the CS lookup has been done already on a previous interest that lead to a PIT entry since no match could be found.
+\end{enumerate}
+
+\subsubsection{ContentStore Miss Pipeline}
+
+\subsubsection{ContentStore Hit Pipeline}
+
+\subsubsection{Outgoing Interest Pipeline}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{chapter-3/OutgoingInterestPipeline}
+  \caption{XXX}
+  \label{fig:OutgoingInterestPipeline}
+\end{figure}
 
 
+
+\subsection{Data Processing Path}
+
+\subsubsection{Incoming Data Pipeline}
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.4]{chapter-3/IncomingDataPipeline}
+  \caption{XXX}
+  \label{fig:IncomingDataPipeline}
+\end{figure}
+
+\subsubsection{Outgoing Data Pipeline}
