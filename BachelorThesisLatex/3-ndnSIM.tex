@@ -170,9 +170,25 @@ After receiving an interest package through a face implemented in the face class
 
 \subsubsection{ContentStore Miss Pipeline}
 
+If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} doesn't yield any data that can satisfy the interest, the content store miss pipeline is called. This pipeline is implemented in \texttt{Forwarder::onContentStoreMiss} and the parameters for this method are the interest packet, the incoming face and the PIT entry. The validity of the interest has been checked already and it needs to be forwarded by taking the following steps:
+
+\begin{enumerate}
+\item In the incoming interest pipeline a PIT entry was created already. Now the in-record with it's incoming face needs to be added to the PIT entry and if it already exists then the in-record with it's face is refreshed. The expiration counter is set to the value of the interest's field \texttt{InterestLifetime}.
+\item The PIT entry's unsatisfy timer is set. It will expire as soon as all in-records of this entry have expired and hand control off to the interest unsatisfied pipeline.
+\item The content store miss pipeline then decides which strategy to use and forwards the interest with it's incoming face and PIT entry to the chosen strategy for further processing.
+\end{enumerate}
+
+The incoming interest pipeline has finished.
+
 \subsubsection{ContentStore Hit Pipeline}
 
+If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} does yield a match, the content store hit pipeline is called through it's implementation in \texttt{Forwarder::onContentStoreHit}. The parameters include the interest packet, incoming face, the PIT entry and the data. The straggler timer is being set since the interest is about to be satisfied, then the data is handed off to the outgoing data pipeline.
+
+The incoming interest pipeline has finished.
+
 \subsubsection{Outgoing Interest Pipeline}
+
+The \texttt{Forwarder::onOutgoingInterest} method implements the outgoing interest pipeline. It is entered from the \texttt{Strategy::sendInterest} or a child of the Strategy class that overrides the method. The parameters are the PIT entry, the outgoing face and a \texttt{wantNewNonce} boolean that signalizes that a new nonce is needed for the interest. As mentioned above the PIT entry holds a reference to the interest and therefore the interest packet is not in the parameters list. See figure \ref{fig:OutgoingInterestPipeline} for a visual representation of the outgoing interest pipeline.
 
 \begin{figure}[H]
   \centering
@@ -181,11 +197,28 @@ After receiving an interest package through a face implemented in the face class
   \label{fig:OutgoingInterestPipeline}
 \end{figure}
 
-
+\begin{enumerate}
+\item First localhost and localhop violation is checked. Interests with a /localhost scope are not permitted to be sent out through non-local faces. Interests with a /localhop scope are permitted to be sent out through a non-local face only if the PIT entry has one or more in-records with that has a local face stored in it.
+\item The interest is picked from the PIT entry and saved to a local variable.
+\item If the \texttt{wantNewNonce} flag is set, the interest is copied and a new nonce is attached to it. That is necessary when the node need to retransmit the interest. If the interest would not receive a new nonce it would be recognized as a looped interest and dropped immediately.
+\item An out-record is created in the PIT entry and add an out-face to it. If an out-record with the same out-face already exists, the entry gets refreshed by the \texttt{InterestLifetime} value.
+\item The interest is forwarded upstream via out-face.
+\end{enumerate}
 
 \subsection{Data Processing Path}
 
+The data processing path consists of the following pipelines:
+
+\begin{itemize}
+\item \emph{incoming data}: incoming data are processed
+\item \emph{data unsolicited}: unsolicited (not requested) data are processed
+\item \emph{outgoing data}: data is forwarded downstream
+\end{itemize}
+
 \subsubsection{Incoming Data Pipeline}
+
+ \texttt{Face::onReceiveData} fires when an data arrives at a face. It triggers the  \texttt{Forwarder::onData} which calls \texttt{Forwarder::onIncomingData} with the incoming face and the data as parameters.
+The following figure \ref{fig:IncomingDataPipeline} summarizes the steps taken by this pipeline:
 
 \begin{figure}[H]
   \centering
@@ -194,4 +227,26 @@ After receiving an interest package through a face implemented in the face class
   \label{fig:IncomingDataPipeline}
 \end{figure}
 
+\begin{enumerate}
+\item Like with the incoming interest pipeline the /localhost scope needs to be checked. Data may not contain the prefix /localhost when coming from a non-local face.
+\item The incoming data needs to be checked against the PIT entries to find out if it is solicited or unsolicited. The data is unsolicited if no matching PIT entry is found. In this case it is forwarded to the next pipeline: data unsolicited.
+\item If one or more PIT entries have been found the data is solicited and therefore inserted into the CS. How the data is processed in the CS is up to the policies defined in the content store.
+\item The unsatisfy and straggler timers for all matched PIT entries need to be cancelled since the interest is being satisfied.
+\item The responsible strategy is determined and triggers the method \texttt{Strategy::beforeSatisfyInterest}. By default it is empty in ndnSIM 2.0 and can be implemented by a custom strategy overriding the method.
+\item The nonce of the data is added to the dead nonce list for further loop detection, since interest and data could still be floating inside the network. This is necessary because the next steps delete the corresponding in- and out-records and the nonce would be lost. 
+\item All in-records of the PIT entry are being deleted then all out-records corresponding to the incoming face of the data.
+\item For every pending downstream the data is handed off to the next pipeline, the outgoing data pipeline, with it's corresponding face. NFD takes care that the data is handed off only once for every distinct downstream, even if several PIT entries are found.
+\end{enumerate}
+
 \subsubsection{Outgoing Data Pipeline}
+
+The outgoing data pipeline is implemented in \texttt{Forwarder::onOutgoingData} and can be called from two different pipelines. If the incoming interest pipeline found a CS match, the data is fetched and passed to \texttt{Forwarder::onOutgoingData} with the correct out-face (interests in-face inside the PIT entry). If the incoming data pipeline found one or more PIT matches, the data and out-face are passed to this method.
+
+This pipeline has only three steps:
+
+\begin{enumerate}
+\item The localhost scope is checked. Data with the prefix /localhost are not permitted to be send out through a non-local face.
+\item This step is reserved for traffic management and traffic shaping but not implemented in ndnSIM 2.0 yet.
+\item The data packet is send out through it's out-face.
+\end{enumerate}
+

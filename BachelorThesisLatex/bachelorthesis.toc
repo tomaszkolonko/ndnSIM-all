@@ -27,18 +27,18 @@
 \contentsline {section}{\numberline {3.3}Forwarding by the NDN Forwarding Daemon (NFD)}{18}{section.3.3}
 \contentsline {subsection}{\numberline {3.3.1}Interest Processing Path}{19}{subsection.3.3.1}
 \contentsline {subsubsection}{Incoming Interest Pipeline}{19}{section*.19}
-\contentsline {subsubsection}{ContentStore Miss Pipeline}{21}{section*.21}
+\contentsline {subsubsection}{ContentStore Miss Pipeline}{20}{section*.21}
 \contentsline {subsubsection}{ContentStore Hit Pipeline}{21}{section*.22}
 \contentsline {subsubsection}{Outgoing Interest Pipeline}{21}{section*.23}
-\contentsline {subsection}{\numberline {3.3.2}Data Processing Path}{21}{subsection.3.3.2}
-\contentsline {subsubsection}{Incoming Data Pipeline}{21}{section*.25}
-\contentsline {subsubsection}{Outgoing Data Pipeline}{21}{section*.27}
-\contentsline {chapter}{\numberline {4}Design and Implementation}{22}{chapter.4}
-\contentsline {section}{\numberline {4.1}Problem Description}{22}{section.4.1}
-\contentsline {section}{\numberline {4.2}Multipath Approach}{22}{section.4.2}
-\contentsline {chapter}{\numberline {5}Evaluation}{23}{chapter.5}
-\contentsline {chapter}{\numberline {6}Conclusion}{24}{chapter.6}
-\contentsline {section}{\numberline {6.1}Summary and Conclusion}{24}{section.6.1}
-\contentsline {section}{\numberline {6.2}Future Work}{24}{section.6.2}
-\contentsline {chapter}{\numberline {7}Appendix}{25}{chapter.7}
-\contentsline {chapter}{Bibliography}{26}{chapter*.28}
+\contentsline {subsection}{\numberline {3.3.2}Data Processing Path}{22}{subsection.3.3.2}
+\contentsline {subsubsection}{Incoming Data Pipeline}{22}{section*.25}
+\contentsline {subsubsection}{Outgoing Data Pipeline}{23}{section*.27}
+\contentsline {chapter}{\numberline {4}Design and Implementation}{24}{chapter.4}
+\contentsline {section}{\numberline {4.1}Problem Description}{24}{section.4.1}
+\contentsline {section}{\numberline {4.2}Multipath Approach}{24}{section.4.2}
+\contentsline {chapter}{\numberline {5}Evaluation}{25}{chapter.5}
+\contentsline {chapter}{\numberline {6}Conclusion}{26}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusion}{26}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{26}{section.6.2}
+\contentsline {chapter}{\numberline {7}Appendix}{27}{chapter.7}
+\contentsline {chapter}{Bibliography}{28}{chapter*.28}

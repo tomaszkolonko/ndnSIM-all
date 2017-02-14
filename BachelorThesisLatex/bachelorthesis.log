@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  13 FEB 2017 16:41
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  14 FEB 2017 14:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -493,7 +493,7 @@ l.1 \chapter
 Chapter 2.
 [3
 
-] <./images/chapter-2/NetworkStack.jpg, id=258, 518.93875pt x 257.96375pt>
+] <./images/chapter-2/NetworkStack.jpg, id=262, 518.93875pt x 257.96375pt>
 File: ./images/chapter-2/NetworkStack.jpg Graphic file (type jpg)
 
 <use ./images/chapter-2/NetworkStack.jpg>
@@ -501,7 +501,7 @@ Package pdftex.def Info: ./images/chapter-2/NetworkStack.jpg used on input line
  21.
 (pdftex.def)             Requested size: 311.36565pt x 154.77943pt.
  [4 <./images/chapter-2/NetworkStack.jpg>] <./images/chapter-2/InterestAndData.
-png, id=266, 636.3775pt x 266.9975pt>
+png, id=270, 636.3775pt x 266.9975pt>
 File: ./images/chapter-2/InterestAndData.png Graphic file (type png)
 
 <use ./images/chapter-2/InterestAndData.png>
@@ -509,7 +509,7 @@ Package pdftex.def Info: ./images/chapter-2/InterestAndData.png used on input l
 ine 38.
 (pdftex.def)             Requested size: 350.0087pt x 146.84906pt.
  [5 <./images/chapter-2/InterestAndData.png>] [6]
-<./images/chapter-2/SimpleInterestForwarding.png, id=280, 381.425pt x 493.845pt
+<./images/chapter-2/SimpleInterestForwarding.png, id=284, 381.425pt x 493.845pt
 >
 File: ./images/chapter-2/SimpleInterestForwarding.png Graphic file (type png)
  <use ./images/chapter-2/SimpleInterestForwarding.png>
@@ -517,7 +517,7 @@ Package pdftex.def Info: ./images/chapter-2/SimpleInterestForwarding.png used o
 n input line 63.
 (pdftex.def)             Requested size: 171.63965pt x 222.22818pt.
  [7 <./images/chapter-2/SimpleInterestForwarding.png>] [8] [9]
-<./images/chapter-2/VANETecosystem.png, id=295, 818.05624pt x 655.44875pt>
+<./images/chapter-2/VANETecosystem.png, id=299, 818.05624pt x 655.44875pt>
 File: ./images/chapter-2/VANETecosystem.png Graphic file (type png)
 
 <use ./images/chapter-2/VANETecosystem.png>
@@ -527,7 +527,7 @@ ne 99.
  [10 <./images/chapter-2/VANETecosystem.png>]) (./3-ndnSIM.tex [11]
 Chapter 3.
 
-<./images/chapter-3/ndnSIMcomponentAbstraction.png, id=308, 590.205pt x 474.773
+<./images/chapter-3/ndnSIMcomponentAbstraction.png, id=312, 590.205pt x 474.773
 74pt>
 File: ./images/chapter-3/ndnSIMcomponentAbstraction.png Graphic file (type png)
 
@@ -541,7 +541,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [12
 
 ]
-<./images/chapter-3/CommunicationLayerAbstraction.png, id=314, 506.89375pt x 40
+<./images/chapter-3/CommunicationLayerAbstraction.png, id=318, 506.89375pt x 40
 0.49625pt>
 File: ./images/chapter-3/CommunicationLayerAbstraction.png Graphic file (type p
 ng)
@@ -553,7 +553,7 @@ sed on input line 26.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13 <./images/chapter-3/ndnSIMcomponentAbstraction.png>]
-<./images/chapter-3/PITdataStructure.png, id=320, 748.7975pt x 377.41pt>
+<./images/chapter-3/PITdataStructure.png, id=324, 748.7975pt x 377.41pt>
 File: ./images/chapter-3/PITdataStructure.png Graphic file (type png)
 
 <use ./images/chapter-3/PITdataStructure.png>
@@ -561,7 +561,7 @@ Package pdftex.def Info: ./images/chapter-3/PITdataStructure.png used on input
 line 43.
 (pdftex.def)             Requested size: 299.51369pt x 150.96132pt.
  [14 <./images/chapter-3/CommunicationLayerAbstraction.png>]
-<./images/chapter-3/FIBdataStructure.png, id=327, 563.10374pt x 192.72pt>
+<./images/chapter-3/FIBdataStructure.png, id=331, 563.10374pt x 192.72pt>
 File: ./images/chapter-3/FIBdataStructure.png Graphic file (type png)
 
 <use ./images/chapter-3/FIBdataStructure.png>
@@ -583,7 +583,7 @@ Underfull \hbox (badness 7415) in paragraph at lines 76--77
 rst time from the for-
  []
 
-<./images/chapter-3/Simulation.png, id=334, 642.4pt x 505.89pt>
+<./images/chapter-3/Simulation.png, id=338, 642.4pt x 505.89pt>
 File: ./images/chapter-3/Simulation.png Graphic file (type png)
 
 <use ./images/chapter-3/Simulation.png>
@@ -591,7 +591,7 @@ Package pdftex.def Info: ./images/chapter-3/Simulation.png used on input line 9
 2.
 (pdftex.def)             Requested size: 256.95544pt x 202.3524pt.
  [16]
-<./images/chapter-3/PITandFIBvis.png, id=342, 602.25pt x 446.66875pt>
+<./images/chapter-3/PITandFIBvis.png, id=346, 602.25pt x 446.66875pt>
 File: ./images/chapter-3/PITandFIBvis.png Graphic file (type png)
 
 <use ./images/chapter-3/PITandFIBvis.png>
@@ -603,7 +603,7 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [17 <./images/chapter-3/Simulation.png> <./images/chapter-3/PITandFIBvis.png>]
 
-<./images/chapter-3/PipelinesAndStrategies.png, id=349, 937.5025pt x 478.78876p
+<./images/chapter-3/PipelinesAndStrategies.png, id=353, 937.5025pt x 478.78876p
 t>
 File: ./images/chapter-3/PipelinesAndStrategies.png Graphic file (type png)
  <use ./images/chapter-3/PipelinesAndStrategies.png>
@@ -628,49 +628,80 @@ e im-ple-mented in the face class
  []
 
 
-<./images/chapter-3/IncomingInterestPipeline.png, id=356, 620.3175pt x 366.3687
+<./images/chapter-3/IncomingInterestPipeline.png, id=360, 620.3175pt x 366.3687
 4pt>
 File: ./images/chapter-3/IncomingInterestPipeline.png Graphic file (type png)
  <use ./images/chapter-3/IncomingInterestPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/IncomingInterestPipeline.png used o
 n input line 156.
 (pdftex.def)             Requested size: 248.1226pt x 146.54489pt.
- [19 <./images/chapter-3/IncomingInterestPipeline.png>]
-<./images/chapter-3/OutgoingInterestPipeline.png, id=365, 612.2875pt x 215.8062
+ [19 <./images/chapter-3/IncomingInterestPipeline.png>] [20]
+Underfull \hbox (badness 6396) in paragraph at lines 185--186
+\OT1/ptm/m/n/10.95 (+20) If the Con-tentStore lookup in \OT1/pcr/m/n/10.95 Forw
+arder::onIncomingInterest \OT1/ptm/m/n/10.95 (+20) does yield
+ []
+
+
+Underfull \hbox (badness 4765) in paragraph at lines 185--186
+\OT1/ptm/m/n/10.95 (+20) a match, the con-tent store hit pipeline is called thr
+ough it's im-ple-men-ta-tion in
+ []
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 191--192
+\OT1/ptm/m/n/10.95 (+20) The \OT1/pcr/m/n/10.95 Forwarder::onOutgoingInterest \
+OT1/ptm/m/n/10.95 (+20) method im-ple-ments the out-go-ing in-ter-est
+ []
+
+
+<./images/chapter-3/OutgoingInterestPipeline.png, id=383, 612.2875pt x 215.8062
 4pt>
 File: ./images/chapter-3/OutgoingInterestPipeline.png Graphic file (type png)
  <use ./images/chapter-3/OutgoingInterestPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/OutgoingInterestPipeline.png used o
-n input line 179.
+n input line 195.
 (pdftex.def)             Requested size: 244.91066pt x 86.32095pt.
+ [21 <./images/chapter-3/OutgoingInterestPipeline.png>]
+Underfull \hbox (badness 3701) in paragraph at lines 220--222
+\OT1/pcr/m/n/10.95 Face::onReceiveData \OT1/ptm/m/n/10.95 (+20) fires when an d
+ata ar-rives at a face. It trig-gers the
+ []
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [20]
-<./images/chapter-3/IncomingDataPipeline.png, id=377, 641.39626pt x 410.53375pt
+<./images/chapter-3/IncomingDataPipeline.png, id=396, 641.39626pt x 410.53375pt
 >
 File: ./images/chapter-3/IncomingDataPipeline.png Graphic file (type png)
  <use ./images/chapter-3/IncomingDataPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/IncomingDataPipeline.png used on in
-put line 192.
+put line 225.
 (pdftex.def)             Requested size: 256.55396pt x 164.21059pt.
-)
-(./4-DesignAndImplementation.tex [21 <./images/chapter-3/OutgoingInterestPipeli
-ne.png> <./images/chapter-3/IncomingDataPipeline.png>]
+ [22 <./images/chapter-3/IncomingDataPipeline.png>]
+Underfull \hbox (badness 10000) in paragraph at lines 235--236
+[]\OT1/ptm/m/n/10.95 (+20) The re-spon-si-ble strat-egy is de-ter-mined and tri
+g-gers the method
+ []
+
+
+Underfull \hbox (badness 1189) in paragraph at lines 235--236
+\OT1/pcr/m/n/10.95 Strategy::beforeSatisfyInterest\OT1/ptm/m/n/10.95 (+20) . By
+ de-fault it is empty in ndnSIM
+ []
+
+) (./4-DesignAndImplementation.tex [23]
 Chapter 4.
-) (./5-Evaluation.tex [22
+) (./5-Evaluation.tex [24
 
 ]
 Chapter 5.
-) (./6-Conclusion.tex [23
+) (./6-Conclusion.tex [25
 
 ]
 Chapter 6.
-) (./7-Appendix.tex [24
+) (./7-Appendix.tex [26
 
 ]
 Chapter 7.
-) (./8-Bibliography.tex [25
+) (./8-Bibliography.tex [27
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 62--64
@@ -681,50 +712,41 @@ Underfull \hbox (badness 10000) in paragraph at lines 62--64
 )
 No file bachelorthesis.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 144.
-[26
+[28
 
 ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 144.
  (./bachelorthesis.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 144.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 144.
+Package rerunfilecheck Info: File `bachelorthesis.out' has not changed.
+(rerunfilecheck)             Checksum: 1570919F9C15BEEE16EC7CA24A367DA5;2266.
 
-
-Package rerunfilecheck Warning: File `bachelorthesis.out' has changed.
-(rerunfilecheck)                Rerun to get outlines right
-(rerunfilecheck)                or use package `bookmark'.
-
-Package rerunfilecheck Info: Checksums for `bachelorthesis.out':
-(rerunfilecheck)             Before: 6E0F4296EAC5E45465D43EE2C16685FE;2266
-(rerunfilecheck)             After:  1570919F9C15BEEE16EC7CA24A367DA5;2266.
 
 LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
 
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 144.
  ) 
 Here is how much of TeX's memory you used:
- 9170 strings out of 493014
- 145278 string characters out of 6133351
- 260824 words of memory out of 5000000
+ 9190 strings out of 493014
+ 145412 string characters out of 6133351
+ 260901 words of memory out of 5000000
  12245 multiletter control sequences out of 15000+600000
  37927 words of font info for 179 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,7n,39p,1519b,415s stack positions out of 5000i,500n,10000p,200000b,80000s
-pdfTeX warning (dest): name{chapter*.26} has been referenced but does not exi
-st, replaced by a fixed one
-
-{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/tex
-live/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texl
-ive/2016/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/2016
-/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texmf-
-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/fo
-nts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/
-urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/times/
-utmri8a.pfb>
-Output written on bachelorthesis.pdf (35 pages, 1135763 bytes).
+{/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
+xlive/2016/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/20
+16/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb></usr/local/texlive/2016/texm
+f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/
+fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
+1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/time
+s/utmri8a.pfb>
+Output written on bachelorthesis.pdf (37 pages, 1144210 bytes).
 PDF statistics:
- 471 PDF objects out of 1000 (max. 8388607)
- 401 compressed objects within 5 object streams
- 107 named destinations out of 1000 (max. 500000)
+ 509 PDF objects out of 1000 (max. 8388607)
+ 437 compressed objects within 5 object streams
+ 127 named destinations out of 1000 (max. 500000)
  30047 words of extra memory for PDF output out of 35830 (max. 10000000)
 
