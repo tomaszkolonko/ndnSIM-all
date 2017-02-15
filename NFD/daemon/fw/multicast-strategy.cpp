@@ -65,8 +65,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
 	std::vector<fib::NextHop> nextHopsSorted = fibEntry->getNextHops();
+//	const fib::NextHopList nexthopspointer = fibEntry->getNextHops();
+//	std::vector<fib::NextHop> *nextHopsSortedPointer = fibEntry->getNextHopsPointer();
 
-	std::sort(nextHopsSorted.begin(), nextHopsSorted.end(), sortByLowestCost);
+	//std::sort(nextHopsSorted.begin(), nextHopsSorted.end(), sortByLowestCost);
 
 //		// SORTING DOES WORK
 //	  	for(int i = 0; i < nextHopsSorted.size(); i++) {
@@ -172,7 +174,16 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 		  if(std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 			  nextHopsSorted[vectorIndex].incrementCost();
-			  std::cout << "it->getCost(): " << nextHopsSorted[vectorIndex].getCost() << std::endl;
+			  std::cout << "nextHopsSorted[vectorIndex].getCost() -> " << nextHopsSorted[vectorIndex].getCost() << std::endl;
+			  fibEntry->addNextHop(outFace, nextHopsSorted[vectorIndex].getCost(), nextHopsSorted[vectorIndex].getTargetMac());
+
+			  int index = 0;
+			  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+					std::cout << index << ") (" << node->GetId()  << ") it->getTargetMac(): " << it->getTargetMac() << " cost: " << it->getCost() << std::endl;
+				}
+
+
+
 			  targetMac = nextHopsSorted[vectorIndex].getTargetMac();
 		  } else {
 			  i--;
@@ -180,6 +191,16 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
 //			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  continue;
+		  }
+
+		  fibEntry->addNextHop(nextHopsSorted[vectorIndex].getFace(), nextHopsSorted[vectorIndex].getCost()+1,
+				  nextHopsSorted[vectorIndex].getTargetMac());
+			  for(int it = 0; it < nexthops.size(); ++it) {
+				  shared_ptr<fib::NextHop> nexthops2 = make_shared<fib::NextHop>(nexthops[it]);
+				  if(nextHopsSorted[vectorIndex].getFace() == nexthops[it].getFace()) {
+					  nexthops2->setCost(nexthops2->getCost()+1);
+
+			  }
 		  }
 
 

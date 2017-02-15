@@ -97,7 +97,9 @@ Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
   }
   // now it refers to the NextHop for face
 
-  it->setCost(cost);
+  if(it->getCost() == 0) {
+	  it->setCost(cost);
+  }
   it->setTargetMac(macAddress);
   this->sortNextHops();
 }

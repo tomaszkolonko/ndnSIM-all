@@ -62,7 +62,6 @@ static const int NET_DEVICE_NONE = 2;
 static const int NET_DEVICE_INVALID = -1;
 
 static int semaphoreNetDevice = NET_DEVICE_INVALID;
-static int semaphoreNetDeviceData = NET_DEVICE_INVALID;
 
 // static unsigned int semaphoreAlternate = NET_DEVICE_ZERO;
 
@@ -122,18 +121,10 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   if(std::regex_match(interest.getInterestTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(currentMacAddresses[0] != interest.getInterestTargetMacAddress()
-			  && currentMacAddresses[1] != interest.getInterestTargetMacAddress()
-			  && currentMacAddresses[2] != interest.getInterestTargetMacAddress()) {
+			  && currentMacAddresses[1] != interest.getInterestTargetMacAddress() && currentMacAddresses[2] != interest.getInterestTargetMacAddress()) {
 		return;
 	  }
   }
-
-
-
-  if(m_deadNonceList.has(interest.getName(), interest.getNonce())) {
-	  return;
-  }
-
 
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
@@ -477,22 +468,21 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	std::string localName = tmpName.str().substr(0,5);
 	std::string fullDataName = tmpName.str().substr(0);
 
-	if (node->GetId() == 7 && data.getDataOriginMacAddress() != "producer Mac") {
-		return;
-	}
+//	if (node->GetId() == 7 && data.getDataOriginMacAddress() != "producer Mac") {
+//		return;
+//	}
 
   // ************************ DROPPING OF DATA ****************************************************
   // **********************************************************************************************
 
   if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if (node->GetId()!=7){
-		  if(data.getDataTargetMacAddress() == localMac || data.getDataTargetMacAddress() == localMac2
-				  || data.getDataTargetMacAddress() == localMac3) {
+		  if(data.getDataTargetMacAddress() == localMac || data.getDataTargetMacAddress() == localMac2|| data.getDataTargetMacAddress() == localMac3) {
 			  // std::cout << " AddRoute / fast 111 on node (" << node->GetId() << "): and getDataOriginMacAddress: " << data.getDataOriginMacAddress() << std::endl;
 			  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 		  } else {
 			  //std::cout << " AddRoute / slow 222 on node (" << node->GetId() << "): and getDataOriginMacAddress: " << data.getDataOriginMacAddress() << std::endl;
-			  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
+			  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 			  return;
 		  }
 	  } else {
@@ -589,7 +579,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 																 it != outRecords.end(); ++it) {
 					  if((node->GetId() % 2) == 0) {
-						  if(it->getFace()->getId() % 2 == 0) {
+						  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 269) {
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
@@ -601,7 +591,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 					  }
 
 					  if((node->GetId() % 2) == 1) {
-						  if(it->getFace()->getId() % 2 == 1) {
+						  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 269) {
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
@@ -682,64 +672,43 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 
 	std::cout << "you really really shouldn't be here" << std::endl;
 
-//	// goto outgoing Data pipeline
+	// goto outgoing Data pipeline
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 	ns3::Ptr<ns3::NetDevice> netDevice, netDevice2, netDevice3;
-//	netDevice = node->GetDevice(0);
-//	netDevice2 = node->GetDevice(1);
-//	netDevice3 = node->GetDevice(2);
-//
-	  int numberOfNetDevices = node->GetNDevices();
-	  std::ostringstream addr[numberOfNetDevices];
-	  std::string currentMacAddresses[numberOfNetDevices];
-
-	  for(int index = 0; index < numberOfNetDevices; index++) {
-		  addr[index] << node->GetDevice(index)->GetAddress();
-		  currentMacAddresses[index] = addr[index].str().substr(6);
-	  }
-
-//	std::ostringstream str, str2, str3;
-//	str << netDevice->GetAddress();
-//	str2 << netDevice2->GetAddress();
-//	str3 << netDevice3->GetAddress();
+	netDevice = node->GetDevice(0);
+	netDevice2 = node->GetDevice(1);
+	netDevice3 = node->GetDevice(2);
+	std::ostringstream str, str2, str3;
+	str << netDevice->GetAddress();
+	str2 << netDevice2->GetAddress();
+	str3 << netDevice3->GetAddress();
 
 	// Since no TargetMac was given this data package we cannot know through which NetDevice it came from !!!!
 	// That is a problem !!!
 
-//	std::string this_NetDevice_Mac = str.str().substr(6);
-//	std::string this_NetDevice_Mac2 = str2.str().substr(6);
-//	std::string this_NetDevice_Mac3 = str3.str().substr(6);
-
+	std::string this_NetDevice_Mac = str.str().substr(6);
+	std::string this_NetDevice_Mac2 = str2.str().substr(6);
+	std::string this_NetDevice_Mac3 = str3.str().substr(6);
 	std::string data_macRoute =  data.getMacDataRoute();
 
 	// check if this device's mac address has been added already to the interest. If yes the position of the
 	// start position will be returned if the madAddress has not yet been added to the interest the function
 	// will return std::string::npos
-	std::size_t found = data_macRoute.find(currentMacAddresses[0]);
-	std::size_t found2 = data_macRoute.find(currentMacAddresses[1]);
-	std::size_t found3 = data_macRoute.find(currentMacAddresses[2]);
+	std::size_t found = data_macRoute.find(this_NetDevice_Mac);
 
 	// the only place where DataOriginMacAddress is set !!!!
-	std::string this_NetDevice_Mac = "";
-	if(data.getDataTargetMacAddress() == "lowerLayerOfProducer" && data.getDataOriginMacAddress() == "producer Mac") {
-		semaphoreNetDeviceData++;
-		this_NetDevice_Mac = currentMacAddresses[semaphoreNetDeviceData%3];
-
-	}
-
 	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
 
 	if(found == std::string::npos) {
-		const_cast<Data&>(data).addMacDataRoute("\n\t       --> " + this_NetDevice_Mac);
+		const_cast<Data&>(data).addMacDataRoute("\n\t       --> " + this_NetDevice_Mac + " OR " + this_NetDevice_Mac2 + " OR " + this_NetDevice_Mac3);
 	}
 
 	// TODO traffic manager
 	if (node->GetId() == 0) {
-		shared_ptr<Face> face= this->getFace(275);
+		shared_ptr<Face> face= this->getFace(261);
 		outFace.sendData(data);
 	} // send Data
-	else {
-		outFace.sendData(data);
+	else {outFace.sendData(data);
 		++m_counters.getNOutDatas();
 	}
 }
@@ -767,68 +736,50 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 
 	// goto outgoing Data pipeline
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
-	ns3::Ptr<ns3::NetDevice> netDevice, netDevice2;
-//	netDevice = node->GetDevice(0);
-//	netDevice2 = node->GetDevice(1);
-
-//	std::ostringstream str, str2;
-//	str << netDevice->GetAddress();
-//	str2 << netDevice2->GetAddress();
-//
-//	std::string this_NetDevice_Mac = str.str().substr(6);
-//	std::string this_NetDevice_Mac2 = str2.str().substr(6);
-//
-//
-
-	  int numberOfNetDevices = node->GetNDevices();
-	  std::ostringstream addr[numberOfNetDevices];
-	  std::string currentMacAddresses[numberOfNetDevices];
-
-	  for(int index = 0; index < numberOfNetDevices; index++) {
-		  addr[index] << node->GetDevice(index)->GetAddress();
-		  currentMacAddresses[index] = addr[index].str().substr(6);
-	  }
-
-	  std::string this_NetDevice_Mac = "";
-
-	  	if(initial_mac_target_data == currentMacAddresses[0]) {
-	  		this_NetDevice_Mac = currentMacAddresses[0];
-	  	} else if (initial_mac_target_data == currentMacAddresses[1]) {
-	  		this_NetDevice_Mac = currentMacAddresses[1];
-	  	} else if (initial_mac_target_data == currentMacAddresses[2]) {
-	  		this_NetDevice_Mac = currentMacAddresses[2];
-	  	} else {
-
-	  	}
+	ns3::Ptr<ns3::NetDevice> netDevice, netDevice2,netDevice3;
+	netDevice = node->GetDevice(0);
+	netDevice2 = node->GetDevice(1);
+	netDevice3 = node->GetDevice(2);
+	std::ostringstream str, str2, str3;
+	str << netDevice->GetAddress();
+	str2 << netDevice2->GetAddress();
+	str3 << netDevice3->GetAddress();
+	std::string this_NetDevice_Mac = str.str().substr(6);
+	std::string this_NetDevice_Mac2 = str2.str().substr(6);
+	std::string this_NetDevice_Mac3 = str3.str().substr(6);
+	if(initial_mac_target_data == this_NetDevice_Mac) {
+		// DO NOTHING
+	} else if (initial_mac_target_data == this_NetDevice_Mac2) {
+		this_NetDevice_Mac = this_NetDevice_Mac2;
+	} else if (initial_mac_target_data == this_NetDevice_Mac3) {
+		this_NetDevice_Mac = this_NetDevice_Mac3;
+	}
 
 
 	std::string data_macRoute =  data.getMacDataRoute();
 
-	// the only place where DataOriginMacAddress is set !!!!
-
-	if(data.getDataTargetMacAddress() == "lowerLayerOfProducer" && data.getDataOriginMacAddress() == "producer Mac") {
-		semaphoreNetDeviceData++;
-		this_NetDevice_Mac = currentMacAddresses[semaphoreNetDeviceData%3];
-
-	}
-
-	std::size_t found = -1;
-	found = data_macRoute.find(this_NetDevice_Mac);
-
-	// TODO: THINK ABOUT THAT AND TRY TO UNCOMENT
 	if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
-		//if (node->GetId()!=7){
-		  if( initial_mac_target_data != currentMacAddresses[0] && initial_mac_target_data != currentMacAddresses[1]
-		                           && initial_mac_target_data != currentMacAddresses[2]) {
+		if (node->GetId()!=7){
+		  if( initial_mac_target_data == this_NetDevice_Mac || initial_mac_target_data == this_NetDevice_Mac2 || initial_mac_target_data == this_NetDevice_Mac3) {
+			  //ns3::ndn::FibHelper::AddRoute(node, "/", outFace.getId(), 111, data.getDataOriginMacAddress());
+//			  shared_ptr<fib::Entry> fibEntry = m_fib.findLongestPrefixMatch("/");
+//			  const fib::NextHopList& nexthops = fibEntry->getNextHops();
+//			  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
+//				  // TODO: ???
+//			  }
+		  } else {
+			  //ns3::ndn::FibHelper::AddRoute(node, "/", outFace.getId(), 222, data.getDataOriginMacAddress());
 			  return;
 		  }
-		//}
+		} else if (node->GetId()==7) {
+			  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
+		}
 	}
 
 	// check if this device's mac address has been added already to the interest. If yes the position of the
 	// start position will be returned if the madAddress has not yet been added to the interest the function
 	// will return std::string::npos
-	//std::size_t found = data_macRoute.find(this_NetDevice_Mac);
+	std::size_t found = data_macRoute.find(this_NetDevice_Mac);
 
 	shared_ptr<Data> data2 = make_shared<Data>(data);
 	data2->setDataOriginMacAddress(this_NetDevice_Mac);
@@ -837,7 +788,6 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 	// the only place where DataOriginMacAddress is set !!!!
 //	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
 //	const_cast<Data&>(data).setDataTargetMacAddress(macAddress);
-
 
 
 	if(found == std::string::npos) {
