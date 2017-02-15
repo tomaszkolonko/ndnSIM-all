@@ -128,6 +128,7 @@ main(int argc, char* argv[])
   // 1. Install Wifi
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
   // 2. Install Mobility model
   Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
@@ -145,9 +146,10 @@ main(int argc, char* argv[])
 
   // AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric);
 
-  std::string mac[(2*nodeNum)];
+  std::string mac[(3*nodeNum)];
   Address ad;
   Address ad2;
+  Address ad3;
 
   for(int n = 0; n < nodeNum; n++) {
 	  ad = node[n]->GetDevice(0)->GetAddress();
@@ -159,6 +161,12 @@ main(int argc, char* argv[])
 	  std::ostringstream str2;
 	  str2 << ad2;
 	  mac[n+nodeNum] = str2.str().substr(6);
+
+	  ad3 = node[n]->GetDevice(2)->GetAddress();
+	  std::ostringstream str3;
+	  str3 << ad3;
+	  mac[n+2*nodeNum] = str3.str().substr(6);
+
   }
 
   std::cout << std::endl << "**********************************************" << std::endl;
