@@ -178,7 +178,7 @@ main(int argc, char* argv[])
   consumerHelper.SetAttribute("Frequency", DoubleValue(3.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
-  consumer.Stop(Seconds(10));
+  consumer.Stop(Seconds(50));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/test");
@@ -194,7 +194,7 @@ main(int argc, char* argv[])
   //  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
   //  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
-  Simulator::Stop(Seconds(10));
+  Simulator::Stop(Seconds(50));
 
   Simulator::Run();
   /*

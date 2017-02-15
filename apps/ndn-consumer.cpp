@@ -48,6 +48,8 @@ NS_OBJECT_ENSURE_REGISTERED(Consumer);
 
 static int counter = 0;
 
+static std::string allSendAndReceivedData = "";
+
 TypeId
 Consumer::GetTypeId(void)
 {
@@ -60,12 +62,12 @@ Consumer::GetTypeId(void)
 
       .AddAttribute("Prefix", "Name of the Interest", StringValue("/"),
                     MakeNameAccessor(&Consumer::m_interestName), MakeNameChecker())
-      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("10s"),
+      .AddAttribute("LifeTime", "LifeTime for interest packet", StringValue("4s"),
                     MakeTimeAccessor(&Consumer::m_interestLifeTime), MakeTimeChecker())
 
       .AddAttribute("RetxTimer",
                     "Timeout defining how frequent retransmission timeouts should be checked",
-                    StringValue("500ms"),
+                    StringValue("50ms"),
                     MakeTimeAccessor(&Consumer::GetRetxTimer, &Consumer::SetRetxTimer),
                     MakeTimeChecker())
 
@@ -206,6 +208,24 @@ Consumer::SendPacket()
   interest->setInterestTargetMacAddress("consumerTargetMac");
   interest->addMacAddressPath("consumer");
 
+
+	Name name;
+	name = interest->getName();
+	std::ostringstream tmpName;
+	tmpName << name;
+	std::string interestName = tmpName.str();
+
+	std::size_t found = -1;
+	std::size_t found2 = -1;
+	found = allSendAndReceivedData.find(interestName);
+	std::string interestNameEx = "OK: " + interestName;
+	found2 = allSendAndReceivedData.find(interestNameEx);
+	if(found == std::string::npos && found2 == std::string::npos) {
+		allSendAndReceivedData.append(interestName + "   \n");
+	}
+
+  //std::cout << "-> allSendAndReceivedData: " << allSendAndReceivedData << std::endl;
+
 // leads to 'boost::exception_detail::clone_impl<boost::exception_detail::error_info_injector<ndn::Block::Error> >'
 
   // NS_LOG_INFO ("Requesting Interest: \n" << *interest);
@@ -252,9 +272,25 @@ Consumer::OnData(shared_ptr<const Data> data)
   }
 
   std::cout << "*****************************************************************" << std::endl;
-  std::cout << ";) ;) consumer receiving data for: " << seq << " with hopcount: " << hopCount << " and name " << data->getName() << std::endl;
+  std::cout << "......consumer receiving data for: " << seq << " with hopcount: " << hopCount << " and name " << data->getName() << std::endl;
   std::cout << ";) ;) MacRoute of the data is: " << data->getMacDataRoute() << std::endl;
   std::cout << "*****************************************************************" << std::endl;
+
+	Name name;
+	name = data->getName();
+	std::ostringstream tmpName;
+	tmpName << name;
+	std::string dataName = tmpName.str();
+	std::string dataNameFound = "OK: " + dataName;
+	std::size_t found = -1;
+	std::size_t found2 = -1;
+	found = allSendAndReceivedData.find(dataName);
+	found2 = allSendAndReceivedData.find("OK: " + dataName);
+	if(found != std::string::npos && found2 == std::string::npos) {
+		allSendAndReceivedData.insert(found, "OK: ");
+	}
+
+	std::cout << "-> allSendAndReceivedData: " << allSendAndReceivedData << std::endl;
 
   // TODO: delete the following two lines after finished testing.
   counter++;

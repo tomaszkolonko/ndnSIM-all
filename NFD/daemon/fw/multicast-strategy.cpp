@@ -52,6 +52,8 @@ MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
 {
 }
 
+bool sortByLowestCost(fib::NextHop a, fib::NextHop b) { return a.getCost() < b.getCost(); }
+
 void
 MulticastStrategy::afterReceiveInterest(const Face& inFace,
                    const Interest& interest,
@@ -61,6 +63,15 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	bool NextHopHasValidMacAddress = false;
 	// they are already sorted by cost !!!
 	const fib::NextHopList& nexthops = fibEntry->getNextHops();
+	std::vector<fib::NextHop> nextHopsSorted = fibEntry->getNextHops();
+
+	std::sort(nextHopsSorted.begin(), nextHopsSorted.end(), sortByLowestCost);
+
+//		// SORTING DOES WORK
+//	  	for(int i = 0; i < nextHopsSorted.size(); i++) {
+//	  		std::cout << " sorted ? " << nextHopsSorted[i].getCost() << std::endl;
+//	  	}
+
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
 	std::string newCurrentOriginMac;
@@ -124,41 +135,46 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 //				 << "-- COST: " << it->getCost() << std::endl;
 
 		if (std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
-			std::cout << "it->getTargetMac() " << it->getTargetMac() << std::endl;
+			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
 			NextHopHasValidMacAddress = true;
+		} else {
+			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
 		}
 	}
 
-	// int i = 0;
 	if (NextHopHasValidMacAddress == true) { // SEND OUT SPECIFICALLY BRANCH
 		int i = 0;
 		int forwarded = 0;
-		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
-			// send only to the best three nextHops
-			if(i >= 3) break;
+		//for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 
-		  shared_ptr<Face> outFace = it->getFace();
+		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+
+			// send only to the best three nextHops
+			if(i >= 1) break;
+
+		  shared_ptr<Face> outFace = nextHopsSorted[vectorIndex].getFace();
 
 		  std::string targetMac; // = it->getMac();
 
 		  // if the targetMac of the interest is the same as of the targetMac of the NextHop, the interest will loop.
-		  if(interest.getInterestTargetMacAddress() == it->getTargetMac()) {
+		  if(interest.getInterestTargetMacAddress() == nextHopsSorted[vectorIndex].getTargetMac()) {
 			  i--;
-			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			  std::cout << "                           looping interests detected                               " << std::endl;
-			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "                           looping interests detected                               " << std::endl;
+//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  continue;
 			  // this->rejectPendingInterest(pitEntry);
 		  }
 
-		  if(std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
-			  const_cast<fib::NextHop&>(*it).incrementCost();
-			  targetMac = it->getTargetMac();
+		  if(std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
+			  nextHopsSorted[vectorIndex].incrementCost();
+			  std::cout << "it->getCost(): " << nextHopsSorted[vectorIndex].getCost() << std::endl;
+			  targetMac = nextHopsSorted[vectorIndex].getTargetMac();
 		  } else {
 			  i--;
-			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
-			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
+//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  continue;
 		  }
 
@@ -180,22 +196,24 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			  isNotBeingForwardedTo++;
 			}
 		}
-		if(forwarded <= 1) {
-			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			  std::cout << "                                being broadcasted after all -> " << forwarded << "                        " << std::endl;
-			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			// if(pitEntry->canForwardTo(*outFace) was false for all NextHops with a target mac, BROADCAST INTEREST !!!
-			NextHopHasValidMacAddress = false;
-		}
+//		if(forwarded <= 1) {
+//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "                                being broadcasted after all -> " << forwarded << "                        " << std::endl;
+//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			// if(pitEntry->canForwardTo(*outFace) was false for all NextHops with a target mac, BROADCAST INTEREST !!!
+//			NextHopHasValidMacAddress = false;
+//		}
 	}
 
 	if (NextHopHasValidMacAddress == false) { // BROADCAST BRANCH
 		std::string originMacBroadcasting;
 		unsigned int semaphoreBraodcasting = 0;
+		int twice = 0;
 		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
 			shared_ptr<Face> outFace = it->getFace();
 			std::string targetMac = "";
-			if (pitEntry->canForwardTo(*outFace)) {
+			if (pitEntry->canForwardTo(*outFace) && twice <= 2) {
+				twice++;
 				originMacBroadcasting = currentMacAddresses[semaphoreBraodcasting%2];
 				semaphoreBraodcasting++;
 				this->sendInterest(pitEntry, outFace, originMacBroadcasting, targetMac, inFace.getId());

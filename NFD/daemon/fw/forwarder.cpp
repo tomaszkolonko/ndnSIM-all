@@ -126,6 +126,13 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 	  }
   }
 
+
+
+  if(m_deadNonceList.has(interest.getName(), interest.getNonce())) {
+	  return;
+  }
+
+
   // PIT insert
   shared_ptr<pit::Entry> pitEntry = m_pit.insert(interest).first;
 
@@ -564,8 +571,6 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
-		if((inFace.getId() == 256 || inFace.getId() == 257 || inFace.getId() == 258 || inFace.getId() == 259
-						|| inFace.getId() == 260 || inFace.getId() == 261 || inFace.getId() == 263)) {
 			  for (const shared_ptr<pit::Entry>& pitEntry : pitMatches) {
 				  // TODO: gives back the wrong mac address (same as target...
 				  // std::string targetMac = pitEntry->getInterest().getInterestOriginMacAddress();
@@ -604,7 +609,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 			  if(node->GetId() == 0 && data.getDataTargetMacAddress() == "consumer") {
 				  std::cout << " 999 : probably never" << std::endl;
 			  }
-		}
+
 	  // ********************** some logic how to add more faces to the downstream *************************************
 	  // ***************************************************************************************************************
 
