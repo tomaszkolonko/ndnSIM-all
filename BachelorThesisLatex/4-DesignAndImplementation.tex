@@ -1,6 +1,38 @@
 \chapter{Design and Implementation}
 
+The main goal of this thesis is to extend the current ndnSIM 2.0 implementation in order to allow efficient communication between mobile agents. A first interest packet is broadcast by the consumer on one channel and forwarded by all intermediate nodes in a broadcast manner. Default routes are set by the NFD at the beginning and need to be overridden as soon as more information is obtained. (TODO: need to check how it is on base) Looping interests need to be identified and dropped in order to reduce bandwidth waste. After being forwarded by the intermediate nodes the interest arrives at the producer and a corresponding data packet is created. This packet returns to the consumer and will add routes by updating the FIB entries.
 
 \section{Problem Description}
 
+The current implementation relies only on face id's of the application or net device (\texttt{ndn::NetDevice}) which is sufficient for point to point connections but will not work on wireless communication like in the mobile ad-hoc scenarios investigated in this thesis. Wireless communication is inherently broadcasting and the nodes are responsible to accept the package if it was meant for them and drop it if it was only overheard. There cannot exist a "route" by defining the in-faces of an interest and forwarding it to out-faces obtained from the FIB entries. The same goes for data being forwarded through faces downstream towards a consumer. The topology is not known and changing fast so there needs to be a way to identify specific nodes in a consistent manner.
+
+If one route is found and the FIB entries updated, interests will follow this path to the producer and data will follow the breadcrumbs back to the consumer. That is likely to lead to congestions and incur unnecessary overhead on some of the intermediate nodes while leaving others out of the information flow all together. Having the possibility to chose from different channels and different paths will spread the load onto different intermediate nodes making congestions and retransmissions less likely.
+
+
 \section{Multipath Approach}
+
+In order to support paths the nodes must know where the packet did come from and for what node is was meant. The faces of the net device cannot be used since they are equal on each node. Every node assigns number id's from 256 to each face. All the nodes will have at least face id 256. Also the application faces will be the same on the consumer and the producer. That can be achieved by using the NDN's net device (\texttt{ndn::NetDevice}) mac addresses that are unique for each simulation. 
+
+\subsection{Changes to the Interest}
+
+What was changed with self-made figures
+
+\subsection{Changes to the Data}
+
+What was changed with self-made figures
+
+\subsection{Changes to the FIB}
+
+What was changed with self-made figures
+
+\subsection{Changes to the PIT}
+
+What was changed with self-made figures
+
+\section{Retransmissions}
+
+(TODO: every retransmission should be broadcast in order to tackle the ad-hoc component)
+
+\section{Mobility}
+
+explain trace-files....

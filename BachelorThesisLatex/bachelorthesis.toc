@@ -35,10 +35,16 @@
 \contentsline {subsubsection}{Outgoing Data Pipeline}{23}{section*.27}
 \contentsline {chapter}{\numberline {4}Design and Implementation}{24}{chapter.4}
 \contentsline {section}{\numberline {4.1}Problem Description}{24}{section.4.1}
-\contentsline {section}{\numberline {4.2}Multipath Approach}{24}{section.4.2}
-\contentsline {chapter}{\numberline {5}Evaluation}{25}{chapter.5}
-\contentsline {chapter}{\numberline {6}Conclusion}{26}{chapter.6}
-\contentsline {section}{\numberline {6.1}Summary and Conclusion}{26}{section.6.1}
-\contentsline {section}{\numberline {6.2}Future Work}{26}{section.6.2}
-\contentsline {chapter}{\numberline {7}Appendix}{27}{chapter.7}
-\contentsline {chapter}{Bibliography}{28}{chapter*.28}
+\contentsline {section}{\numberline {4.2}Multipath Approach}{25}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Changes to the Interest}{25}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Changes to the Data}{25}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Changes to the FIB}{25}{subsection.4.2.3}
+\contentsline {subsection}{\numberline {4.2.4}Changes to the PIT}{25}{subsection.4.2.4}
+\contentsline {section}{\numberline {4.3}Retransmissions}{25}{section.4.3}
+\contentsline {section}{\numberline {4.4}Mobility}{25}{section.4.4}
+\contentsline {chapter}{\numberline {5}Evaluation}{26}{chapter.5}
+\contentsline {chapter}{\numberline {6}Conclusion}{27}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusion}{27}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{27}{section.6.2}
+\contentsline {chapter}{\numberline {7}Appendix}{28}{chapter.7}
+\contentsline {chapter}{Bibliography}{29}{chapter*.28}
