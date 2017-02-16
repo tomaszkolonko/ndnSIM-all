@@ -50,6 +50,7 @@ static int counter = 0;
 
 static std::string allSendAndReceivedData = "";
 static int send = 0, received = 0;
+static std::vector<std::string> distinctPathsTakenOfData;
 
 TypeId
 Consumer::GetTypeId(void)
@@ -278,6 +279,15 @@ Consumer::OnData(shared_ptr<const Data> data)
   std::cout << ";) ;) MacRoute of the data is: " << data->getMacDataRoute() << std::endl;
   std::cout << "*****************************************************************" << std::endl;
 
+  std::vector<std::string>::iterator it;
+  it = std::find(distinctPathsTakenOfData.begin(), distinctPathsTakenOfData.end(), data->getMacDataRoute());
+  if(it == distinctPathsTakenOfData.end()) {
+	  // route not added yet
+	  distinctPathsTakenOfData.push_back(data->getMacDataRoute());
+  } else {
+	  // route exists already
+  }
+
 	Name name;
 	name = data->getName();
 	std::ostringstream tmpName;
@@ -293,8 +303,9 @@ Consumer::OnData(shared_ptr<const Data> data)
 		allSendAndReceivedData.insert(found, "OK: ");
 	}
 
-	std::cout << "-> allSendAndReceivedData: \n\n" << allSendAndReceivedData << std::endl;
-	std::cout << "-- -- -->> " << received << "/" << send << "<<-- -- --\n" << std::endl;
+	std::cout << "-> allSendAndReceivedData: \n\n" << allSendAndReceivedData << "\n"<< std::endl;
+	std::cout << "-- -- -->> " << received << "/" << send << "<<-- -- --" << std::endl;
+	std::cout << "-- -->> distinct routes: " << distinctPathsTakenOfData.size() << "<<-- --\n\n" << std::endl;
 
   // TODO: delete the following two lines after finished testing.
   counter++;

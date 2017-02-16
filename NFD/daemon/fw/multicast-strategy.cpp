@@ -143,8 +143,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		if (std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
 			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
 			NextHopHasValidMacAddress = true;
-		} else {
-			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
 		}
 	}
 
