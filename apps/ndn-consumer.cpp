@@ -294,7 +294,7 @@ Consumer::OnData(shared_ptr<const Data> data)
 	}
 
 	std::cout << "-> allSendAndReceivedData: \n\n" << allSendAndReceivedData << std::endl;
-	std::cout << "-- -- -->> " << send << "/" << received << "<<-- -- --\n" << std::endl;
+	std::cout << "-- -- -->> " << received << "/" << send << "<<-- -- --\n" << std::endl;
 
   // TODO: delete the following two lines after finished testing.
   counter++;
