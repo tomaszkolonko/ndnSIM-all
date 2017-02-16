@@ -1,0 +1,23 @@
+****** configuration ******
+
+seconds:	300 s
+frequency:	3 p.s.
+RetxTimer:	50 ms
+LifeTime:	4 s
+
+
+-> no FIB sorting
+-> no overhearing
+-> no movement
+-> 8 nodes
+-> forwarding to one FIB only
+
+
+
+
+****** RESULTS ******
+
+248/249 data received back at consumer
+248/249 = 99.6%
+
+6 distinct routes taken by data
