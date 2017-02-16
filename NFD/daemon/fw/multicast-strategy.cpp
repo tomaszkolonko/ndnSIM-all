@@ -63,17 +63,11 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	bool NextHopHasValidMacAddress = false;
 	// they are already sorted by cost !!!
-	const fib::NextHopList& nexthops = fibEntry->getNextHops();
-	std::vector<fib::NextHop> nextHopsSorted = fibEntry->getNextHops();
-//	const fib::NextHopList nexthopspointer = fibEntry->getNextHops();
-//	std::vector<fib::NextHop> *nextHopsSortedPointer = fibEntry->getNextHopsPointer();
+	std::vector<fib::NextHop>& nextHopsSorted = fibEntry->getNextHopsList();
 
 	//std::sort(nextHopsSorted.begin(), nextHopsSorted.end(), sortByLowestCost);
-
-//		// SORTING DOES WORK
-//	  	for(int i = 0; i < nextHopsSorted.size(); i++) {
-//	  		std::cout << " sorted ? " << nextHopsSorted[i].getCost() << std::endl;
-//	  	}
+	// SORTING HAS TO BE FOUND TO LEAD TO FIB ENTRIES ON WRONG PLACES LEADING TO WRONG CHOICES
+	// FIB ENTRIES ARE AS EXPECTED SORTED ALREADY...
 
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
@@ -135,13 +129,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 												// SOME PRINT STATEMENTS IF NEEDED: END
 
 
-	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-//		 std::cout << "4765: YOU ARE ON NODE (" << node->GetId() << ")" << " FIB ENTRY NAME: " << fibEntry->getPrefix()
-//				 << " size of next hops: " << nexthops.size() << " with target mac ad: " << it->getTargetMac()
-//				 << "-- COST: " << it->getCost() << std::endl;
+	std::cout << "     *** node (" << node->GetId() << ") ***" << std::endl;
 
-		if (std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
-			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
+	for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+		if (std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
 			NextHopHasValidMacAddress = true;
 		}
 	}
@@ -149,9 +140,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if (NextHopHasValidMacAddress == true) { // SEND OUT SPECIFICALLY BRANCH
 		int i = 0;
 		int forwarded = 0;
-		//for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 
-		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++, i++) {
 
 			// send only to the best three nextHops
 			if(i >= 1) break;
@@ -172,35 +162,11 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 		  if(std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 			  nextHopsSorted[vectorIndex].incrementCost();
-			  std::cout << "nextHopsSorted[vectorIndex].getCost() -> " << nextHopsSorted[vectorIndex].getCost() << std::endl;
-			  fibEntry->addNextHop(outFace, nextHopsSorted[vectorIndex].getCost(), nextHopsSorted[vectorIndex].getTargetMac());
-
-			  int index = 0;
-			  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-					std::cout << index << ") (" << node->GetId()  << ") it->getTargetMac(): " << it->getTargetMac() << " cost: " << it->getCost() << std::endl;
-				}
-
-
-
 			  targetMac = nextHopsSorted[vectorIndex].getTargetMac();
 		  } else {
 			  i--;
-//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-//			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
-//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  continue;
 		  }
-
-		  fibEntry->addNextHop(nextHopsSorted[vectorIndex].getFace(), nextHopsSorted[vectorIndex].getCost()+1,
-				  nextHopsSorted[vectorIndex].getTargetMac());
-			  for(int it = 0; it < nexthops.size(); ++it) {
-				  shared_ptr<fib::NextHop> nexthops2 = make_shared<fib::NextHop>(nexthops[it]);
-				  if(nextHopsSorted[vectorIndex].getFace() == nexthops[it].getFace()) {
-					  nexthops2->setCost(nexthops2->getCost()+1);
-
-			  }
-		  }
-
 
 		   // if (pitEntry->canForwardTo(*outFace)) {
 		  if (true) {
@@ -219,21 +185,14 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			  isNotBeingForwardedTo++;
 			}
 		}
-//		if(forwarded <= 1) {
-//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-//			  std::cout << "                                being broadcasted after all -> " << forwarded << "                        " << std::endl;
-//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-//			// if(pitEntry->canForwardTo(*outFace) was false for all NextHops with a target mac, BROADCAST INTEREST !!!
-//			NextHopHasValidMacAddress = false;
-//		}
 	}
 
 	if (NextHopHasValidMacAddress == false) { // BROADCAST BRANCH
 		std::string originMacBroadcasting;
 		unsigned int semaphoreBraodcasting = 0;
 		int twice = 0;
-		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-			shared_ptr<Face> outFace = it->getFace();
+		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+			shared_ptr<Face> outFace = nextHopsSorted[vectorIndex].getFace();
 			std::string targetMac = "";
 			if (pitEntry->canForwardTo(*outFace) && twice <= 2) {
 				twice++;
@@ -243,20 +202,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			}
 		}
 	}
-
-//	if (NextHopHasValidMacAddress == false) { // BROADCAST BRANCH
-//		std::string originMacBroadcasting;
-//		int smally = 0;
-//
-//		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, smally++) {
-//			if(smally >= 2) break;
-//			std::cout << "broadcasting : " << smally << " through: " << currentMacAddresses[smally] << std::endl;
-//			originMacBroadcasting = currentMacAddresses[smally];
-//
-//			this->sendInterest(pitEntry, it->getFace(), originMacBroadcasting, "", inFace.getId());
-//
-//		}
-//	}
 
 
 	if (!pitEntry->hasUnexpiredOutRecords()) {

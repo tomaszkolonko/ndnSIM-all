@@ -97,6 +97,7 @@ Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
   }
   // now it refers to the NextHop for face
 
+  // Prevents overriding the current set value
   if(it->getCost() == 0) {
 	  it->setCost(cost);
   }

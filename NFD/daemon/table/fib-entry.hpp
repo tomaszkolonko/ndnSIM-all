@@ -64,6 +64,9 @@ public:
   const NextHopList&
   getNextHops() const;
 
+  NextHopList&
+  getNextHopsList();
+
   /** \return whether this Entry has any NextHop record
    */
   bool
@@ -138,6 +141,12 @@ Entry::getPrefix() const
 
 inline const NextHopList&
 Entry::getNextHops() const
+{
+  return m_nextHops;
+}
+
+inline NextHopList&
+Entry::getNextHopsList()
 {
   return m_nextHops;
 }
