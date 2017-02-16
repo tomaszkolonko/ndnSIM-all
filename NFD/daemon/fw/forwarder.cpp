@@ -56,12 +56,7 @@ using fw::Strategy;
 
 const Name Forwarder::LOCALHOST_NAME("ndn:/localhost");
 
-static const int NET_DEVICE_ZERO = 0;
-static const int NET_DEVICE_ONE = 1;
-static const int NET_DEVICE_NONE = 2;
 static const int NET_DEVICE_INVALID = -1;
-
-static int semaphoreNetDevice = NET_DEVICE_INVALID;
 
 // static unsigned int semaphoreAlternate = NET_DEVICE_ZERO;
 
@@ -121,7 +116,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
 
   if(std::regex_match(interest.getInterestTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(currentMacAddresses[0] != interest.getInterestTargetMacAddress()
-			  && currentMacAddresses[1] != interest.getInterestTargetMacAddress() && currentMacAddresses[2] != interest.getInterestTargetMacAddress()) {
+			  && currentMacAddresses[1] != interest.getInterestTargetMacAddress()
+			  && currentMacAddresses[2] != interest.getInterestTargetMacAddress()) {
 		return;
 	  }
   }
@@ -443,18 +439,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   std::string localMac2 = tmpLocalMac2.str().substr(6);
   std::string localMac3 = tmpLocalMac3.str().substr(6);
 
-//  if(data.getDataOriginMacAddress() == localMac || data.getDataOriginMacAddress() == localMac2) {
-//	  std::cout << "3553: dropping" << std::endl;
-//	  return;
-//  }
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-//  if(node->GetId() == 0) {
-//	  std::cout << "++ you are on node 0 and the data path is: " << data.getMacDataRoute()
-//			  << " and targetMac is: " << data.getDataTargetMacAddress() << std::endl;
-//  }
 
 
   // %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -579,7 +567,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 																 it != outRecords.end(); ++it) {
 					  if((node->GetId() % 2) == 0) {
-						  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 269) {
+						  if(it->getFace()->getId() % 2 == 0 || it->getFace()->getId() == 275) {
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
@@ -591,7 +579,7 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 					  }
 
 					  if((node->GetId() % 2) == 1) {
-						  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 269) {
+						  if(it->getFace()->getId() % 2 == 1 || it->getFace()->getId() == 275) {
 							  // TODO: fix logic
 							  for(stringIterator = targetMacs.begin(); stringIterator != targetMacs.end(); stringIterator++) {
 								  dataWithNewTargetMac->setDataTargetMacAddress(*stringIterator);
@@ -760,19 +748,13 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 
 	if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 		if (node->GetId()!=7){
-		  if( initial_mac_target_data == this_NetDevice_Mac || initial_mac_target_data == this_NetDevice_Mac2 || initial_mac_target_data == this_NetDevice_Mac3) {
-			  //ns3::ndn::FibHelper::AddRoute(node, "/", outFace.getId(), 111, data.getDataOriginMacAddress());
-//			  shared_ptr<fib::Entry> fibEntry = m_fib.findLongestPrefixMatch("/");
-//			  const fib::NextHopList& nexthops = fibEntry->getNextHops();
-//			  for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-//				  // TODO: ???
-//			  }
+		  if( initial_mac_target_data == this_NetDevice_Mac || initial_mac_target_data == this_NetDevice_Mac2
+				  || initial_mac_target_data == this_NetDevice_Mac3) {
+
 		  } else {
 			  //ns3::ndn::FibHelper::AddRoute(node, "/", outFace.getId(), 222, data.getDataOriginMacAddress());
 			  return;
 		  }
-		} else if (node->GetId()==7) {
-			  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 		}
 	}
 
@@ -785,10 +767,6 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 	data2->setDataOriginMacAddress(this_NetDevice_Mac);
 	data2->setDataTargetMacAddress(macAddress);
 
-	// the only place where DataOriginMacAddress is set !!!!
-//	const_cast<Data&>(data).setDataOriginMacAddress(this_NetDevice_Mac);
-//	const_cast<Data&>(data).setDataTargetMacAddress(macAddress);
-
 
 	if(found == std::string::npos) {
 		//const_cast<Data&>(data).addMacDataRoute("\n\t       --> " + this_NetDevice_Mac);
@@ -797,13 +775,13 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 	// TODO traffic manager
 
 	// send Data
-	if (node->GetId() == 0) {
-		shared_ptr<Face> face= this->getFace(275);
-		outFace.sendData(*data2);
-	} else {
+//	if (node->GetId() == 0) {
+//		shared_ptr<Face> face= this->getFace(275);
+//		outFace.sendData(*data2);
+//	} else {
 		outFace.sendData(*data2);
 		++m_counters.getNOutDatas();
-	}
+	//}
 }
 
 static inline bool
