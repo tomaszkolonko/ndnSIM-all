@@ -49,6 +49,7 @@ NS_OBJECT_ENSURE_REGISTERED(Consumer);
 static int counter = 0;
 
 static std::string allSendAndReceivedData = "";
+static int send = 0, received = 0;
 
 TypeId
 Consumer::GetTypeId(void)
@@ -221,6 +222,7 @@ Consumer::SendPacket()
 	std::string interestNameEx = "OK: " + interestName;
 	found2 = allSendAndReceivedData.find(interestNameEx);
 	if(found == std::string::npos && found2 == std::string::npos) {
+		send++;
 		allSendAndReceivedData.append(interestName + "   \n");
 	}
 
@@ -287,10 +289,12 @@ Consumer::OnData(shared_ptr<const Data> data)
 	found = allSendAndReceivedData.find(dataName);
 	found2 = allSendAndReceivedData.find("OK: " + dataName);
 	if(found != std::string::npos && found2 == std::string::npos) {
+		received++;
 		allSendAndReceivedData.insert(found, "OK: ");
 	}
 
-	std::cout << "-> allSendAndReceivedData: " << allSendAndReceivedData << std::endl;
+	std::cout << "-> allSendAndReceivedData: \n\n" << allSendAndReceivedData << std::endl;
+	std::cout << "-- -- -->> " << send << "/" << received << "<<-- -- --\n" << std::endl;
 
   // TODO: delete the following two lines after finished testing.
   counter++;
