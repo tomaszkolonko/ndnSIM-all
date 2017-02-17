@@ -13,9 +13,13 @@
 \contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{17}{figure.caption.17}
 \contentsline {figure}{\numberline {3.7}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{18}{figure.caption.18}
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{19}{figure.caption.20}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces XXX\relax }}{21}{figure.caption.24}
-\contentsline {figure}{\numberline {3.10}{\ignorespaces XXX\relax }}{22}{figure.caption.26}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Outgoing interest pipeline\relax }}{21}{figure.caption.24}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Incoming data pipeline\relax }}{22}{figure.caption.26}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {4.1}{\ignorespaces This figure shows how mac addresses are added and checked within the incoming interest pipeline\relax }}{25}{figure.caption.28}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces This figure shows how mac addresses are added and checked within the incoming data pipeline\relax }}{27}{figure.caption.29}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces This figure shows the new FIB data structure\relax }}{28}{figure.caption.30}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces This figure shows the new PIT data structure\relax }}{29}{figure.caption.31}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }

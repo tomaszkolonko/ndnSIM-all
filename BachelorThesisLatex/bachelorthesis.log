@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  15 FEB 2017 13:19
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  17 FEB 2017 16:48
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -300,7 +300,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 )
 \Hy@SectionHShift=\skip52
 )
-(./bachelorthesis.aux)
+No file bachelorthesis.aux.
 \openout1 = `bachelorthesis.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 90.
@@ -318,7 +318,6 @@ LaTeX Font Info:    ... okay on input line 90.
 LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 90.
 LaTeX Font Info:    ... okay on input line 90.
 LaTeX Font Info:    Try loading font information for OT1+ptm on input line 90.
-
 (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/ot1ptm.fd
 File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 )
@@ -431,37 +430,33 @@ Package microtype Info: Loading generic settings for font family
  [1
 
 {/usr/local/texlive/2016/texmf-var/fonts/map/pdftex/updmap/pdftex.map}] [2]
-(./bachelorthesis.toc
-(/usr/local/texlive/2016/texmf-dist/tex/latex/microtype/mt-cmr.cfg
-File: mt-cmr.cfg 2013/05/19 v2.2 microtype config. file: Computer Modern Roman 
-(RS)
-)
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <10.95> on input line 5.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 5.
-LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 5.
- [1
 
-])
+Package hyperref Warning: old toc file detected, not used; run LaTeX again.
+
 \tf@toc=\write4
 \openout4 = `bachelorthesis.toc'.
 
+[1
 
-[2] (./bachelorthesis.lof)
+]
+
+Package hyperref Warning: old lof file detected, not used; run LaTeX again.
+
 \tf@lof=\write5
 \openout5 = `bachelorthesis.lof'.
 
- [3
+[2
 
-] (./bachelorthesis.lot)
+]
+
+Package hyperref Warning: old lot file detected, not used; run LaTeX again.
+
 \tf@lot=\write6
 \openout6 = `bachelorthesis.lot'.
 
- [4
+[3
 
-] [5
+] [4
 
 ]pdfTeX warning (ext4): destination with the same identifier (name{page.i}) has
  been already used, duplicate ignored
@@ -493,15 +488,20 @@ l.1 \chapter
 Chapter 2.
 [3
 
-] <./images/chapter-2/NetworkStack.jpg, id=292, 518.93875pt x 257.96375pt>
+] <./images/chapter-2/NetworkStack.jpg, id=58, 518.93875pt x 257.96375pt>
 File: ./images/chapter-2/NetworkStack.jpg Graphic file (type jpg)
 
 <use ./images/chapter-2/NetworkStack.jpg>
 Package pdftex.def Info: ./images/chapter-2/NetworkStack.jpg used on input line
  21.
 (pdftex.def)             Requested size: 311.36565pt x 154.77943pt.
- [4 <./images/chapter-2/NetworkStack.jpg>] <./images/chapter-2/InterestAndData.
-png, id=300, 636.3775pt x 266.9975pt>
+
+
+LaTeX Warning: Reference `fig:NetworkStack' on page 4 undefined on input line 2
+6.
+
+[4 <./images/chapter-2/NetworkStack.jpg>]
+<./images/chapter-2/InterestAndData.png, id=67, 636.3775pt x 266.9975pt>
 File: ./images/chapter-2/InterestAndData.png Graphic file (type png)
 
 <use ./images/chapter-2/InterestAndData.png>
@@ -509,15 +509,18 @@ Package pdftex.def Info: ./images/chapter-2/InterestAndData.png used on input l
 ine 38.
 (pdftex.def)             Requested size: 350.0087pt x 146.84906pt.
  [5 <./images/chapter-2/InterestAndData.png>] [6]
-<./images/chapter-2/SimpleInterestForwarding.png, id=315, 381.425pt x 493.845pt
->
+<./images/chapter-2/SimpleInterestForwarding.png, id=85, 381.425pt x 493.845pt>
 File: ./images/chapter-2/SimpleInterestForwarding.png Graphic file (type png)
- <use ./images/chapter-2/SimpleInterestForwarding.png>
+<use ./images/chapter-2/SimpleInterestForwarding.png>
 Package pdftex.def Info: ./images/chapter-2/SimpleInterestForwarding.png used o
 n input line 63.
 (pdftex.def)             Requested size: 171.63965pt x 222.22818pt.
  [7 <./images/chapter-2/SimpleInterestForwarding.png>] [8] [9]
-<./images/chapter-2/VANETecosystem.png, id=330, 818.05624pt x 655.44875pt>
+
+LaTeX Warning: Reference `fig:VANETecosystem' on page 10 undefined on input lin
+e 95.
+
+<./images/chapter-2/VANETecosystem.png, id=103, 818.05624pt x 655.44875pt>
 File: ./images/chapter-2/VANETecosystem.png Graphic file (type png)
 
 <use ./images/chapter-2/VANETecosystem.png>
@@ -527,7 +530,11 @@ ne 99.
  [10 <./images/chapter-2/VANETecosystem.png>]) (./3-ndnSIM.tex [11]
 Chapter 3.
 
-<./images/chapter-3/ndnSIMcomponentAbstraction.png, id=342, 590.205pt x 474.773
+LaTeX Warning: Reference `fig:NetworkStack' on page 12 undefined on input line 
+3.
+
+
+<./images/chapter-3/ndnSIMcomponentAbstraction.png, id=116, 590.205pt x 474.773
 74pt>
 File: ./images/chapter-3/ndnSIMcomponentAbstraction.png Graphic file (type png)
 
@@ -541,7 +548,12 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
  [12
 
 ]
-<./images/chapter-3/CommunicationLayerAbstraction.png, id=348, 506.89375pt x 40
+
+LaTeX Warning: Reference `fig:ndnSIMcomponentAbstraction' on page 13 undefined 
+on input line 18.
+
+
+<./images/chapter-3/CommunicationLayerAbstraction.png, id=123, 506.89375pt x 40
 0.49625pt>
 File: ./images/chapter-3/CommunicationLayerAbstraction.png Graphic file (type p
 ng)
@@ -553,7 +565,11 @@ sed on input line 26.
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [13 <./images/chapter-3/ndnSIMcomponentAbstraction.png>]
-<./images/chapter-3/PITdataStructure.png, id=354, 748.7975pt x 377.41pt>
+
+LaTeX Warning: Reference `fig:CommunicationLayerAbstraction' on page 14 undefin
+ed on input line 31.
+
+<./images/chapter-3/PITdataStructure.png, id=130, 748.7975pt x 377.41pt>
 File: ./images/chapter-3/PITdataStructure.png Graphic file (type png)
 
 <use ./images/chapter-3/PITdataStructure.png>
@@ -561,18 +577,29 @@ Package pdftex.def Info: ./images/chapter-3/PITdataStructure.png used on input
 line 43.
 (pdftex.def)             Requested size: 299.51369pt x 150.96132pt.
  [14 <./images/chapter-3/CommunicationLayerAbstraction.png>]
-<./images/chapter-3/FIBdataStructure.png, id=361, 563.10374pt x 192.72pt>
+
+LaTeX Warning: Reference `fig:PITdataStructure' on page 15 undefined on input l
+ine 48.
+
+
+LaTeX Warning: Citation `Afanasyev16' on page 15 undefined on input line 48.
+
+<./images/chapter-3/FIBdataStructure.png, id=138, 563.10374pt x 192.72pt>
 File: ./images/chapter-3/FIBdataStructure.png Graphic file (type png)
 
 <use ./images/chapter-3/FIBdataStructure.png>
 Package pdftex.def Info: ./images/chapter-3/FIBdataStructure.png used on input 
 line 56.
 (pdftex.def)             Requested size: 225.2375pt x 77.08662pt.
- [15 <./images/chapter-3/PITdataStructure.png> <./images/chapter-3/FIBdataStruc
-ture.png>]
-LaTeX Font Info:    Try loading font information for OMS+ptm on input line 68.
 
-(/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
+
+LaTeX Warning: Reference `fig:FIBdataStructure' on page 15 undefined on input l
+ine 61.
+
+[15 <./images/chapter-3/PITdataStructure.png> <./images/chapter-3/FIBdataStruct
+ure.png>]
+LaTeX Font Info:    Try loading font information for OMS+ptm on input line 68.
+ (/usr/local/texlive/2016/texmf-dist/tex/latex/psnfss/omsptm.fd
 File: omsptm.fd 
 )
 LaTeX Font Info:    Font shape `OMS/ptm/m/n' in size <10.95> not available
@@ -583,7 +610,7 @@ Underfull \hbox (badness 7415) in paragraph at lines 76--77
 rst time from the for-
  []
 
-<./images/chapter-3/Simulation.png, id=368, 642.4pt x 505.89pt>
+<./images/chapter-3/Simulation.png, id=147, 642.4pt x 505.89pt>
 File: ./images/chapter-3/Simulation.png Graphic file (type png)
 
 <use ./images/chapter-3/Simulation.png>
@@ -591,7 +618,11 @@ Package pdftex.def Info: ./images/chapter-3/Simulation.png used on input line 9
 2.
 (pdftex.def)             Requested size: 256.95544pt x 202.3524pt.
  [16]
-<./images/chapter-3/PITandFIBvis.png, id=376, 602.25pt x 446.66875pt>
+
+LaTeX Warning: Reference `fig:Simulation' on page 17 undefined on input line 97
+.
+
+<./images/chapter-3/PITandFIBvis.png, id=155, 602.25pt x 446.66875pt>
 File: ./images/chapter-3/PITandFIBvis.png Graphic file (type png)
 
 <use ./images/chapter-3/PITandFIBvis.png>
@@ -599,11 +630,21 @@ Package pdftex.def Info: ./images/chapter-3/PITandFIBvis.png used on input line
  101.
 (pdftex.def)             Requested size: 240.89572pt x 178.66432pt.
 
+
+LaTeX Warning: Reference `fig:PITandFIBvis' on page 17 undefined on input line 
+106.
+
+
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [17 <./images/chapter-3/Simulation.png> <./images/chapter-3/PITandFIBvis.png>]
 
-<./images/chapter-3/PipelinesAndStrategies.png, id=383, 937.5025pt x 478.78876p
+
+LaTeX Warning: Reference `fig:PipelinesAndStrategies' on page 18 undefined on i
+nput line 116.
+
+
+<./images/chapter-3/PipelinesAndStrategies.png, id=163, 937.5025pt x 478.78876p
 t>
 File: ./images/chapter-3/PipelinesAndStrategies.png Graphic file (type png)
  <use ./images/chapter-3/PipelinesAndStrategies.png>
@@ -622,69 +663,87 @@ Package microtype Info: Loading generic settings for font family
 (microtype)             For optimal results, create family-specific settings.
 (microtype)             See the microtype manual for details.
 
-Underfull \hbox (badness 3088) in paragraph at lines 152--153
+
+LaTeX Warning: Reference `fig:IncomingInterestPipeline' on page 19 undefined on
+ input line 152.
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 152--153
 \OT1/ptm/m/n/10.95 (+20) After re-ceiv-ing an in-ter-est pack-age through a fac
-e im-ple-mented in the face class
+e im-ple-mented in
  []
 
 
-<./images/chapter-3/IncomingInterestPipeline.png, id=390, 620.3175pt x 366.3687
+<./images/chapter-3/IncomingInterestPipeline.png, id=171, 620.3175pt x 366.3687
 4pt>
 File: ./images/chapter-3/IncomingInterestPipeline.png Graphic file (type png)
  <use ./images/chapter-3/IncomingInterestPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/IncomingInterestPipeline.png used o
 n input line 156.
 (pdftex.def)             Requested size: 248.1226pt x 146.54489pt.
- [19 <./images/chapter-3/IncomingInterestPipeline.png>] [20]
-Underfull \hbox (badness 6396) in paragraph at lines 185--186
+
+
+LaTeX Warning: Reference `fig:IncomingInterestPipeline' on page 19 undefined on
+ input line 161.
+
+[19 <./images/chapter-3/IncomingInterestPipeline.png>]
+
+LaTeX Warning: Reference `fig:SimpleInterestForwarding' on page 20 undefined on
+ input line 166.
+
+[20]
+Underfull \hbox (badness 6396) in paragraph at lines 187--188
 \OT1/ptm/m/n/10.95 (+20) If the Con-tentStore lookup in \OT1/pcr/m/n/10.95 Forw
 arder::onIncomingInterest \OT1/ptm/m/n/10.95 (+20) does yield
  []
 
 
-Underfull \hbox (badness 4765) in paragraph at lines 185--186
+Underfull \hbox (badness 5403) in paragraph at lines 187--188
 \OT1/ptm/m/n/10.95 (+20) a match, the con-tent store hit pipeline is called thr
-ough it's im-ple-men-ta-tion in
+ough its im-ple-men-ta-tion in
  []
 
 
-Underfull \hbox (badness 1168) in paragraph at lines 191--192
+LaTeX Warning: Reference `fig:OutgoingInterestPipeline' on page 21 undefined on
+ input line 193.
+
+
+Underfull \hbox (badness 1168) in paragraph at lines 193--194
 \OT1/ptm/m/n/10.95 (+20) The \OT1/pcr/m/n/10.95 Forwarder::onOutgoingInterest \
 OT1/ptm/m/n/10.95 (+20) method im-ple-ments the out-go-ing in-ter-est
  []
 
 
-<./images/chapter-3/OutgoingInterestPipeline.png, id=413, 612.2875pt x 215.8062
+<./images/chapter-3/OutgoingInterestPipeline.png, id=193, 612.2875pt x 215.8062
 4pt>
 File: ./images/chapter-3/OutgoingInterestPipeline.png Graphic file (type png)
  <use ./images/chapter-3/OutgoingInterestPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/OutgoingInterestPipeline.png used o
-n input line 195.
+n input line 197.
 (pdftex.def)             Requested size: 244.91066pt x 86.32095pt.
  [21 <./images/chapter-3/OutgoingInterestPipeline.png>]
-Underfull \hbox (badness 3701) in paragraph at lines 220--222
+
+LaTeX Warning: Reference `fig:IncomingDataPipeline' on page 22 undefined on inp
+ut line 223.
+
+
+Underfull \hbox (badness 3701) in paragraph at lines 222--224
 \OT1/pcr/m/n/10.95 Face::onReceiveData \OT1/ptm/m/n/10.95 (+20) fires when an d
 ata ar-rives at a face. It trig-gers the
  []
 
 
-<./images/chapter-3/IncomingDataPipeline.png, id=427, 641.39626pt x 410.53375pt
+<./images/chapter-3/IncomingDataPipeline.png, id=206, 641.39626pt x 410.53375pt
 >
 File: ./images/chapter-3/IncomingDataPipeline.png Graphic file (type png)
  <use ./images/chapter-3/IncomingDataPipeline.png>
 Package pdftex.def Info: ./images/chapter-3/IncomingDataPipeline.png used on in
-put line 225.
+put line 227.
 (pdftex.def)             Requested size: 256.55396pt x 164.21059pt.
  [22 <./images/chapter-3/IncomingDataPipeline.png>]
-Underfull \hbox (badness 10000) in paragraph at lines 235--236
+Underfull \hbox (badness 10000) in paragraph at lines 237--238
 []\OT1/ptm/m/n/10.95 (+20) The re-spon-si-ble strat-egy is de-ter-mined and tri
 g-gers the method
- []
-
-
-Underfull \hbox (badness 1189) in paragraph at lines 235--236
-\OT1/pcr/m/n/10.95 Strategy::beforeSatisfyInterest\OT1/ptm/m/n/10.95 (+20) . By
- de-fault it is empty in ndnSIM
  []
 
 ) (./4-DesignAndImplementation.tex [23]
@@ -700,21 +759,104 @@ Underfull \vbox (badness 10000) has occurred while \output is active []
 
  [24
 
-])
-(./5-Evaluation.tex [25]
+]
+
+LaTeX Warning: Reference `fig:incomingInterestPipelineWithMac' on page 25 undef
+ined on input line 26.
+
+
+<./images/chapter-4/incomingInterestPipelineWithMac.png, id=242, 608.2725pt x 2
+45.91875pt>
+File: ./images/chapter-4/incomingInterestPipelineWithMac.png Graphic file (type
+ png)
+ <use ./images/chapter-4/incomingInterestPipelineWithMac.png>
+Package pdftex.def Info: ./images/chapter-4/incomingInterestPipelineWithMac.png
+ used on input line 30.
+(pdftex.def)             Requested size: 364.96632pt x 147.55237pt.
+
+[25 <./images/chapter-4/incomingInterestPipelineWithMac.png>]
+
+LaTeX Warning: Reference `fig:incomingInterestPipelineWithMac' on page 26 undef
+ined on input line 37.
+
+[26]
+
+LaTeX Warning: Reference `fig:incomingDataPipelineWithMac' on page 27 undefined
+ on input line 61.
+
+
+<./images/chapter-4/incomingDataPipelineWithMac.png, id=261, 648.4225pt x 383.4
+325pt>
+File: ./images/chapter-4/incomingDataPipelineWithMac.png Graphic file (type png
+)
+ <use ./images/chapter-4/incomingDataPipelineWithMac.png>
+Package pdftex.def Info: ./images/chapter-4/incomingDataPipelineWithMac.png use
+d on input line 65.
+(pdftex.def)             Requested size: 389.0565pt x 230.06126pt.
+ [27 <./images/chapter-4/incomingDataPipelineWithMac.png>]
+
+LaTeX Warning: Reference `fig:FIBdataStructure' on page 28 undefined on input l
+ine 87.
+
+
+<./images/chapter-4/newFIBdataStructure.png, id=274, 787.94376pt x 310.15875pt>
+File: ./images/chapter-4/newFIBdataStructure.png Graphic file (type png)
+<use ./images/chapter-4/newFIBdataStructure.png>
+Package pdftex.def Info: ./images/chapter-4/newFIBdataStructure.png used on inp
+ut line 92.
+(pdftex.def)             Requested size: 472.7699pt x 186.09668pt.
+
+Overfull \hbox (54.51622pt too wide) in paragraph at lines 92--93
+ [][] 
+ []
+
+
+LaTeX Warning: Reference `fig:FIBdataStructure' on page 28 undefined on input l
+ine 97.
+
+
+LaTeX Warning: Reference `fig:PITdataStructure' on page 28 undefined on input l
+ine 101.
+
+
+Underfull \vbox (badness 1681) has occurred while \output is active []
+
+ [28 <./images/chapter-4/newFIBdataStructure.png>]
+<./images/chapter-4/newPITdataStructure.png, id=283, 761.84625pt x 437.635pt>
+File: ./images/chapter-4/newPITdataStructure.png Graphic file (type png)
+
+<use ./images/chapter-4/newPITdataStructure.png>
+Package pdftex.def Info: ./images/chapter-4/newPITdataStructure.png used on inp
+ut line 105.
+(pdftex.def)             Requested size: 457.11128pt x 262.58302pt.
+
+Overfull \hbox (38.8576pt too wide) in paragraph at lines 105--106
+ [][] 
+ []
+
+
+LaTeX Warning: Reference `fig:newPITdataStructure' on page 29 undefined on inpu
+t line 110.
+
+) (./5-Evaluation.tex
+Underfull \vbox (badness 4096) has occurred while \output is active []
+
+ [29 <./images/chapter-4/newPITdataStructure.png>] [30]
 Chapter 5.
-) (./6-Conclusion.tex [26
+) (./6-Conclusion.tex [31
 
 ]
 Chapter 6.
-) (./7-Appendix.tex [27
+) (./7-Appendix.tex [32
 
 ]
 Chapter 7.
-) (./8-Bibliography.tex [28
+) (./8-Bibliography.tex [33
+
+] [34
 
 ]
-Underfull \hbox (badness 10000) in paragraph at lines 62--64
+Underfull \hbox (badness 10000) in paragraph at lines 102--104
 []\OT1/ptm/m/n/10.95 (+20) "PyViz," https://www.nsnam.org/wiki/PyViz, 2017. [On
 -line]. Avail-able:
  []
@@ -722,25 +864,42 @@ Underfull \hbox (badness 10000) in paragraph at lines 62--64
 )
 No file bachelorthesis.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 144.
-[29
+[35pdfTeX warning (ext4): destination with the same identifier (name{cite.wu11}
+) has been already used, duplicate ignored
 
-]
+\AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
+                                                  \fi \fi 
+l.144 \end{document}
+                    ]
 Package atveryend Info: Empty hook `AfterLastShipout' on input line 144.
  (./bachelorthesis.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 144.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 144.
-Package rerunfilecheck Info: File `bachelorthesis.out' has not changed.
-(rerunfilecheck)             Checksum: F50D153927ED2B35EFB06A2E473D4E67;2677.
+
+
+Package rerunfilecheck Warning: File `bachelorthesis.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `bachelorthesis.out':
+(rerunfilecheck)             Before: D41D8CD98F00B204E9800998ECF8427E;0
+(rerunfilecheck)             After:  D08127D930D5AE43CC425F25B8718831;2677.
+
+LaTeX Warning: There were undefined references.
+
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 144.
  ) 
 Here is how much of TeX's memory you used:
- 9203 strings out of 493014
- 145603 string characters out of 6133351
- 260901 words of memory out of 5000000
- 12251 multiletter control sequences out of 15000+600000
- 37927 words of font info for 179 fonts, out of 8000000 for 9000
+ 9115 strings out of 493014
+ 144244 string characters out of 6133351
+ 259309 words of memory out of 5000000
+ 12130 multiletter control sequences out of 15000+600000
+ 37083 words of font info for 186 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 36i,7n,39p,1519b,415s stack positions out of 5000i,500n,10000p,200000b,80000s
+ 36i,7n,39p,1519b,457s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
 exlive/2016/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/te
 xlive/2016/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb></usr/local/texlive/20
@@ -749,10 +908,10 @@ f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on bachelorthesis.pdf (38 pages, 1147705 bytes).
+Output written on bachelorthesis.pdf (43 pages, 1273797 bytes).
 PDF statistics:
- 544 PDF objects out of 1000 (max. 8388607)
- 471 compressed objects within 5 object streams
- 134 named destinations out of 1000 (max. 500000)
- 30095 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 402 PDF objects out of 1000 (max. 8388607)
+ 317 compressed objects within 4 object streams
+ 161 named destinations out of 1000 (max. 500000)
+ 28251 words of extra memory for PDF output out of 29859 (max. 10000000)
 
