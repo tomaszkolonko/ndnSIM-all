@@ -170,7 +170,7 @@ main(int argc, char* argv[])
   }
 
   std::cout << std::endl << "**********************************************" << std::endl;
-  for(int n = 0; n < 2*nodeNum; n++) {
+  for(int n = 0; n < 3*nodeNum; n++) {
 	  std::cout << "testing mac" << n << ": " << mac[n] << std::endl;
   }
   std::cout << "**********************************************" << std::endl << std::endl;

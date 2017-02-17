@@ -35,8 +35,6 @@ const Name MulticastStrategy::STRATEGY_NAME("ndn:/localhost/nfd/strategy/multica
 NFD_REGISTER_STRATEGY(MulticastStrategy);
 
 const bool debug = false;
-static int isBeingForwardedTo = 0;
-static int isNotBeingForwardedTo = 0;
 
 static const int NET_DEVICE_ZERO = 0;
 static const int NET_DEVICE_ONE = 1;
@@ -53,8 +51,6 @@ MulticastStrategy::MulticastStrategy(Forwarder& forwarder, const Name& name)
 {
 }
 
-bool sortByLowestCost(fib::NextHop a, fib::NextHop b) { return a.getCost() < b.getCost(); }
-
 void
 MulticastStrategy::afterReceiveInterest(const Face& inFace,
                    const Interest& interest,
@@ -64,10 +60,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	bool NextHopHasValidMacAddress = false;
 	// they are already sorted by cost !!!
 	std::vector<fib::NextHop>& nextHopsSorted = fibEntry->getNextHopsList();
-
-	//std::sort(nextHopsSorted.begin(), nextHopsSorted.end(), sortByLowestCost);
-	// SORTING HAS TO BE FOUND TO LEAD TO FIB ENTRIES ON WRONG PLACES LEADING TO WRONG CHOICES
-	// FIB ENTRIES ARE AS EXPECTED SORTED ALREADY...
 
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
@@ -129,30 +121,30 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 												// SOME PRINT STATEMENTS IF NEEDED: END
 
 
-	std::cout << "     *** node (" << node->GetId() << ") ***" << std::endl;
-
 	for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
 		if (std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
+			std::cout << "it->getTargetMac() " << nextHopsSorted[vectorIndex].getTargetMac()  << " and cost: "
+					<< nextHopsSorted[vectorIndex].getCost() << std::endl;
 			NextHopHasValidMacAddress = true;
 		}
 	}
 
 	if (NextHopHasValidMacAddress == true) { // SEND OUT SPECIFICALLY BRANCH
-		int i = 0;
 		int forwarded = 0;
+		//for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 
-		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++, i++) {
-
-			// send only to the best three nextHops
-			if(i >= 1) break;
+		int i = 0;
+		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+			if (i == 1) {
+				break;
+			}
 
 		  shared_ptr<Face> outFace = nextHopsSorted[vectorIndex].getFace();
 
-		  std::string targetMac; // = it->getMac();
+		  std::string targetMac = ""; // = it->getMac();
 
 		  // if the targetMac of the interest is the same as of the targetMac of the NextHop, the interest will loop.
 		  if(interest.getInterestTargetMacAddress() == nextHopsSorted[vectorIndex].getTargetMac()) {
-			  i--;
 //			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 //			  std::cout << "                           looping interests detected                               " << std::endl;
 //			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
@@ -161,29 +153,32 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		  }
 
 		  if(std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
-			  nextHopsSorted[vectorIndex].incrementCost();
 			  targetMac = nextHopsSorted[vectorIndex].getTargetMac();
 		  } else {
-			  i--;
+//			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
+//			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
+//			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  continue;
 		  }
 
+
 		   // if (pitEntry->canForwardTo(*outFace)) {
 		  if (true) {
-			  isBeingForwardedTo++;
 			  forwarded++;
 			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			  std::cout << "                                YEAH forward to: " << targetMac << "                         " << std::endl;
 			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			this->sendInterest(pitEntry, outFace, newCurrentOriginMac, targetMac, inFace.getId());
-		  } else {
-			  // find a new nexthop!
-			  i--;
+			  i++;
+			  this->sendInterest(pitEntry, outFace, newCurrentOriginMac, targetMac, inFace.getId());
+			  nextHopsSorted[vectorIndex].incrementCost();
+		  }
+		}
+
+		if(forwarded == 0) {
 			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			  std::cout << "                                cannot forward to: " << targetMac << "                         " << std::endl;
+			  std::cout << "                                being broadcasted after all -> " << forwarded << "                        " << std::endl;
 			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
-			  isNotBeingForwardedTo++;
-			}
+			  NextHopHasValidMacAddress = false;
 		}
 	}
 
@@ -196,8 +191,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			std::string targetMac = "";
 			if (pitEntry->canForwardTo(*outFace) && twice <= 2) {
 				twice++;
-				originMacBroadcasting = currentMacAddresses[semaphoreBraodcasting%3];
-				semaphoreBraodcasting++;
+				originMacBroadcasting = currentMacAddresses[(++semaphoreBraodcasting)%3];
 				this->sendInterest(pitEntry, outFace, originMacBroadcasting, targetMac, inFace.getId());
 			}
 		}

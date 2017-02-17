@@ -450,9 +450,10 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   // **********************************************************************************************
 
 
-  if (node->GetId() == 7 && data.getDataOriginMacAddress() != "producer Mac") {
-  	  return;
-  }
+	// SHOULD NEVER HAPPEN ANYWAY and has no effect on this scenario
+//  if (node->GetId() == 7 && data.getDataOriginMacAddress() != "producer Mac") {
+//  	  return;
+//  }
 
   if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(data.getDataTargetMacAddress() == currentMacAddresses[0] || data.getDataTargetMacAddress() == currentMacAddresses[1]
@@ -464,7 +465,17 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 	  }
 	  // FOR NOW ELSE {} HAS NO EFFECT
   } else if (node->GetId() == 7 && data.getDataTargetMacAddress() == "lowerLayerOfProducer") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
+	  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
+  } else if (node->GetId() == 0 && (data.getDataTargetMacAddress() == "consumer" || false)) {
+
+	  //ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
+  } else {
+	  // TODO: I THINK HERE IS A MISTAKE
+//	  std::cout << "data has no target mac!!! how is that even possible?" << std::endl;
+//	  std::cout << "data.targetMac: " << data.getDataTargetMacAddress() << std::endl;
+//	  std::cout << "data.originMac: " << data.getDataOriginMacAddress() << std::endl;
+//	  std::cout << "5556" << std::endl;
+	  //return;
   }
 
   string initial_mac_target_data = data.getDataTargetMacAddress();
@@ -543,6 +554,8 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 				  shared_ptr<Data> dataWithNewTargetMac = make_shared<Data>(data);
 
 				  const pit::OutRecordCollection& outRecords = pitEntry->getOutRecords();
+
+				  // TODO I THINK THIS IS WRONG !!!!
 				  for (pit::OutRecordCollection::const_iterator it = outRecords.begin();
 																 it != outRecords.end(); ++it) {
 					  if((node->GetId() % 2) == 0) {
