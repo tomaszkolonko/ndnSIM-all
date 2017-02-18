@@ -75,15 +75,16 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 8;
+  int nodeNum = 16;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
   std::string traceFile2 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile2";
   std::string traceFile3 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile3";
   std::string traceFile4 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-8nodes";
+  std::string traceFile5 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-16nodes";
 
-  std::string currentTraceFile = traceFile4;
+  std::string currentTraceFile = traceFile5;
 
   CommandLine cmd;
   cmd.AddValue ("traceFile", "Ns2 movement trace file", currentTraceFile);
@@ -129,6 +130,7 @@ main(int argc, char* argv[])
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  NetDeviceContainer wifiNetDevices4 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
   // 2. Install Mobility model
   Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
