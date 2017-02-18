@@ -3,7 +3,7 @@
 #  (consumer) ---- (1) ----------(4) ---- (producer)
 #                    \           /
 #                     (5) --- (6)
-
+# basic final scenario as it is. static.
 
 #consumer
 $node_(0) set X_ 150

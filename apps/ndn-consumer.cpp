@@ -49,8 +49,13 @@ NS_OBJECT_ENSURE_REGISTERED(Consumer);
 static int counter = 0;
 
 static std::string allSendAndReceivedData = "";
-static int send = 0, received = 0;
+static int retransmissions = 0;
 static std::vector<std::string> distinctPathsTakenOfData;
+
+const int NUMBER_OF_INTERESTS = 1000;
+const int NUMBER_OF_DATA = 5;
+static std::string results[NUMBER_OF_INTERESTS][NUMBER_OF_DATA];
+
 
 TypeId
 Consumer::GetTypeId(void)
@@ -92,7 +97,7 @@ Consumer::Consumer()
   , m_seqMax(0) // don't request anything
 {
   NS_LOG_FUNCTION_NOARGS();
-
+  std::fill(results[0], results[0] +  NUMBER_OF_INTERESTS * NUMBER_OF_DATA, "x");
   m_rtt = CreateObject<RttMeanDeviation>();
 }
 
@@ -217,14 +222,15 @@ Consumer::SendPacket()
 	tmpName << name;
 	std::string interestName = tmpName.str();
 
-	std::size_t found = -1;
-	std::size_t found2 = -1;
-	found = allSendAndReceivedData.find(interestName);
-	std::string interestNameEx = "OK: " + interestName;
-	found2 = allSendAndReceivedData.find(interestNameEx);
-	if(found == std::string::npos && found2 == std::string::npos) {
-		send++;
-		allSendAndReceivedData.append(interestName + "   \n");
+	for(int i = 0; i < NUMBER_OF_INTERESTS; i++) {
+		if(results[i][0] == interestName) {
+			retransmissions++;
+			break;
+		} else if(results[i][0] == "x") {
+			results[i][0] = interestName;
+			results[i][2] = std::to_string(Simulator::Now().GetNanoSeconds());
+			break;
+		}
 	}
 
   //std::cout << "-> allSendAndReceivedData: " << allSendAndReceivedData << std::endl;
@@ -293,19 +299,43 @@ Consumer::OnData(shared_ptr<const Data> data)
 	std::ostringstream tmpName;
 	tmpName << name;
 	std::string dataName = tmpName.str();
-	std::string dataNameFound = "OK: " + dataName;
-	std::size_t found = -1;
-	std::size_t found2 = -1;
-	found = allSendAndReceivedData.find(dataName);
-	found2 = allSendAndReceivedData.find("OK: " + dataName);
-	if(found != std::string::npos && found2 == std::string::npos) {
-		received++;
-		allSendAndReceivedData.insert(found, "OK: ");
+
+	for(int i = 0; i < NUMBER_OF_INTERESTS; i++) {
+		if(results[i][0] == dataName && results[i][0] != "OK") {
+			results[i][1] = "OK";
+			results[i][3] = std::to_string(Simulator::Now().GetNanoSeconds());
+			results[i][4] = std::to_string(std::stod(results[i][3]) - std::stod(results[i][2]));
+		} else if(results[i][0] == "x") {
+			break;
+		}
+
+	}
+
+	double totalLatency = 0;
+	int arrivedData = 0;
+	int send = 0;
+	for(int i = 0; i < NUMBER_OF_INTERESTS; i++) {
+		if(results[i][0] != "x") {
+			std::cout << results[i][0] << " - " << results[i][1] << " - " << results[i][2] << " - " << results[i][3] << " - "
+					<< results[i][4] << std::endl;
+			send++;
+			if(results[i][1] == "OK") {
+				arrivedData++;
+				totalLatency += std::stod(results[i][4]);
+			}
+		} else {
+			break;
+		}
 	}
 
 	std::cout << "-> allSendAndReceivedData: \n\n" << allSendAndReceivedData << "\n"<< std::endl;
-	std::cout << "-- -- -->> " << received << "/" << send << "<<-- -- --" << std::endl;
-	std::cout << "-- -->> distinct routes: " << distinctPathsTakenOfData.size() << "<<-- --\n\n" << std::endl;
+	std::cout << "-- -- -->> " << arrivedData << "/" << send << "<<-- -- --" << std::endl;
+    std::cout << "-- -- -->> RETRANSMISSIONS: " << retransmissions << "<<-- -- --" << std::endl;
+    std::cout << "-- -- -->> RETRANSMISSIONS + SENDS: " << retransmissions + send << "<<-- -- --\n" << std::endl;
+	std::cout << "-- -->> distinct routes: " << distinctPathsTakenOfData.size() << "<<-- --\n" << std::endl;
+	std::cout << "-- -->> average latency: " << totalLatency/arrivedData << " ns <<-- --\n" << std::endl;
+	std::cout << "-- -->> average latency: " << (totalLatency/arrivedData)/1000 << " us <<-- --\n" << std::endl;
+	std::cout << "-- -->> average latency: " << (totalLatency/arrivedData)/1000000 << " ms <<-- --\n" << std::endl;
 
   // TODO: delete the following two lines after finished testing.
   counter++;

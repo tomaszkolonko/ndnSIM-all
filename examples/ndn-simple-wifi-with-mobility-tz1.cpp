@@ -75,15 +75,22 @@ main(int argc, char* argv[])
   std::cout.precision (2);
   std::cout.setf (std::ios::fixed);
   // if this number is changed, you will need to update the consumerHelper and producerHelper-install methods
-  int nodeNum = 8;
+  int nodeNum = 16;
 
   double deltaTime = 10;
   std::string traceFile1 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile1";
   std::string traceFile2 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile2";
   std::string traceFile3 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile3";
   std::string traceFile4 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-8nodes";
+  std::string traceFile5 = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-16nodes";
 
-  std::string currentTraceFile = traceFile4;
+  std::string tracefiles[50];
+  tracefiles[8] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-8nodes";
+  tracefiles[16] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-16nodes";
+  tracefiles[24] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-24nodes";
+  tracefiles[32] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-32nodes";
+
+  std::string currentTraceFile = tracefiles[nodeNum];
 
   CommandLine cmd;
   cmd.AddValue ("traceFile", "Ns2 movement trace file", currentTraceFile);
@@ -129,6 +136,9 @@ main(int argc, char* argv[])
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  NetDeviceContainer wifiNetDevices4 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  //NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+
 
   // 2. Install Mobility model
   Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
@@ -170,7 +180,7 @@ main(int argc, char* argv[])
   }
 
   std::cout << std::endl << "**********************************************" << std::endl;
-  for(int n = 0; n < 2*nodeNum; n++) {
+  for(int n = 0; n < 3*nodeNum; n++) {
 	  std::cout << "testing mac" << n << ": " << mac[n] << std::endl;
   }
   std::cout << "**********************************************" << std::endl << std::endl;
@@ -186,7 +196,7 @@ main(int argc, char* argv[])
   consumerHelper.SetAttribute("Frequency", DoubleValue(3.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
-  consumer.Stop(Seconds(300));
+  consumer.Stop(Seconds(600));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/test");
@@ -202,7 +212,7 @@ main(int argc, char* argv[])
   //  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
   //  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
-  Simulator::Stop(Seconds(300));
+  Simulator::Stop(Seconds(600));
 
   Simulator::Run();
   /*

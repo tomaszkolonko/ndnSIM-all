@@ -117,7 +117,8 @@ Forwarder::onIncomingInterest(Face& inFace, const Interest& interest)
   if(std::regex_match(interest.getInterestTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(currentMacAddresses[0] != interest.getInterestTargetMacAddress()
 			  && currentMacAddresses[1] != interest.getInterestTargetMacAddress()
-			  && currentMacAddresses[2] != interest.getInterestTargetMacAddress()) {
+			  && currentMacAddresses[2] != interest.getInterestTargetMacAddress()
+			  && currentMacAddresses[3] != interest.getInterestTargetMacAddress()) {
 		return;
 	  }
   }
@@ -456,9 +457,11 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
   if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(data.getDataTargetMacAddress() == currentMacAddresses[0] || data.getDataTargetMacAddress() == currentMacAddresses[1]
-			  || data.getDataTargetMacAddress() == currentMacAddresses[2]) {
+			  || data.getDataTargetMacAddress() == currentMacAddresses[2]
+			  || data.getDataTargetMacAddress() == currentMacAddresses[3]) {
 		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
 	  } else {
+		  // WITH OR WITHOUT OVERHEARING
 		  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
 		  return;
 	  }
@@ -659,6 +662,8 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace)
 	// check if this device's mac address has been added already to the interest. If yes the position of the
 	// start position will be returned if the madAddress has not yet been added to the interest the function
 	// will return std::string::npos
+
+    // TODO WHY IS IT STILL LIKE THAT????
 	std::size_t found = data_macRoute.find(currentMacAddresses[0]);
 
 	// the only place where DataOriginMacAddress is set !!!!
@@ -715,8 +720,10 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 		this_NetDevice_Mac = currentMacAddresses[1];
 	} else if (initial_mac_target_data == currentMacAddresses[2]) {
 		this_NetDevice_Mac = currentMacAddresses[2];
+	} else if (initial_mac_target_data == currentMacAddresses[3]){
+		this_NetDevice_Mac = currentMacAddresses[3];
 	} else {
-		this_NetDevice_Mac = currentMacAddresses[producerMacSemaphore%3];
+		this_NetDevice_Mac = currentMacAddresses[producerMacSemaphore%4];
 		producerMacSemaphore++;
 	}
 
@@ -726,7 +733,8 @@ Forwarder::onOutgoingData(const Data& data, Face& outFace, std::string macAddres
 	if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 		if (node->GetId()!=7){
 		  if( initial_mac_target_data != currentMacAddresses[0] && initial_mac_target_data != currentMacAddresses[1]
-				  && initial_mac_target_data != currentMacAddresses[2]) {
+				  && initial_mac_target_data != currentMacAddresses[2]
+				  && initial_mac_target_data != currentMacAddresses[3]) {
 			  return;
 		  }
 		}
