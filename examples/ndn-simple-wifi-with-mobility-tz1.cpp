@@ -86,7 +86,7 @@ main(int argc, char* argv[])
 
   std::string tracefiles[50];
   tracefiles[8] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-8nodes";
-  tracefiles[16] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-16nodes";
+  tracefiles[16] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-16nodesss";
   tracefiles[24] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-24nodes";
   tracefiles[32] = "src/ndnSIM/examples/trace-files/ndn-simple-wifi-tracefile-32nodes";
 
@@ -143,6 +143,11 @@ main(int argc, char* argv[])
   // 2. Install Mobility model
   Ns2MobilityHelper ns2 = Ns2MobilityHelper (currentTraceFile);
   ns2.Install ();
+//
+//  MobilityHelper mobility;
+//
+//  mobility.SetMobilityModel ("ns3::RandomWalk2dMobilityModel",
+//		  "Bounds", RectangleValue (Rectangle (-50, 50, -50, 50)));
 
   // 3. Install NDN stack -> L3Protocol
   NS_LOG_INFO("Installing NDN stack");
@@ -196,7 +201,7 @@ main(int argc, char* argv[])
   consumerHelper.SetAttribute("Frequency", DoubleValue(3.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
-  consumer.Stop(Seconds(600));
+  consumer.Stop(Seconds(300));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/test");
@@ -212,7 +217,7 @@ main(int argc, char* argv[])
   //  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
   //  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
-  Simulator::Stop(Seconds(600));
+  Simulator::Stop(Seconds(300));
 
   Simulator::Run();
   /*

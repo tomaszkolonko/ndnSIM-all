@@ -133,11 +133,16 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		}
 	}
 
+
 	if (NextHopHasValidMacAddress == true) { // SEND OUT SPECIFICALLY BRANCH
 		int forwarded = 0;
+		int i = 0;
 		//for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it, ++i) {
 
 		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+			if( i > 1) {
+				break;
+			}
 
 		  shared_ptr<Face> outFace = nextHopsSorted[vectorIndex].getFace();
 
@@ -169,7 +174,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			  std::cout << "                                YEAH forward to: " << targetMac << "                         " << std::endl;
 			  std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 			this->sendInterest(pitEntry, outFace, newCurrentOriginMac, targetMac, inFace.getId());
-			break;
+			i++;
 		  }
 		}
 

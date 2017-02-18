@@ -215,6 +215,14 @@ Consumer::SendPacket()
   interest->setInterestTargetMacAddress("consumerTargetMac");
   interest->addMacAddressPath("consumer");
 
+//  for(int i = 0; i < 300; i++) {
+//	  for(int f = 1; f < 15; f++) {
+//		  if(f!=7) {
+//			  std::cout << "$ns_ at " << 5*i << " \"$node_(" << f << ") setdest "
+//					  << (rand() % 500 + 100) << " " << (rand() % 500 + 100) << " " << (rand() % 10) << "\"" << std::endl;
+//		  }
+//	  }
+//  }
 
 	Name name;
 	name = interest->getName();
