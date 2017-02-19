@@ -3,4 +3,21 @@
 
 \section{Summary and Conclusion}
 
+The goal of this thesis was to improve the current implementation (as of ndnSIM version 2.0) of the multicast-strategy in several ways. It has been shown that routing can be done through mac addresses over wifi 802.11a without the faces originally used by ndnSIM. A multicast strategy was implemented and tests against the existing multicast strategy. On all the measured parameters the new implementation outperformed the current.
+Comparing the percentage of satisfied interests obtained in the static scenario by both implementations, a significant improvement could be observed. Taking also the number of interests and data packages into account, it becomes clear that the performance has been increased many fold with reduced strain on the bandwidth of the network. The constant latency in the new implementation shows that over time there is no significant accumulation of unsatisfied interests floating inside the network.
+
+\vspace{5mm} %5mm vertical space
+
+The results on the dynamic scenario are less clear and comparable since no good measures could be obtained with the current implementation in ndnSIM. The main reason is that more nodes are broadcasting and the congestion problem already mentioned in the static scenario is exponentially worsened in the scenario with 16 nodes. The percentage of satisfied interests could be drastically increased over all simulation times. It does start lower than on the static scenario but that was expected since the topology is more complex and moving. As the satisfied interests accumulate the percentage goes steadily up. The amount of interests send out to the network and being satisfied has been also improved. In the base implementation there is no significant raise in interests being sent out. That is due to retransmissions and lost packages through congestion. After 600 seconds of simulation only 5 interests have been satisfied compared to 109 interests being satisfied with the new multicast strategy. The average latency seems to be better in the simulations of 100 and 200 seconds (base implementation). That is due one interests being satisfied very fast. As soon as another package arrives, the average latency time rises far above the average latency that is achieved with the new strategy.
+
 \section{Future Work}
+
+CCN and it's implementation in NDN are still in the early beginnings although already several years into research. As devices get more in number and become highly mobile there are many scenarios that need further investigation.
+
+\subsection{Static 8 nodes scenario}
+
+For the static 8 nodes scenario interesting future work could be improving on dynamic route selection by comparing response time. Therefore not needing to arbitrary increment the cost of often used FIB entries but incrementing or decrementing the cost according to feedback added to the data, as has been shown in the evaluation that lower cost lead to faster and more reliable forwarding of the interests. Therefore keeping the cost as low as possible is important for a performant network. NACKs (negative acknowledgments) could be implemented reducing the time between retransmissions. Adding 100 or 200 nodes to the current scenario would give important insight into scalability of the used implementation, especially since scalability is an important feature and advantage of the CCN architecture. The achieved improvements could be potentially be multiplied by introducing a CS to the scenario. Since the main focus of this thesis was the forwarding algorithm, the CS implementation was not included. CS and Scalability become even more interesting when several consumers and producers are added to the simulation.
+
+\subsection{Dynamic 8 nodes scenario}
+
+For the dynamic 16 node scenario introducing a timer for the FIB entries should result in more sophisticated routing. If a FIB entry has not been used for a certain amount of time it should be deleted forcing flooding and therefore get current information about the next neighbour topology.

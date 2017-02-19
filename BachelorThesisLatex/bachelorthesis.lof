@@ -21,5 +21,13 @@
 \contentsline {figure}{\numberline {4.3}{\ignorespaces This figure shows the new FIB data structure\relax }}{28}{figure.caption.30}
 \contentsline {figure}{\numberline {4.4}{\ignorespaces This figure shows the new PIT data structure\relax }}{29}{figure.caption.31}
 \addvspace {10\p@ }
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Basic static scenario with 8 nodes, 1 consumer and 1 producer\relax }}{32}{figure.caption.32}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Satisfaction ratio at different simulation times for both implementations\relax }}{33}{figure.caption.33}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Number of sent and received packages over simulation time\relax }}{34}{figure.caption.34}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Latency of both implementations over simulation time\relax }}{35}{figure.caption.35}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Ad-hoc scenario with 16 nodes and movement, 1 consumer and 1 producer\relax }}{36}{figure.caption.36}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Satisfaction ratio at different simulation times for both implementations with mobility\relax }}{37}{figure.caption.37}
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Number of sent and received packages over simulation time\relax }}{37}{figure.caption.38}
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Latency of both implementations over simulation time\relax }}{38}{figure.caption.39}
 \addvspace {10\p@ }
 \addvspace {10\p@ }
