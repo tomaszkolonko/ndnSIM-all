@@ -1,12 +1,14 @@
 \chapter{ndnSIM}
 
-NDN is a newly proposed Internet communication paradigm that tries to keep most of the well accepted and tested TCP/IP Internet architecture (as shown in \ref{fig:NetworkStack}), while evolving the thin waist introducing many new features. These features differ in fundamental ways from a point-to-point communication architecture and need to be simulated extensively under constantly changing parameters and implementations.
+Named Data Networking (NDN) is a newly proposed Internet communication paradigm that tries to keep most of the well accepted and tested TCP/IP Internet architecture (as shown in \ref{fig:NetworkStack}), while evolving the thin waist introducing many new features. These features differ in fundamental ways from a point-to-point communication architecture and need to be simulated extensively under constantly changing parameters and implementations.
 
 NdnSIM is an open source simulator for NDN networks within the existing NS-3 simulator framework. Its main goals are to facilitate experimentation inside the research community and make all basic NDN protocol operations accessible and therefore changeable like routing, data caching, packet forwarding and congestion management. Packet-level interoperability with CCNx implementation is given in order to support traffic measurements, traffic traces and analysis tools between CCNx and ndnSIM. Large-scale simulations should be supported and made easy to set up through helper classes. Helper classes automate the repetitive creation of single entities like nodes and set them up in a standardized way. Therefore, the simulator has been implemented in a very modular fashion making it very easy to modify, replace or re-implement specific components like the FIB, PIT or forwarding strategy. Replacing components have minimal or no impact on other components, as long as they adhere to the modules API's and other components they interact with.
 
+\newpage
+
 \section{Design overview}
 
-NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modelled components making experimentation on one hand very fine-grained and on the other hand very isolated and decoupled from the rest. The NDN core protocol stack can be installed on every simulated network node in a consistent manner through helpers, that take care of all the parts that need to play together like the inter-node communication with installed applications through their respective application faces.
+NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modeled components making experimentation on one hand very fine-grained and on the other hand very isolated and decoupled from the rest. The NDN core protocol stack can be installed on every simulated network node in a consistent manner through helpers, that take care of all the parts that need to play together like the inter-node communication with installed applications through their respective application faces.
 
 \begin{figure}[H]
   \centering
@@ -15,11 +17,11 @@ NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modelled
   \label{fig:ndnSIMcomponentAbstraction}
 \end{figure}
 
-The basic component abstractions are seen in figure \ref{fig:ndnSIMcomponentAbstraction}. The core NDN Protocol is the ndn::L3Protocol that receives interest and data packages from upper and lower layers through the corresponding faces. As of ndnSIM version 2.0 there are two distinct faces: the application face (ndn::AppFace) is responsible for inter-node communication between the application and the node itself while the net device face (ndn::NetDeviceFace) is responsible for inter-network communication with different nodes. Other faces for different purposes are expected to be added by the core developer or the community as needed. The CS (ndn::ContentStore) is an abstraction for in-network caching of data and can easily be omitted or replaced by another implementation of a different storing policy. The PIT (ndn::Pit) abstracts the data structure that is responsible to log all received interests with their nonce and incoming faces while the FIB (ndn::Fib) abstracts the data structure to guide the strategy in interest forwarding. The Strategy (ndn::ForwadingStrategy) is responsible to implement how interests and data are forwarded. That includes lookups in the content store for cached data, in PIT for already forwarded interests and in FIB if both previous searches didn't yield any matches. Each action in the forwarder of the strategy is represented as a virtual function in the forwarder header class and can be overwritten.
+The basic component abstractions are seen in figure \ref{fig:ndnSIMcomponentAbstraction}. The core NDN Protocol is the ndn::L3Protocol that receives interest and data packages from upper and lower layers through the corresponding faces. As of ndnSIM version 2.0 there are two distinct faces: the application face (ndn::AppFace) is responsible for inter-node communication between the application and the node itself while the net device face (ndn::NetDeviceFace) is responsible for inter-network communication with different nodes. Other faces for different purposes are expected to be added by the core developer or the community as needed. The CS (ndn::ContentStore) is an abstraction for in-network caching of data and can easily be omitted or replaced by another implementation of a different storing policy. The PIT (ndn::Pit) abstracts the data structure that is responsible for logging all received interests with their nonce and incoming faces while the FIB (ndn::Fib) abstracts the data structure to guide the strategy in interest forwarding. The Strategy (ndn::ForwadingStrategy) is responsible for implementing how interests and data are forwarded. That includes lookups in the content store for cached data, in PIT for already forwarded interests and in FIB if both previous searches didn't yield any matches. Each action in the forwarder of the strategy is represented as a virtual function in the forwarder header class and can be overwritten.
 
 \subsection{Face abstraction}
 
-The face abstraction plays an important role in the overall modularity of the NDN simulator by acting as an interface therefore making ndnSIM design independent from any underlying transport layers. All communication between application, the NDN core protocol and other nodes with the L3 protocol happens through faces that take care of any needed conversion.
+The face abstraction plays an important role in the overall modularity of the NDN simulator by acting as an interface, therefore, making ndnSIM design independent from any underlying transport layers. All communication between application, the NDN core protocol and other nodes with the L3 protocol happens through faces that take care of any needed conversion.
 
 \begin{figure}[H]
   \centering
@@ -45,7 +47,9 @@ The PIT data structure keeps information about each forwarded interest. Each PIT
   \label{fig:PITdataStructure}
 \end{figure}
 
-Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they relate to each other. There are also two additional timers on every PIT entry that are not explicitly shown here. The \emph{unsatisfy timer} is the lifetime of an interest and counts down. If it reaches 0 the PIT entry has expired and needs to be forwarded again. The \emph{straggler timer} starts counting down as soon a interest got rejected or satisfied. The straggler timer gives the node the time to detect further loops by the satisfied or rejected interest still floating within the network. Also, data plane measurements of returning data might require to still finish obtaining data points just after that event. Deleting the PIT entry immediately, there would be no means to detect loops and acquire valuable measurements \cite{Afanasyev16}. After the straggler timer runs out the PIT entry is deleted. The PIT abstraction provides basic functions to insert, lookup, delete PIT entries and get measurements if necessary.
+Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they relate to each other. There are also two additional timers on every PIT entry that are not explicitly shown here. The \emph{unsatisfy timer} is the lifetime of an interest and counts down. If it reaches 0 the PIT entry has expired and needs to be forwarded again. The \emph{straggler timer} starts counting down as soon an interest got rejected or satisfied. The straggler timer gives the node the time to detect further loops by the satisfied or rejected interest still floating within the network. Also, data plane measurements of returning data might require to still finish obtaining data points just after that event. Deleting the PIT entry immediately, there would be no means to detect loops and acquire valuable measurements \cite{Afanasyev16}. After the straggler timer runs out the PIT entry is deleted. The PIT abstraction provides basic functions to insert, lookup, delete PIT entries and get measurements if necessary.
+
+\newpage
 
 \subsection{Forwarding Information Base (FIB) abstraction}
 
@@ -58,22 +62,22 @@ The FIB guides the forwarding strategy in making decisions about Interest forwar
   \label{fig:FIBdataStructure}
 \end{figure}
 
-As shown in Figure \ref{fig:FIBdataStructure} each FIB entry that has been identified by longest-prefix match has an aggregated collection of NextHops. The NextHop collection must be non-empty and for every NextHop there is one outgoing face towards a possible content source. There may only be one NextHop with a specific face id. The FIB abstraction provides basic insertions, deletions and exact match operations.
+As shown in Figure \ref{fig:FIBdataStructure} each FIB entry that has been identified by longest-prefix match has an aggregated collection of NextHops. The NextHop collection must be non-empty and for every NextHop there is one outgoing face towards a possible content source. There may only be one NextHop with a specific face id. The FIB abstraction provides basic insertions, deletions, and exact match operations.
 
 \subsection{Forwarding Strategy abstraction}
 
-NdnSIM's modular architecture allows to experiment with different types of forwarding strategies without having to adapt any core components. The forwarder class interacts with the strategy and has the following important functions:
+NdnSIM's modular architecture allows experimenting with different types of forwarding strategies without having to adapt any core components. The forwarder class interacts with the strategy and has the following important functions:
 
 \begin{itemize}
 \item \emph{onIncomingInterest}: checks for localhost violations and if the interests have looped. Then the function inserts or updates the PIT, resets its timers and looks if the interest can be satisfied by cached data.
 \item \emph{onContenStoreMiss}: if there is no data to satisfy the interest, the strategy is called.
 \item \emph{onOutgoingInterest}: this function is called by the strategy and forwards the interest to the outgoing faces.
-\item \emph{onIncomingData}: checks for localhost violations and if there are any PIT entries for that data. If there are no PIT entries the data is dropped, otherwise the data will be handed on to the onOutgoingData function.
+\item \emph{onIncomingData}: checks for localhost violations and if there are any PIT entries for that data. If there are no PIT entries the data is dropped, otherwise, the data will be handed on to the onOutgoingData function.
 \item \emph{onOutgoingData}: forwards the data downstream towards the content requester.
 \end{itemize}
 
 
-The strategy is called on three occasions. The first time from the forwarder::onContentStoreMiss(), when the decision has to be made how to forward the interest upstream. The second time from the forwarder::onContentStoreHit() to decide how to proceed with an satisfied interest. And the last time from the forwarder::onIncomingData()
+The strategy is called on three occasions. The first time from the forwarder::onContentStoreMiss(), when the decision has to be made how to forward the interest upstream. The second time from the forwarder::onContentStoreHit() to decide how to proceed with a satisfied interest. And the last time from the forwarder::onIncomingData()
 
 \vspace{5mm} %5mm vertical space
 
@@ -82,6 +86,7 @@ The strategy has one important function:
 \begin{itemize}
 \item \emph{afterReceiveInterest}: it receives the interest and the corresponding FIB and PIT entries from the forwarder and decides how to forward them further and through which faces.
 \end{itemize}
+
 
 \section{Simulation Environment}
 
@@ -94,7 +99,7 @@ The NS-3 simulator supports several simulation environments. In this thesis, NS-
   \label{fig:Simulation}
 \end{figure}
 
-Figure \ref{fig:Simulation} shows a current scenario in development. Zoom and speed can interactively be adjusted. The simulation can be started and paused at any time. Node specific information can be shown while hovering over the node. Traffic between the nodes is visualized by green lines. The current utilized bandwidth is mentioned just above the traffic lines in a live simulation.
+Figure \ref{fig:Simulation} shows a current scenario in development. Zoom and speed can interactively be adjusted. The simulation can be started and paused at any time. Node-specific information can be shown while hovering over the node. Traffic between the nodes is visualized by green lines. The current utilized bandwidth is mentioned just above the traffic lines in a live simulation.
 
 \begin{figure}[H]
   \centering
@@ -113,7 +118,7 @@ All the above mentioned modular components and abstractions are implemented and 
 
 \vspace{5mm} %5mm vertical space
 
-Packet processing in NFD is accomplished through forwarding pipelines and forwarding strategies. A forwarding pipeline is an aggregation of different steps that are applied on a packet or a PIT entry. Forwarding pipelines are triggered by specific events like the reception of an Interest, detection of a loop, of when an interest is ready to be forwarded further, etc. A forwarding strategy is attached at the beginning or the end of a pipeline and supports it with information about how and when to forward the interest. Figure \ref{fig:PipelinesAndStrategies} shows the interactions between forwarding pipelines and strategies. For the thesis relevant pipelines will be shortly described.
+Packet processing in NFD is accomplished through forwarding pipelines and forwarding strategies. A forwarding pipeline is an aggregation of different steps that are applied on a packet or a PIT entry. Forwarding pipelines are triggered by specific events like the reception of an Interest, detection of a loop, of when an interest is ready to be forwarded further, etc. A forwarding strategy is attached at the beginning or the end of a pipeline and supports it with information about how and when to forward the interest. Figure \ref{fig:PipelinesAndStrategies} shows the interactions between forwarding pipelines and strategies. For the thesis, relevant pipelines will be shortly described.
 
 \begin{figure}[H]
   \centering
@@ -122,7 +127,7 @@ Packet processing in NFD is accomplished through forwarding pipelines and forwar
   \label{fig:PipelinesAndStrategies}
 \end{figure}
 
-Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about failure to satisfy a particular interest). After a pipeline has finished it's processing the package is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
+Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about the failure to satisfy a particular interest). After a pipeline has finished it's processing the package is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
 
 \begin{itemize}
 \item \emph{Interest Processing Path}
@@ -165,7 +170,7 @@ The following is a short step by step description of the pipeline in figure  \re
 \item Next the name of the interest with its nonce is checked against the dead nonce list. That happens before the PIT entry is created for the incoming interest (supplements the regular nonce checking through PIT entries). If the tuple of interest and nonce have been processed already, the incoming interest has been looped and will be handed off to the interest loop pipeline.
 \item Using the name and the selectors of the interest the PIT is searched for matches. If no match can be found a new PIT entry is created, otherwise an existing PIT entry is updated with the new information mainly the inFace and timers. In Figure \ref{fig:SimpleInterestForwarding} of chapter 2 the CS was checked first, then the PIT was searched and created if necessary. NFD has a slightly different approach. It is expected that the CS will be much larger than the PIT. A search in the CS may take much longer than a PIT lookup, and if a pending interest is present the CS lookup can be omitted saving time and resources.
 \item The nonce of the interest is checked against the nonces in the PIT and if a loop or multi-path arrival is detected the interest will be handed off to the interest loop pipeline. If no loop or multi-path arrival is detected the forwarding process is continued.
-\item Since a new valid interest arrived and the PIT entries got updated, the current unsatisfy timer (fires when the PIT entry expires) and the straggler timer (fires when PIT entry is no longer needed after it has been satisfied or rejected) are cancelled.
+\item Since a new valid interest arrived and the PIT entries got updated, the current unsatisfy timer (fires when the PIT entry expires) and the straggler timer (fires when PIT entry is no longer needed after it has been satisfied or rejected) are canceled.
 \item This step checks if the interest is pending (if the PIT entry has already another in-record from the same or different face).
 \item If there is no PIT entry a CS lookup is needed in order to satisfy the interest (ContentStore hit) or forward it (ContentStore miss). If there is already a pending interest the CS lookup has been done already on a previous interest that led to a PIT entry since no match could be found.
 \end{enumerate}
@@ -184,7 +189,7 @@ The incoming interest pipeline has finished.
 
 \subsubsection{ContentStore Hit Pipeline}
 
-If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} does yield a match, the content store hit pipeline is called through its implementation in \texttt{Forwarder::onContentStoreHit}. The parameters include the interest packet, incoming face, the PIT entry and the data. The straggler timer is being set since the interest is about to be satisfied. After that the data is handed off to the outgoing data pipeline.
+If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} does yield a match, the content store hit pipeline is called through its implementation in \texttt{Forwarder::onContentStoreHit}. The parameters include the interest packet, incoming face, the PIT entry and the data. The straggler timer is being set since the interest is about to be satisfied. After that, the data is handed off to the outgoing data pipeline.
 
 The incoming interest pipeline has finished.
 
@@ -233,9 +238,9 @@ The following figure \ref{fig:IncomingDataPipeline} summarizes the steps taken b
 \item Like with the incoming interest pipeline the /localhost scope needs to be checked. Data may not contain the prefix /localhost when coming from a non-local face.
 \item The incoming data needs to be checked against the PIT entries to find out if it is solicited or unsolicited. The data is unsolicited if no matching PIT entry is found. In this case, it is forwarded to the next pipeline: data unsolicited.
 \item If one or more PIT entries have been found the data is solicited and therefore inserted into the CS. How the data is processed in the CS is up to the policies defined in the content store.
-\item The unsatisfy and straggler timers for all matched PIT entries need to be cancelled since the interest is being satisfied.
+\item The unsatisfy and straggler timers for all matched PIT entries need to be canceled since the interest is being satisfied.
 \item The responsible strategy is determined and triggers the method \texttt{Strategy::beforeSatisfyInterest}. By default, it is empty in ndnSIM 2.0 and can be implemented by a custom strategy overriding the method.
-\item The nonce of the data is added to the dead nonce list for further loop detection, since interest and data could still be floating inside the network. This is necessary because the next steps delete the corresponding in- and out-records of the PIT entry and the nonce would be lost. 
+\item The nonce of the data is added to the dead nonce list for further loop detection since interest and data could still be floating inside the network. This is necessary because the next steps delete the corresponding in- and out-records of the PIT entry and the nonce would be lost. 
 \item The PIT entry is marked satisfied. All in-records and out-records (corresponding to the incoming face of the data) are being deleted.
 \item For every pending downstream the data is handed off to the next pipeline, the outgoing data pipeline, with its corresponding face. NFD takes care that the data is handed off only once for every distinct downstream, even if several PIT entries are found.
 \end{enumerate}
@@ -247,9 +252,9 @@ The outgoing data pipeline is implemented in \texttt{Forwarder::onOutgoingData} 
 This pipeline has three steps:
 
 \begin{enumerate}
-\item The localhost scope is checked. Data with the prefix /localhost are not permitted to be send out through a non-local face.
+\item The localhost scope is checked. Data with the prefix /localhost are not permitted to be sent out through a non-local face.
 \item This step is reserved for traffic management and traffic shaping but not implemented in ndnSIM 2.0 yet.
-\item The data packet is send out through it's out-face.
+\item The data packet is sent out through it's out-face.
 \end{enumerate}
 
 

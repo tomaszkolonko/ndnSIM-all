@@ -1,23 +1,23 @@
 \chapter{Design and Implementation}
 
-The main goal of this thesis is to extend the current ndnSIM 2.0 implementation in order to allow efficient communication between mobile agents. A first interest packet is broadcast by the consumer on one channel and forwarded by all intermediate nodes in a broadcast manner. Default routes are set by the NFD at the beginning and need to be overridden as soon as more information is obtained. (TODO: need to check how it is on base) Looping interests need to be identified and dropped in order to reduce bandwidth waste. After being forwarded by the intermediate nodes the interest arrives at the producer and a corresponding data packet is created. This packet returns to the consumer and will add routes by updating the FIB entries.
+The main goal of this thesis is to extend the current ndnSIM 2.0 implementation in order to allow efficient communication between mobile agents. A first interest packet is broadcast by the consumer on one channel and forwarded by all intermediate nodes in a broadcast manner. Default routes are set by the NFD at the beginning and need to be overridden as soon as more information is obtained. Looping interests need to be identified and dropped in order to reduce bandwidth waste. After being forwarded by the intermediate nodes the interest arrives at the producer and a corresponding data packet is created. This packet returns to the consumer and will add routes by updating the FIB entries.
 
 \section{Problem Description}
 
-The current implementation relies only on face id's of the application or net device (\texttt{ndn::NetDevice}) which is sufficient for point to point connections but will not work on wireless communication like in the mobile ad-hoc scenarios investigated in this thesis. All examples found so far use a point to point topology where wires connect different faces of different nodes. Sending an interest to one face defines automatically on which face and node the interest will arrive. A path exists and is uniquely identified by the combination of node and face. Wireless communication is inherently broadcasting and the nodes are responsible to accept the package if it was meant for them and drop it if it was only overheard. There cannot exist a "route" by defining the in-faces of an interest and forwarding it to out-faces obtained from the FIB entries. The same goes for data being forwarded through faces downstream towards a consumer. The topology is not known and changing fast so there needs to be a way to identify specific nodes in a consistent manner.
+The current implementation relies only on face id's of the application or net device (\texttt{ndn::NetDevice}) which is sufficient for point to point connections but will not work on wireless communication like in the mobile ad-hoc scenarios investigated in this thesis. All examples found so far use a point to point topology where wires connect different faces of different nodes. Sending an interest to one face defines automatically on which face and node the interest will arrive. A path exists and is uniquely identified by the combination of node and face. Wireless communication is inherently broadcasting and the nodes are responsible for accepting the package if it was meant for them and drop it if it was only overheard. There cannot exist a "route" by defining the in-faces of an interest and forwarding it to out-faces obtained from the FIB entries. The same goes for data being forwarded through faces downstream towards a consumer. The topology is not known and changing fast so there needs to be a way to identify specific nodes in a consistent manner.
 
 If one route is found and the FIB entries updated, interests will follow this path to the producer and data will follow the breadcrumbs back to the consumer. That will likely lead to congestions and incur unnecessary overhead on some of the intermediate nodes. Other nodes are potentially left out all together since no FIB entries are configured to point to them. Having the possibility to chose from different channels and different paths will spread the load onto different intermediate nodes making congestions and retransmissions less likely.
 
-No content store has been implement. This thesis focuses on a new forwarding strategy for ad-hoc vehicular networks. In the two distinct scenarios only one consumer and one producer are used and the consumer requests different data every time. A content store caches data for later use if another consumer happens to request the very same data. If more consumer are introduced a content store implementation should not be missing.
+No content store has been implemented. This thesis focuses on a new forwarding strategy for ad-hoc vehicular networks. In the two distinct scenarios, only one consumer and one producer are used and the consumer requests different data every time. A content store caches data for later use if another consumer happens to request the very same data. If more consumer are introduced a content store implementation should not be missing.
 
 
 \section{Multipath Approach}
 
-In order to support paths the nodes must know where the packet did come from and where to forward it to. ndnSIM's default installation solves this issue through faces which are attached to the net devices of the nodes. The faces of the net device cannot be used since they are equal on each node. Numbers starting from 256 are assigned to the faces as id's in an incrementing order and if there are 10 nodes in the network there will be 10 faces with the same face id of 256. Also the application faces will be the same on the consumer and the producer. In order to solve this problem a new identifier needs to be found that can identify each node. Net devices are required for any kind of inter-node connections and they have unique MAC addresses, which are set at the beginning for every simulation and won't clash with other net devices. Therefore they make a perfect substitution for the current faces used for point to point configurations and can be used in wifi scenarios. Net Devices are implemented in ndnSIM through the \texttt{ndn::NetDevice} class.
+In order to support paths, the nodes must know where the packet did come from and where to forward it to. ndnSIM's default installation solves this issue through faces which are attached to the net devices of the nodes. The faces of the net device cannot be used since they are equal on each node. Numbers starting from 256 are assigned to the faces as id's in an incrementing order and if there are 10 nodes in the network there will be 10 faces with the same face id of 256. Also, the application faces will be the same on the consumer and the producer. In order to solve this problem, a new identifier needs to be found that can identify each node. Net devices are required for any kind of inter-node connections and they have unique MAC addresses, which are set at the beginning for every simulation and won't clash with other net devices. Therefore they make a perfect substitution for the current faces used for point to point configurations and can be used in WiFi scenarios. Net Devices are implemented in ndnSIM through the \texttt{ndn::NetDevice} class.
 
 \subsection{Changes to the Interest}
 
-In order to populate the FIB entries, the information about the topology must be communicated to all surrounding neighbours. The information about previous nodes that have been encountered, while forwarding the interest towards a potential content source, can be added to the interest. That makes it possible to forward the data downstream towards the requester by following the breadcrumbs left in the PIT entries. These breadcrumbs consist in our implementation of the mac addresses of the net device from the previous node. The interest has three new fields:
+In order to populate the FIB entries, the information about the topology must be communicated to all surrounding neighbors. The information about previous nodes that have been encountered, while forwarding the interest towards a potential content source, can be added to the interest. That makes it possible to forward the data downstream towards the requester by following the breadcrumbs left in the PIT entries. These breadcrumbs consist in our implementation of the MAC addresses of the net device from the previous node. The interest has three new fields:
 
 \begin{itemize}
 \item \emph{std::string m\_interestOriginMacAddress}: This field has the MAC address of the previous node.
@@ -34,33 +34,33 @@ The following figure \ref{fig:incomingInterestPipelineWithMac} illustrated the M
   \label{fig:incomingInterestPipelineWithMac}
 \end{figure}
 
-At the beginning of the simulation no knowledge about the topology is present. The first interest is broadcast. Since the FIB entries have not yet been populated with information on neighbouring nodes and their mac address, the first interest cannot have a valid targetMacAddress. The missing mac address signals to all receiving nodes that the interest is being flooded through the network and needs to be broadcast further. After information about the topology is present the interest will have a valid mac address of the target it is supposed to reach.
+At the beginning of the simulation, no knowledge about the topology is present. The first interest is broadcast. Since the FIB entries have not yet been populated with information on neighboring nodes and their MAC address, the first interest cannot have a valid targetMacAddress. The missing MAC address signals to all receiving nodes that the interest is being flooded through the network and needs to be broadcast further. After information about the topology is present the interest will have a valid MAC address of the target it is supposed to reach.
 
 When a node receives an interest either from another node or from an application, the following steps (from figure \ref{fig:incomingInterestPipelineWithMac}) are performed:
 
 \begin{enumerate}
 \item The \emph{Interest::m\_interestTargetMacAddress} is checked for a valid MAC address through regular expressions.
-\item In the case the interest has no valid target MAC address the interest is accepted as being broadcast. It will be inserted into the PIT table with it's attached origin MAC address. The origin MAC address tells the node where the interest came from and will be used later for the data to be forwarded downstream towards the content requester.
+\item In the case, the interest has no valid target MAC address the interest is accepted as being broadcast. It will be inserted into the PIT table with it's attached origin MAC address. The origin MAC address tells the node where the interest came from and will be used later for the data to be forwarded downstream towards the content requester.
 \item If a valid MAC address was found, it is checked against the receiving net device's MAC address.
-\item If the interest's target MAC address equals the receiving net device's MAC address the interest was meant for this node (in particular for this net device) and will be inserted into the PIT table with it's origin MAC address. If the two MAC addresses (target MAC address and the current device's MAC address) do not match, the interest was not meant for this node and will be dropped immediately to save resources. No overhearing occurs at any time with the interest. Interests are only forwarded to specific nodes or broadcast.
+\item If the interest's target MAC address equals the receiving net device's MAC address the interest was meant for this node (in particular for this net device) and will be inserted into the PIT table with its origin MAC address. If the two MAC addresses (target MAC address and the current device's MAC address) do not match, the interest was not meant for this node and will be dropped immediately to save resources. No overhearing occurs at any time with the interest. Interests are only forwarded to specific nodes or broadcast.
 \item The interest will be forwarded to the strategy for further processing.
 \end{enumerate}
 
-All interests have valid \emph{std::string m\_interestOriginMacAddress} fields at all time. These are needed to leave the breadcrumbs for the returning data and are inserted into the PIT entries at the time of arriving at a new node. If the incoming interest had a valid target mac address, it will be checked if it matches any MAC address on the node. In that case the target MAC address will become the outgoing interest origin MAC address, since it will be leaving this node through the current net device it was originally received on. If no valid target mac was given to the incoming interest a new current MAC address must be chosen from all active net devices on this node. This is done through a static counter and the modulo expression, making sure, that different paths are taken. Adding the new origin mac address happens in \texttt{Forwarder::onOutgoingInterest} or in \texttt{Strategy::afterReceiveInterest}.
+All interests have valid \emph{std::string m\_interestOriginMacAddress} fields at all time. These are needed to leave the breadcrumbs for the returning data and are inserted into the PIT entries at the time of arriving at a new node. If the incoming interest had a valid target MAC address, it will be checked if it matches any MAC address on the node. In that case, the target MAC address will become the outgoing interest origin MAC address, since it will be leaving this node through the current net device it was originally received on. If no valid target MAC was given to the incoming interest a new current MAC address must be chosen from all active net devices on this node. This is done through a static counter and the modulo expression, making sure, that different paths are taken. Adding the new origin MAC address happens in \texttt{Forwarder::onOutgoingInterest} or in \texttt{Strategy::afterReceiveInterest}.
 
 \subsection{Changes to the Data}
 
-In order to have routes and the FIB entries populated, the information about the topology must be communicated to all the surrounding neighbours. The data is responsible to populate the FIB entries with new MAC addresses from nodes further upstream. The data carries that information, which is the MAC address of the previous node the data was forwarded from. Existing FIB entries can be updated or new routes can be added with the help of the \texttt{ns3::ndn::FibHelper} helper class by calling the \texttt(AddRoute) method.
+In order to have routes and the FIB entries populated, the information about the topology must be communicated to all the surrounding neighbors. The data is responsible for populating the FIB entries with new MAC addresses from nodes further upstream. The data carries that information, which is the MAC address of the previous node the data was forwarded from. Existing FIB entries can be updated or new routes can be added with the help of the \texttt{ns3::ndn::FibHelper} helper class by calling the \texttt(AddRoute) method.
 
 The data is also extended with three new member variables:
 
 \begin{itemize}
-\item \emph{std::string m\_dataOriginMacAddress}: This field has the mac address of the previous node.
-\item \emph{std::string m\_dataTargetMacAddress}: This field has the mac address of the next node if a mac address was left in the PIT entry.
+\item \emph{std::string m\_dataOriginMacAddress}: This field has the MAC address of the previous node.
+\item \emph{std::string m\_dataTargetMacAddress}: This field has the MAC address of the next node if a MAC address was left in the PIT entry.
 \item \emph{std::string m\_macDataRoute}: This field shows the the way of the data so far.
 \end{itemize}
 
-The following figure \ref{fig:incomingDataPipelineWithMac} illustrates the mac address relevant steps in the incoming data pipeline \texttt{Forwarder::onIncomingData}.
+The following figure \ref{fig:incomingDataPipelineWithMac} illustrates the MAC address relevant steps in the incoming data pipeline \texttt{Forwarder::onIncomingData}.
 
 \begin{figure}[H]
   \centering
@@ -73,21 +73,21 @@ The steps are explained as follows:
 
 \begin{enumerate}
 \item After the node receives the data, the member variable  \emph{Data::m\_dataTargetMacAddress} is checked for a valid MAC address through regular expressions.
-\item If the target mac address of the data is equal to the current net device's mac address the data was meant for this node. If the mac addresses do not match, the data was overheard.
+\item If the target MAC address of the data is equal to the current net device's MAC address the data was meant for this node. If the MAC addresses do not match, the data was overheard.
 \item It depends on the implementation if overheard data shall be further processed, cached into CS or just dropped. If it is saved, the route from where it came will be added to the FIB entries for later use.
 \item If the data was meant for this node a route is added with low cost, in order to prioritize the route.
 \item From the corresponding PIT entry (retrieved by longest prefix match) the downstream MAC address and face information are retrieved and then added to a copy of the data. The copy is needed since the data is defined as constant.
 \item The updated copy of the data is then handed off to the outgoing data pipeline.
 \end{enumerate}
 
-The outgoing data pipeline is implemented in \texttt{Forwarder::onOutgoingData}. It receives the data with additional parameters. If the target MAC address of the data is valid and the data is solicited, the origin MAC address field of the data is updated with the MAC address of the current net device responsible for forwarding this data. If the data was unsolicited a new MAC address of the possible net devices is selected in an alternating manner and added to the data. The route is updated and the data is send through it's out-face to the next node.
+The outgoing data pipeline is implemented in \texttt{Forwarder::onOutgoingData}. It receives the data with additional parameters. If the target MAC address of the data is valid and the data is solicited, the origin MAC address field of the data is updated with the MAC address of the current net device responsible for forwarding this data. If the data was unsolicited a new MAC address of the possible net devices is selected in an alternating manner and added to the data. The route is updated and the data is sent through it's out-face to the next node.
 
 The data encoding of the interest and data packets had to be extended by the new fields in order to be sent over the network and to be received by other nodes.
 
 \subsection{Changes to the FIB}
 
 The FIB entries hold information about how to forward the interest upstream. Every FIB entry is uniquely identified by the prefix of the incoming interest. It is found by longest prefix match. The entry aggregates NextHop objects with the corresponding faces and cost information as shown in chapter 3 figure \ref{fig:FIBdataStructure}.
-In this thesis forwarding is not done by faces like initially implemented, but by MAC addresses. These MAC addresses are updated inside existing FIB entries or new FIB entries are created with this additional information. Therefore the new FIB entries have been extended with functions to fetch the new information from the NextHop entries. And the NextHop entries have been extended by a new mac address field.
+In this thesis, forwarding is not done by faces like initially implemented, but by MAC addresses. These MAC addresses are updated inside existing FIB entries or new FIB entries are created with this additional information. Therefore the new FIB entries have been extended with functions to fetch the new information from the NextHop entries. And the NextHop entries have been extended by a new MAC address field.
 
 \begin{figure}[H]
   \centering
@@ -96,11 +96,13 @@ In this thesis forwarding is not done by faces like initially implemented, but b
   \label{fig:newFIBdataStructure}
 \end{figure}
 
-Figure \ref{fig:FIBdataStructure} shows only the relevant and new member variables and methods added to the data structure. The FIB entries need new methods that find next hops according to the mac addresses or a combination of mac addresses and faces. A new method returns a NextHopList that is passed by reference. The NextHop class has been extended by the target mac field, setters and getters.
+Figure \ref{fig:FIBdataStructure} shows only the relevant and new member variables and methods added to the data structure. The FIB entries need new methods that find next hops according to the MAC addresses or a combination of MAC addresses and faces. A new method returns a NextHopList that is passed by reference. The NextHop class has been extended by the target MAC field, setters and getters.
+
+\newpage
 
 \subsection{Changes to the PIT}
 
-The PIT entries hold information about how to forward the data downstream. Every PIT entry is uniquely identified by the prefix of the incoming data. It is found by longest prefix match. The entry aggregates in-record and out-record objects with the corresponding faces, lastNonce and lastRenewed information, as shown in chapter 3 figure \ref{fig:PITdataStructure}. The faces need to be extended by mac addresses since the data is broadcast and the receiving node needs to identify if it is the intended recipient.
+The PIT entries hold information about how to forward the data downstream. Every PIT entry is uniquely identified by the prefix of the incoming data. It is found by longest prefix match. The entry aggregates in-record and out-record objects with the corresponding faces, lastNonce and lastRenewed information, as shown in chapter 3 figure \ref{fig:PITdataStructure}. The faces need to be extended by MAC addresses since the data is broadcast and the receiving node needs to identify if it is the intended recipient.
 
 \begin{figure}[H]
   \centering
@@ -109,13 +111,15 @@ The PIT entries hold information about how to forward the data downstream. Every
   \label{fig:newPITdataStructure}
 \end{figure}
 
-Figure \ref{fig:newPITdataStructure} shows only the relevant and new member variables and methods added to the data structure. A new list member variable \texttt{m\_originMacCollection} has been added to the PIT entry. Every interest forwarded correctly leaves it's origin MAC address in this list. When requested data arrives at the node, the origin MAC collection in the PIT entry is checked and attached to the data's field. Methods, setters and getters encapsulate the member variable within it's class.
+Figure \ref{fig:newPITdataStructure} shows only the relevant and new member variables and methods added to the data structure. A new list member variable \texttt{m\_originMacCollection} has been added to the PIT entry. Every interest forwarded correctly leaves it's origin MAC address in this list. When requested data arrives at the node, the origin MAC collection in the PIT entry is checked and attached to the data's field. Methods, setters and getters encapsulate the member variable within its class.
+
+\newpage
 
 \section{Topology and Mobility}
 
-The topology of the nodes and their movement is a fundamental factor that should be considered carefully. In order to be able to run specific tests the nodes need to be spaced accordingly. Since WIFI 802.11a is used in this theses the nodes should not exceed 200 meter or the connection will be lost. On the other hand putting them to near together will introduce problems in collisions, retransmissions and lost packages. The nodes will not be able to handle flooding efficiently when clustered all together. Random movement is another problem that can lead to unwanted problems and lost routes.
+The topology of the nodes and their movement is a fundamental factor that should be considered carefully. In order to be able to run specific tests, the nodes need to be spaced accordingly. Since WiFi 802.11a is used in this theses the nodes should not exceed 200 meters or the connection will be lost. On the other hand putting them to near together will introduce problems in collisions, retransmissions and lost packages. The nodes will not be able to handle flooding efficiently when clustered all together. Random movement is another problem that can lead to unwanted problems and lost routes.
  
-The topology is created within a trace file that can be read by the \texttt{Ns2MobilityHelper} helper class and is fully supported by the NS3 network simulator. The initial positions of the nodes within the cartesian coordinate system are placed inside the file by specifying the node, it's x-value and it's y-value as shown in figure \ref{fig:ns2traceFileStatic}:
+The topology is created within a trace file that can be read by the \texttt{Ns2MobilityHelper} helper class and is fully supported by the ns-3 network simulator. The initial positions of the nodes within the cartesian coordinate system are placed inside the file by specifying the node, it's x-value and it's y-value as shown in figure \ref{fig:ns2traceFileStatic}:
 
 \begin{figure}[H]
   \centering
@@ -123,6 +127,8 @@ The topology is created within a trace file that can be read by the \texttt{Ns2M
   \caption{Node positioning in NS2 trace files}
   \label{fig:ns2traceFileStatic}
 \end{figure}
+
+\newpage
 
 This scenario has been used for the static 8 node simulations. For the dynamic scenario, movement had to be added through special statements in the trace file. Every statement specifies the time at which the movement will take place, the node which has to be moved, the new destination and speed. The node will stop when it arrives at the new destination or when a new statement changes its course and speed. Figure \ref{fig:ns2traceDynamic} shows few lines from the trace file used in the dynamic 16 node scenario.
 

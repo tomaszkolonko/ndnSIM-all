@@ -5,31 +5,31 @@
 \contentsline {figure}{\numberline {2.3}{\ignorespaces Shows how the data structures are used in order to forward or discard the interest\relax }}{7}{figure.caption.9}
 \contentsline {figure}{\numberline {2.4}{\ignorespaces Different communication agents interacting with each other through different channels\relax }}{10}{figure.caption.10}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {3.1}{\ignorespaces Basic component abstractions in ndnSIM\relax }}{13}{figure.caption.11}
-\contentsline {figure}{\numberline {3.2}{\ignorespaces Face abstractions around ndn::l3Protocol\relax }}{14}{figure.caption.12}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT data structure\relax }}{15}{figure.caption.13}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB data structure\relax }}{15}{figure.caption.14}
-\contentsline {figure}{\numberline {3.5}{\ignorespaces Simulation of a possible scenario\relax }}{17}{figure.caption.15}
-\contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{17}{figure.caption.16}
-\contentsline {figure}{\numberline {3.7}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{18}{figure.caption.17}
-\contentsline {figure}{\numberline {3.8}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{19}{figure.caption.19}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Outgoing interest pipeline\relax }}{21}{figure.caption.23}
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Incoming data pipeline\relax }}{22}{figure.caption.25}
+\contentsline {figure}{\numberline {3.1}{\ignorespaces Basic component abstractions in ndnSIM\relax }}{14}{figure.caption.11}
+\contentsline {figure}{\numberline {3.2}{\ignorespaces Face abstractions around ndn::l3Protocol\relax }}{15}{figure.caption.12}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT data structure\relax }}{16}{figure.caption.13}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB data structure\relax }}{17}{figure.caption.14}
+\contentsline {figure}{\numberline {3.5}{\ignorespaces Simulation of a possible scenario\relax }}{18}{figure.caption.15}
+\contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{19}{figure.caption.16}
+\contentsline {figure}{\numberline {3.7}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{20}{figure.caption.17}
+\contentsline {figure}{\numberline {3.8}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines\relax }}{21}{figure.caption.19}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Outgoing interest pipeline\relax }}{23}{figure.caption.23}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Incoming data pipeline\relax }}{24}{figure.caption.25}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Incoming interest pipeline for the implementation of MAC addresses\relax }}{26}{figure.caption.27}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Incoming data pipeline for data messages\relax }}{28}{figure.caption.28}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces FIB new data structure\relax }}{29}{figure.caption.29}
-\contentsline {figure}{\numberline {4.4}{\ignorespaces New PIT data structure\relax }}{30}{figure.caption.30}
-\contentsline {figure}{\numberline {4.5}{\ignorespaces Node positioning in NS2 trace files\relax }}{31}{figure.caption.31}
-\contentsline {figure}{\numberline {4.6}{\ignorespaces Node movement in NS2 trace files\relax }}{31}{figure.caption.32}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Incoming interest pipeline for the implementation of MAC addresses\relax }}{29}{figure.caption.27}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Incoming data pipeline for data messages\relax }}{31}{figure.caption.28}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces FIB new data structure\relax }}{32}{figure.caption.29}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces New PIT data structure\relax }}{33}{figure.caption.30}
+\contentsline {figure}{\numberline {4.5}{\ignorespaces Node positioning in NS2 trace files\relax }}{34}{figure.caption.31}
+\contentsline {figure}{\numberline {4.6}{\ignorespaces Node movement in NS2 trace files\relax }}{35}{figure.caption.32}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {5.1}{\ignorespaces Basic static scenario with 8 nodes, 1 consumer and 1 producer\relax }}{33}{figure.caption.33}
-\contentsline {figure}{\numberline {5.2}{\ignorespaces Satisfaction ratio at different simulation times for both implementations\relax }}{34}{figure.caption.34}
-\contentsline {figure}{\numberline {5.3}{\ignorespaces Number of sent and received packages over simulation time\relax }}{35}{figure.caption.35}
-\contentsline {figure}{\numberline {5.4}{\ignorespaces Latency of both implementations over simulation time\relax }}{36}{figure.caption.36}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Ad-hoc scenario with 16 nodes and movement, 1 consumer and 1 producer\relax }}{37}{figure.caption.37}
-\contentsline {figure}{\numberline {5.6}{\ignorespaces Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes.\relax }}{38}{figure.caption.38}
-\contentsline {figure}{\numberline {5.7}{\ignorespaces Satisfaction ratio at different simulation times for both implementations with mobility\relax }}{39}{figure.caption.39}
-\contentsline {figure}{\numberline {5.8}{\ignorespaces Number of sent and received packages over simulation time\relax }}{40}{figure.caption.40}
-\contentsline {figure}{\numberline {5.9}{\ignorespaces Latency of both implementations over simulation time\relax }}{40}{figure.caption.41}
+\contentsline {figure}{\numberline {5.1}{\ignorespaces Basic static scenario with 8 nodes, 1 consumer and 1 producer\relax }}{38}{figure.caption.33}
+\contentsline {figure}{\numberline {5.2}{\ignorespaces Satisfaction ratio at different simulation times for both implementations\relax }}{39}{figure.caption.34}
+\contentsline {figure}{\numberline {5.3}{\ignorespaces Number of sent and received packages over simulation time\relax }}{40}{figure.caption.35}
+\contentsline {figure}{\numberline {5.4}{\ignorespaces Latency of both implementations over simulation time\relax }}{41}{figure.caption.36}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Ad-hoc scenario with 16 nodes and movement, 1 consumer and 1 producer\relax }}{42}{figure.caption.37}
+\contentsline {figure}{\numberline {5.6}{\ignorespaces Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes.\relax }}{43}{figure.caption.38}
+\contentsline {figure}{\numberline {5.7}{\ignorespaces Satisfaction ratio at different simulation times for both implementations with mobility\relax }}{44}{figure.caption.39}
+\contentsline {figure}{\numberline {5.8}{\ignorespaces Number of sent and received packages over simulation time\relax }}{45}{figure.caption.40}
+\contentsline {figure}{\numberline {5.9}{\ignorespaces Latency of both implementations over simulation time\relax }}{45}{figure.caption.41}
 \addvspace {10\p@ }

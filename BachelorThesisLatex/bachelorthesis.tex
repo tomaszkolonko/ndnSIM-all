@@ -5,7 +5,7 @@
 % Thomas Kolonko 20.01.2017
 %
 
-\documentclass[11pt,a4paper,twoside,hidelinks,]{rvsbachelor}
+\documentclass[11pt,a4paper,twoside,hidelinks,openright,]{rvsbachelor}
 
 \usepackage[latin1]{inputenc}
 \usepackage{graphicx}
@@ -71,6 +71,8 @@
 \ifpdf
 %to make table of contents and index appear in bookmarks
 \usepackage{tocbibind}
+
+\usepackage[parfill]{parskip}
 %refs also as links
 \usepackage[pdftex,plainpages=false]{hyperref}
 %plainpages=false: enable links although page numbering is reset after title
@@ -99,8 +101,6 @@
 % if you have some code listing, you can include a list of all your listings
 % \lstlistoflistings{}
 
-
-
 % if you want to thank somebody for the support during your studies make it here
 \chapter*{Acknowledgments}
 On this page I would like to thank everybody who supported me to write this bachelor thesis.
@@ -108,17 +108,19 @@ First I would like to thank my coach Eirini Kalogeiton. She supported me trough 
 After that I would like to thank Prof. Dr. Torsten Braun who allowed me to write this thesis in his research group. I am also very grateful for the resources that were generously provided by the research group of Prof. Braun.
 
 \begin{abstract}
-Content-Centric Networking (CCN) is a new network approach based on the information-centric networking paradigm (ICN), which tries to provide a more secure, flexible and scalable network. CCN does not operate on a host-to-host basis but emphasizes the content itself by making it directly addressable and routable. Knowledge of the topology is therefore not required as the routing is based on the names of the content and happens only locally on the intermediate nodes. This allows much more efficient communication in highly mobile and dynamic environments, where no static topology is given, and devices enter and leave a given area very frequently.
 
 \vspace{5mm} %5mm vertical space
 
-In this thesis a new routing strategy for VANET's has been developed in ndnSIM version 2.0 within the ns-3 network simulator. The current implementation supports only routing based on incoming and outgoing faces. Since Wifi and other forms of wireless networking broadcast data by design, a new mechanism has been introduced for forwarding and discriminating by mac addresses. Two new fields have been added to the interest and data packages for original and target mac addresses. FIB tables were extended with the new mac address fields in order to forward the interests to the correct upstream nodes. PIT tables were also extended so that the data could follow the interests way back to the requesting consumer. A new strategy has been implemented for flooding the interest if the FIB entries have not yet been populated with known mac addresses and to forward specifically hop by hop if the FIB entries showed actual intermediate target nodes with lower costs. (TODO: add some info about the multiple netDevices when done)
+Content-Centric Networking (CCN) is a new network approach based on the information-centric networking paradigm (ICN), which tries to provide a more secure, flexible and scalable network. CCN does not operate on a host-to-host basis, but emphasizes the content itself by making it directly addressable and routable. Knowledge of the topology is therefore not required as the routing is based on the names of the content and happens only locally on the intermediate nodes. This allows much more efficient communication in highly mobile and dynamic environments, where no static topology is given, and devices enter and leave a given area very frequently.
 
 \vspace{5mm} %5mm vertical space
 
-The scenario was implemented and evaluated using the ns-3 network simulator. Simulation with 100 nodes were conducted for 21 times and ...... (TODO: finish this part as soon as you have some results)
+In this thesis a new routing strategy for VANET's has been developed in ndnSIM version 2.0 within the ns-3 network simulator. The current implementation supports only routing based on incoming and outgoing faces. Since WiFi and other forms of wireless networking broadcast data by design, a new mechanism has been introduced for forwarding and discriminating by MAC addresses. Two new fields have been added to the interest and data packages for original and target MAC addresses. FIB tables were extended with the new MAC address fields in order to forward the interests to the correct upstream nodes. PIT tables were also extended so that the data could follow the interests way back to the requesting consumer. A new strategy has been implemented for flooding the interest if the FIB entries have not yet been populated with known MAC addresses and to forward specifically hop by hop if the FIB entries showed actual intermediate target nodes with lower costs.
 
-(TODO: CHANGE WORDING from Amadeo14 BEGIN) -> Performance evaluation is carried by means of ndnSIM, the official NDN simulator, that is overhauled for use in realistic wireless ad-hoc environments. Results collected under variable traffic loads and topologies provide insights into the behaviours of both forwarding approaches and help to derive a set of recommendations that are crucial to the successful design of a forwarding strategy for named data ad-hoc wireless networking <- (TODO: CHANGE WORDING from Amadeo14 END)
+\vspace{5mm} %5mm vertical space
+
+The scenario was implemented in ndnSIM and evaluated using the ns-3 network simulator. Two distinct simulations were conducted and compared to the default forwarding strategy of ndnSIM as of version 2.0. The static scenario with 8 nodes floods the network to get information about the current topology and uses this information to route further interests by unicast towards the content source. A much lower and constant latency was achieved while increasing the satisfaction ratio (satisfied interests / interests send out). The amount of received data was more than tripled while the retransmission rate was kept slightly lower than the default. The second scenario with 16 nodes also outperformed the default implementation on all observed metrics. The performance on the mobile scenario has been roughly doubled on all metrics.
+
 \end{abstract}
 
 \cleardoublepage
