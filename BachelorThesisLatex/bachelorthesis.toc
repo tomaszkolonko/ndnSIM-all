@@ -37,19 +37,18 @@
 \contentsline {section}{\numberline {4.1}Problem Description}{24}{section.4.1}
 \contentsline {section}{\numberline {4.2}Multipath Approach}{25}{section.4.2}
 \contentsline {subsection}{\numberline {4.2.1}Changes to the Interest}{25}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Changes to the Data}{26}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Changes to the FIB}{28}{subsection.4.2.3}
+\contentsline {subsection}{\numberline {4.2.2}Changes to the Data}{27}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Changes to the FIB}{29}{subsection.4.2.3}
 \contentsline {subsection}{\numberline {4.2.4}Changes to the PIT}{29}{subsection.4.2.4}
-\contentsline {section}{\numberline {4.3}Retransmissions}{29}{section.4.3}
-\contentsline {section}{\numberline {4.4}Mobility}{30}{section.4.4}
-\contentsline {chapter}{\numberline {5}Evaluation}{31}{chapter.5}
-\contentsline {section}{\numberline {5.1}Evaluation environment}{31}{section.5.1}
-\contentsline {section}{\numberline {5.2}Results for a static 8 nodes scenario}{31}{section.5.2}
-\contentsline {section}{\numberline {5.3}Results for dynamic 16 nodes scenario}{36}{section.5.3}
-\contentsline {chapter}{\numberline {6}Conclusion}{39}{chapter.6}
-\contentsline {section}{\numberline {6.1}Summary and Conclusion}{39}{section.6.1}
-\contentsline {section}{\numberline {6.2}Future Work}{40}{section.6.2}
-\contentsline {subsection}{\numberline {6.2.1}Static 8 nodes scenario}{40}{subsection.6.2.1}
-\contentsline {subsection}{\numberline {6.2.2}Dynamic 8 nodes scenario}{40}{subsection.6.2.2}
-\contentsline {chapter}{\numberline {7}Appendix}{41}{chapter.7}
-\contentsline {chapter}{Bibliography}{42}{chapter*.40}
+\contentsline {section}{\numberline {4.3}Topology and Mobility}{30}{section.4.3}
+\contentsline {chapter}{\numberline {5}Evaluation}{32}{chapter.5}
+\contentsline {section}{\numberline {5.1}Evaluation environment}{32}{section.5.1}
+\contentsline {section}{\numberline {5.2}Results for a static 8 nodes scenario}{32}{section.5.2}
+\contentsline {section}{\numberline {5.3}Results for dynamic 16 nodes scenario}{37}{section.5.3}
+\contentsline {chapter}{\numberline {6}Conclusion}{42}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusion}{42}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{43}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Static 8 nodes scenario}{43}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Dynamic 8 nodes scenario}{43}{subsection.6.2.2}
+\contentsline {chapter}{\numberline {7}Appendix}{44}{chapter.7}
+\contentsline {chapter}{Bibliography}{45}{chapter*.43}

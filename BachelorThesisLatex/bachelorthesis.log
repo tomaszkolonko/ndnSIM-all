@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  19 FEB 2017 05:30
+This is pdfTeX, Version 3.14159265-2.6-1.40.17 (TeX Live 2016) (preloaded format=pdflatex 2017.1.22)  19 FEB 2017 19:09
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -452,13 +452,13 @@ LaTeX Font Info:    External font `cmex10' loaded for size
 \openout4 = `bachelorthesis.toc'.
 
 
-[2] (./bachelorthesis.lof)
+[2] (./bachelorthesis.lof [3
+
+])
 \tf@lof=\write5
 \openout5 = `bachelorthesis.lof'.
 
- [3
-
-] [4] (./bachelorthesis.lot)
+ [4] (./bachelorthesis.lot)
 \tf@lot=\write6
 \openout6 = `bachelorthesis.lot'.
 
@@ -693,7 +693,7 @@ d's of the ap-pli-ca-tion or net de-vice
  []
 
 
-Underfull \vbox (badness 10000) has occurred while \output is active []
+Underfull \vbox (badness 1062) has occurred while \output is active []
 
  [24
 
@@ -707,7 +707,10 @@ Package pdftex.def Info: ./images/chapter-4/incomingInterestPipelineWithMac.png
  used on input line 30.
 (pdftex.def)             Requested size: 364.96632pt x 147.55237pt.
 
-[25 <./images/chapter-4/incomingInterestPipelineWithMac.png>] [26]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [25]
+[26 <./images/chapter-4/incomingInterestPipelineWithMac.png>]
 <./images/chapter-4/incomingDataPipelineWithMac.png, id=533, 648.4225pt x 383.4
 325pt>
 File: ./images/chapter-4/incomingDataPipelineWithMac.png Graphic file (type png
@@ -716,23 +719,24 @@ File: ./images/chapter-4/incomingDataPipelineWithMac.png Graphic file (type png
 Package pdftex.def Info: ./images/chapter-4/incomingDataPipelineWithMac.png use
 d on input line 65.
 (pdftex.def)             Requested size: 389.0565pt x 230.06126pt.
- [27 <./images/chapter-4/incomingDataPipelineWithMac.png>]
-<./images/chapter-4/newFIBdataStructure.png, id=547, 787.94376pt x 310.15875pt>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [27]
+[28 <./images/chapter-4/incomingDataPipelineWithMac.png>]
+<./images/chapter-4/newFIBdataStructure.png, id=551, 768.8725pt x 291.0875pt>
 File: ./images/chapter-4/newFIBdataStructure.png Graphic file (type png)
+
 <use ./images/chapter-4/newFIBdataStructure.png>
 Package pdftex.def Info: ./images/chapter-4/newFIBdataStructure.png used on inp
 ut line 92.
-(pdftex.def)             Requested size: 472.7699pt x 186.09668pt.
+(pdftex.def)             Requested size: 461.32706pt x 174.65384pt.
 
-Overfull \hbox (54.51622pt too wide) in paragraph at lines 92--93
+Overfull \hbox (43.07338pt too wide) in paragraph at lines 92--93
  [][] 
  []
 
-
-Underfull \vbox (badness 1681) has occurred while \output is active []
-
- [28 <./images/chapter-4/newFIBdataStructure.png>]
-<./images/chapter-4/newPITdataStructure.png, id=555, 761.84625pt x 437.635pt>
+<./images/chapter-4/newPITdataStructure.png, id=554, 761.84625pt x 437.635pt>
 File: ./images/chapter-4/newPITdataStructure.png Graphic file (type png)
 
 <use ./images/chapter-4/newPITdataStructure.png>
@@ -744,14 +748,32 @@ Overfull \hbox (38.8576pt too wide) in paragraph at lines 105--106
  [][] 
  []
 
-) (./5-Evaluation.tex
-Underfull \vbox (badness 4096) has occurred while \output is active []
+[29 <./images/chapter-4/newFIBdataStructure.png>]
+<./images/chapter-4/ns2traceFileStatic.png, id=563, 530.98375pt x 332.24126pt>
+File: ./images/chapter-4/ns2traceFileStatic.png Graphic file (type png)
 
- [29 <./images/chapter-4/newPITdataStructure.png>] [30]
+<use ./images/chapter-4/ns2traceFileStatic.png>
+Package pdftex.def Info: ./images/chapter-4/ns2traceFileStatic.png used on inpu
+t line 120.
+(pdftex.def)             Requested size: 318.5927pt x 199.34628pt.
+ [30 <./images/chapter-4/newPITdataStructure.png>]
+
+LaTeX Warning: Reference `fig:ns2traceDynamic' on page 31 undefined on input li
+ne 125.
+
+<./images/chapter-4/ns2traceFileDynamic.png, id=569, 397.485pt x 214.8025pt>
+File: ./images/chapter-4/ns2traceFileDynamic.png Graphic file (type png)
+
+<use ./images/chapter-4/ns2traceFileDynamic.png>
+Package pdftex.def Info: ./images/chapter-4/ns2traceFileDynamic.png used on inp
+ut line 129.
+(pdftex.def)             Requested size: 238.49283pt x 128.88249pt.
+) (./5-Evaluation.tex [31 <./images/chapter-4/ns2traceFileStatic.png> <./images
+/chapter-4/ns2traceFileDynamic.png>]
 Chapter 5.
-[31
+[32
 
-] <./images/chapter-5/scenario1.png, id=574, 704.6325pt x 553.06625pt>
+] <./images/chapter-5/scenario1.png, id=581, 704.6325pt x 553.06625pt>
 File: ./images/chapter-5/scenario1.png Graphic file (type png)
 
 <use ./images/chapter-5/scenario1.png>
@@ -759,7 +781,7 @@ Package pdftex.def Info: ./images/chapter-5/scenario1.png used on input line 17
 .
 (pdftex.def)             Requested size: 352.3154pt x 276.53244pt.
 
-<./images/chapter-5/staticS1ratio.png, id=575, 631.35875pt x 383.4325pt>
+<./images/chapter-5/staticS1ratio.png, id=582, 631.35875pt x 383.4325pt>
 File: ./images/chapter-5/staticS1ratio.png Graphic file (type png)
 
 <use ./images/chapter-5/staticS1ratio.png>
@@ -769,8 +791,8 @@ e 26.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [32 <./images/chapter-5/scenario1.png>]
-<./images/chapter-5/staticS1iod.png, id=583, 632.3625pt x 381.425pt>
+ [33 <./images/chapter-5/scenario1.png>]
+<./images/chapter-5/staticS1iod.png, id=591, 632.3625pt x 381.425pt>
 File: ./images/chapter-5/staticS1iod.png Graphic file (type png)
 
 <use ./images/chapter-5/staticS1iod.png>
@@ -780,8 +802,8 @@ Package pdftex.def Info: ./images/chapter-5/staticS1iod.png used on input line
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [33 <./images/chapter-5/staticS1ratio.png>]
-<./images/chapter-5/staticS1latency.png, id=592, 627.34375pt x 378.41376pt>
+ [34 <./images/chapter-5/staticS1ratio.png>]
+<./images/chapter-5/staticS1latency.png, id=599, 627.34375pt x 378.41376pt>
 File: ./images/chapter-5/staticS1latency.png Graphic file (type png)
 
 <use ./images/chapter-5/staticS1latency.png>
@@ -791,11 +813,11 @@ ine 46.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [34 <./images/chapter-5/staticS1iod.png>]
+ [35 <./images/chapter-5/staticS1iod.png>]
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [35 <./images/chapter-5/staticS1latency.png>]
-<./images/chapter-5/scenario2.png, id=604, 702.625pt x 588.1975pt>
+ [36 <./images/chapter-5/staticS1latency.png>]
+<./images/chapter-5/scenario2.png, id=611, 702.625pt x 588.1975pt>
 File: ./images/chapter-5/scenario2.png Graphic file (type png)
 
 <use ./images/chapter-5/scenario2.png>
@@ -803,50 +825,73 @@ Package pdftex.def Info: ./images/chapter-5/scenario2.png used on input line 69
 .
 (pdftex.def)             Requested size: 281.04501pt x 235.27483pt.
 
-<./images/chapter-5/scenario2ratio.png, id=606, 633.36626pt x 387.4475pt>
+
+LaTeX Warning: Reference `ig:scenario2extended' on page 37 undefined on input l
+ine 74.
+
+<./images/chapter-5/scenario2extended.png, id=612, 818.05624pt x 605.26125pt>
+File: ./images/chapter-5/scenario2extended.png Graphic file (type png)
+
+<use ./images/chapter-5/scenario2extended.png>
+Package pdftex.def Info: ./images/chapter-5/scenario2extended.png used on input
+ line 78.
+(pdftex.def)             Requested size: 327.21669pt x 242.1002pt.
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [37 <./images/chapter-5/scenario2.png>]
+<./images/chapter-5/scenario2ratio.png, id=618, 634.37pt x 386.44376pt>
 File: ./images/chapter-5/scenario2ratio.png Graphic file (type png)
 
 <use ./images/chapter-5/scenario2ratio.png>
 Package pdftex.def Info: ./images/chapter-5/scenario2ratio.png used on input li
-ne 78.
-(pdftex.def)             Requested size: 380.02269pt x 232.47029pt.
+ne 89.
+(pdftex.def)             Requested size: 380.62492pt x 231.86804pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [36 <./images/chapter-5/scenario2.png>]
-<./images/chapter-5/scenario2iod.png, id=612, 630.355pt x 384.43625pt>
+ [38 <./images/chapter-5/scenario2extended.png>]
+
+LaTeX Warning: Reference `ig:scenario2extended' on page 39 undefined on input l
+ine 95.
+
+<./images/chapter-5/scenario2iod.png, id=626, 633.36626pt x 386.44376pt>
 File: ./images/chapter-5/scenario2iod.png Graphic file (type png)
 
 <use ./images/chapter-5/scenario2iod.png>
 Package pdftex.def Info: ./images/chapter-5/scenario2iod.png used on input line
- 87.
-(pdftex.def)             Requested size: 378.21591pt x 230.66351pt.
+ 99.
+(pdftex.def)             Requested size: 380.02269pt x 231.86804pt.
 
-<./images/chapter-5/scenario2latency.png, id=614, 636.3775pt x 381.425pt>
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [39 <./images/chapter-5/scenario2ratio.png>]
+<./images/chapter-5/scenario2latency.png, id=634, 638.385pt x 381.425pt>
 File: ./images/chapter-5/scenario2latency.png Graphic file (type png)
 
 <use ./images/chapter-5/scenario2latency.png>
 Package pdftex.def Info: ./images/chapter-5/scenario2latency.png used on input 
-line 96.
-(pdftex.def)             Requested size: 381.82944pt x 228.85675pt.
-
-Underfull \vbox (badness 1102) has occurred while \output is active []
-
- [37 <./images/chapter-5/scenario2ratio.png> <./images/chapter-5/scenario2iod.p
-ng>])
-(./6-Conclusion.tex [38 <./images/chapter-5/scenario2latency.png>]
+line 108.
+(pdftex.def)             Requested size: 383.03394pt x 228.85675pt.
+ [40 <./images/chapter-5/scenario2iod.png> <./images/chapter-5/scenario2latency
+.png>]) (./6-Conclusion.tex
+[41]
 Chapter 6.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [39
+ [42
 
-])
-(./7-Appendix.tex [40]
+]
+
+LaTeX Warning: Reference `ig:scenario2extended' on page 43 undefined on input l
+ine 23.
+
+) (./7-Appendix.tex [43]
 Chapter 7.
-) (./8-Bibliography.tex [41
+) (./8-Bibliography.tex [44
 
-] [42
+] [45
 
 ]
 Underfull \hbox (badness 10000) in paragraph at lines 106--108
@@ -857,7 +902,7 @@ Underfull \hbox (badness 10000) in paragraph at lines 106--108
 )
 No file bachelorthesis.bbl.
 Package atveryend Info: Empty hook `BeforeClearDocument' on input line 144.
-[43pdfTeX warning (ext4): destination with the same identifier (name{cite.wu11}
+[46pdfTeX warning (ext4): destination with the same identifier (name{cite.wu11}
 ) has been already used, duplicate ignored
 
 \AtBegShi@Output ...ipout \box \AtBeginShipoutBox 
@@ -869,7 +914,10 @@ Package atveryend Info: Empty hook `AfterLastShipout' on input line 144.
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 144.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 144.
 Package rerunfilecheck Info: File `bachelorthesis.out' has not changed.
-(rerunfilecheck)             Checksum: D57A52EB5D4C7C6EEA82802C5D271769;3069.
+(rerunfilecheck)             Checksum: 2EC4449B6D1B16B7816642F357F7EEDE;3020.
+
+
+LaTeX Warning: There were undefined references.
 
 
 LaTeX Warning: There were multiply-defined labels.
@@ -877,11 +925,11 @@ LaTeX Warning: There were multiply-defined labels.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 144.
  ) 
 Here is how much of TeX's memory you used:
- 9363 strings out of 493014
- 149179 string characters out of 6133351
- 263432 words of memory out of 5000000
- 12324 multiletter control sequences out of 15000+600000
- 39265 words of font info for 193 fonts, out of 8000000 for 9000
+ 9392 strings out of 493014
+ 149999 string characters out of 6133351
+ 263580 words of memory out of 5000000
+ 12340 multiletter control sequences out of 15000+600000
+ 39601 words of font info for 196 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  36i,7n,39p,1519b,457s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/local/texlive/2016/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
@@ -892,10 +940,10 @@ f-dist/fonts/type1/urw/helvetic/uhvr8a.pfb></usr/local/texlive/2016/texmf-dist/
 fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type
 1/urw/times/utmr8a.pfb></usr/local/texlive/2016/texmf-dist/fonts/type1/urw/time
 s/utmri8a.pfb>
-Output written on bachelorthesis.pdf (53 pages, 1533409 bytes).
+Output written on bachelorthesis.pdf (56 pages, 1595010 bytes).
 PDF statistics:
- 730 PDF objects out of 1000 (max. 8388607)
- 618 compressed objects within 7 object streams
- 185 named destinations out of 1000 (max. 500000)
- 30195 words of extra memory for PDF output out of 35830 (max. 10000000)
+ 751 PDF objects out of 1000 (max. 8388607)
+ 632 compressed objects within 7 object streams
+ 190 named destinations out of 1000 (max. 500000)
+ 30202 words of extra memory for PDF output out of 35830 (max. 10000000)
 
