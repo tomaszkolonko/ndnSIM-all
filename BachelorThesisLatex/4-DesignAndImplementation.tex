@@ -8,6 +8,8 @@ The current implementation relies only on face id's of the application or net de
 
 If one route is found and the FIB entries updated, interests will follow this path to the producer and data will follow the breadcrumbs back to the consumer. That will likely lead to congestions and incur unnecessary overhead on some of the intermediate nodes. Other nodes are potentially left out all together since no FIB entries are configured to point to them. Having the possibility to chose from different channels and different paths will spread the load onto different intermediate nodes making congestions and retransmissions less likely.
 
+No content store has been implement. This thesis focuses on a new forwarding strategy for ad-hoc vehicular networks. In the two distinct scenarios only one consumer and one producer are used and the consumer requests different data every time. A content store caches data for later use if another consumer happens to request the very same data. If more consumer are introduced a content store implementation should not be missing.
+
 
 \section{Multipath Approach}
 
