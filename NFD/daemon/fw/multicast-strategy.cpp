@@ -59,8 +59,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 {
 	bool NextHopHasValidMacAddress = false;
 	// they are already sorted by cost !!!
-	const fib::NextHopList& nexthops = fibEntry->getNextHops();
-	std::vector<fib::NextHop> nextHopsSorted = fibEntry->getNextHops();
+	//const fib::NextHopList& nexthops = fibEntry->getNextHops();
+
+	// SOMETHING IS WRONG WITH THE fibEntry->getNextHopsList() METHOD !!!!!!!!!!
+	std::vector<fib::NextHop>& nextHopsSorted = fibEntry->getNextHopsList();
 
 	ns3::Ptr<ns3::Node> node = ns3::NodeList::GetNode(ns3::Simulator::GetContext());
 
@@ -123,9 +125,10 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 												// SOME PRINT STATEMENTS IF NEEDED: END
 
 
-	for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-		if (std::regex_match(it->getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
-			std::cout << "it->getTargetMac() " << it->getTargetMac()  << " and cost: " << it->getCost() << std::endl;
+	for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+		if (std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))){
+			std::cout << "it->getTargetMac() " << nextHopsSorted[vectorIndex].getTargetMac()
+					<< " and cost: " << nextHopsSorted[vectorIndex].getCost() << std::endl;
 			NextHopHasValidMacAddress = true;
 		}
 	}
@@ -156,6 +159,11 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 
 		  if(std::regex_match(nextHopsSorted[vectorIndex].getTargetMac(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 			  targetMac = nextHopsSorted[vectorIndex].getTargetMac();
+//			  if( nextHopsSorted[vectorIndex].getCost() > 350) {
+//				  nextHopsSorted[vectorIndex].setCost(300);
+//			  } else {
+//				  nextHopsSorted[vectorIndex].incrementCost();
+//			  }
 		  } else {
 //			  std::cout << "\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
 //			  std::cout << "                             no targetMac on NextHop                                " << std::endl;
@@ -187,8 +195,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		std::string originMacBroadcasting;
 		unsigned int semaphoreBraodcasting = 0;
 		int twice = 0;
-		for (fib::NextHopList::const_iterator it = nexthops.begin(); it != nexthops.end(); ++it) {
-			shared_ptr<Face> outFace = it->getFace();
+		for(int vectorIndex = 0; vectorIndex < nextHopsSorted.size(); vectorIndex++) {
+			shared_ptr<Face> outFace = nextHopsSorted[vectorIndex].getFace();
 			std::string targetMac = "";
 			if (pitEntry->canForwardTo(*outFace) && twice <= 2) {
 				twice++;

@@ -64,6 +64,9 @@ public:
   const NextHopList&
   getNextHops() const;
 
+  NextHopList&
+  getNextHopsList();
+
   /** \return whether this Entry has any NextHop record
    */
   bool
@@ -140,6 +143,13 @@ inline const NextHopList&
 Entry::getNextHops() const
 {
   return m_nextHops;
+}
+
+inline NextHopList&
+Entry::getNextHopsList()
+{
+	//this->sortNextHops();
+	return m_nextHops;
 }
 
 inline bool
