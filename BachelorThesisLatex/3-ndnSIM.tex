@@ -1,8 +1,8 @@
 \chapter{ndnSIM}
 
-Named Data Networking (NDN) is a newly proposed Internet communication paradigm that tries to keep most of the well accepted and tested TCP/IP Internet architecture (as shown in \ref{fig:NetworkStack}), while evolving the thin waist introducing many new features. These features differ in fundamental ways from a point-to-point communication architecture and need to be simulated extensively under constantly changing parameters and implementations.
+Named Data Networking (NDN) is a newly proposed Internet communication paradigm that tries to keep most of the well accepted and tested TCP/IP Internet architecture (as shown in \ref{fig:NetworkStack}), while evolving the thin waist introducing many new features \cite{ndn17}. These features differ in fundamental ways from a point-to-point communication architecture and need to be simulated extensively under constantly changing parameters and implementations \cite{Ajunwadkar14}.
 
-NdnSIM is an open source simulator for NDN networks within the existing NS-3 simulator framework. Its main goals are to facilitate experimentation inside the research community and make all basic NDN protocol operations accessible and therefore changeable like routing, data caching, packet forwarding and congestion management. Packet-level interoperability with CCNx implementation is given in order to support traffic measurements, traffic traces and analysis tools between CCNx and ndnSIM. Large-scale simulations should be supported and made easy to set up through helper classes. Helper classes automate the repetitive creation of single entities like nodes and set them up in a standardized way. Therefore, the simulator has been implemented in a very modular fashion making it very easy to modify, replace or re-implement specific components like the FIB, PIT or forwarding strategy. Replacing components have minimal or no impact on other components, as long as they adhere to the modules API's and other components they interact with.
+NdnSIM is an open source simulator for NDN networks within the existing NS-3 simulator framework. Its main goals are to facilitate experimentation inside the research community and make all basic NDN protocol operations accessible and therefore changeable like routing, data caching, packet forwarding and congestion management \cite{mastorakis16}. Packet-level interoperability with CCNx implementation is given in order to support traffic measurements, traffic traces and analysis tools between CCNx and ndnSIM. Large-scale simulations should be supported and made easy to set up through helper classes. Helper classes automate the repetitive creation of single entities like nodes and set them up in a standardized way. Therefore, the simulator has been implemented in a very modular fashion making it very easy to modify, replace or re-implement specific components like the FIB, PIT or forwarding strategy. Replacing components have minimal or no impact on other components, as long as they adhere to the modules API's and other components they interact with \cite{Afanasyev16}.
 
 \newpage
 
@@ -13,37 +13,37 @@ NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modeled 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/ndnSIMcomponentAbstraction}
-  \caption{Basic component abstractions in ndnSIM}
+  \caption{Basic component abstractions in ndnSIM \cite{afanasyev12}}
   \label{fig:ndnSIMcomponentAbstraction}
 \end{figure}
 
 The basic component abstractions are seen in figure \ref{fig:ndnSIMcomponentAbstraction}. The core NDN Protocol is the ndn::L3Protocol that receives interest and data packages from upper and lower layers through the corresponding faces. As of ndnSIM version 2.0 there are two distinct faces: the application face (ndn::AppFace) is responsible for inter-node communication between the application and the node itself while the net device face (ndn::NetDeviceFace) is responsible for inter-network communication with different nodes. Other faces for different purposes are expected to be added by the core developer or the community as needed. The CS (ndn::ContentStore) is an abstraction for in-network caching of data and can easily be omitted or replaced by another implementation of a different storing policy. The PIT (ndn::Pit) abstracts the data structure that is responsible for logging all received interests with their nonce and incoming faces while the FIB (ndn::Fib) abstracts the data structure to guide the strategy in interest forwarding. The Strategy (ndn::ForwadingStrategy) is responsible for implementing how interests and data are forwarded. That includes lookups in the content store for cached data, in PIT for already forwarded interests and in FIB if both previous searches didn't yield any matches. Each action in the forwarder of the strategy is represented as a virtual function in the forwarder header class and can be overwritten.
 
-\subsection{Face abstraction}
+\subsection{Face Abstraction}
 
 The face abstraction plays an important role in the overall modularity of the NDN simulator by acting as an interface, therefore, making ndnSIM design independent from any underlying transport layers. All communication between application, the NDN core protocol and other nodes with the L3 protocol happens through faces that take care of any needed conversion.
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/CommunicationLayerAbstraction}
-  \caption{Face abstractions around ndn::l3Protocol}
+  \caption{Face abstractions around ndn::l3Protocol \cite{afanasyev12}}
   \label{fig:CommunicationLayerAbstraction}
 \end{figure}
 
 As shown in \ref{fig:CommunicationLayerAbstraction} the application can communicate with ndn::L3Protocol through the AppFace whereas for inter-node transmission it depends on the transmission protocols which faces need to be used. TCP and UDP have their respective ndn::UdpFace and ndn::TcpFace. IPv4 and IPv6 also have their own ndn::Ipv4Face making it particularly easy to implement the NDN architecture on top of IP or even TCP/IP. If NDN needs to be implemented without TCP/IP protocol it can communicate directly with the link layer through the ndn::NetDeviceFace.
 
-\subsection{Content Store abstraction}
+\subsection{Content Store Abstraction}
 
 The CS is crucial for the NDN Internet architecture as it caches data for later use in potentially all the intermediate nodes. It can do rudimentary error recovery and multicast the data asynchronously downstream to the requesters. The replacement policy determines what data is saved into cache and how it gets replaced or deleted after a certain time. Currently implemented versions of the CS support Least Recently Used (ndn::cs::Lru), First In First Out (ndn::cs::Fifo) and a Random Replacement Policy (ndn::cs::Random). Each implementation is based on a dynamic trie-based data structure with hash-based indexing as are the PIT and FIB implementations.
 
-\subsection{Pending Interest Table (PIT) abstraction}
+\subsection{Pending Interest Table (PIT) Abstraction}
 
 The PIT data structure keeps information about each forwarded interest. Each PIT entry is uniquely identified by the content name of the interest. It holds a list of all incoming faces on which the interest was received and a list of all outgoing faces that the interest has been forwarded to. The arrival and expiration time are also kept in order to retransmit a lost interest. The nonce of an interest is a randomly generated number that is attached to the interest and identifies the interest in order to avoid loops. Nonce and Interest name uniquely identify the interest. Different consumers issuing the same interest will very likely have different nonces. In that case, no loop is detected and the incoming face is added to the already existing PIT entry. If the same nonce and interest are received again, the interest has looped and should be dropped.
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/PITdataStructure}
-  \caption{PIT data structure}
+  \caption{PIT data structure \cite{Afanasyev16}}
   \label{fig:PITdataStructure}
 \end{figure}
 
@@ -51,20 +51,20 @@ Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they r
 
 \newpage
 
-\subsection{Forwarding Information Base (FIB) abstraction}
+\subsection{Forwarding Information Base (FIB) Abstraction}
 
 The FIB guides the forwarding strategy in making decisions about Interest forwarding. It is similar to an IP's FIB but contains name prefixes instead of IP prefixes and holds several interfaces (out-faces) therefore enabling multicast forwarding. The faces are ordered according to their cost (routing metric) putting the cheapest connections at the beginning of the list. The lookup is performed on the content name prefixes. The longest prefix match yields the requested FIB entry with its outgoing face(es).
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/FIBdataStructure}
-  \caption{FIB data structure}
+  \caption{FIB data structure \cite{Afanasyev16}}
   \label{fig:FIBdataStructure}
 \end{figure}
 
 As shown in Figure \ref{fig:FIBdataStructure} each FIB entry that has been identified by longest-prefix match has an aggregated collection of NextHops. The NextHop collection must be non-empty and for every NextHop there is one outgoing face towards a possible content source. There may only be one NextHop with a specific face id. The FIB abstraction provides basic insertions, deletions, and exact match operations.
 
-\subsection{Forwarding Strategy abstraction}
+\subsection{Forwarding Strategy Abstraction}
 
 NdnSIM's modular architecture allows experimenting with different types of forwarding strategies without having to adapt any core components. The forwarder class interacts with the strategy and has the following important functions:
 
@@ -90,7 +90,7 @@ The strategy has one important function:
 
 \section{Simulation Environment}
 
-The NS-3 simulator supports several simulation environments. In this thesis, NS-3 PyViz was used as a live simulator. PyViz also has an interactive console that visualizes the connections between the nodes of the simulation. It also can be used to debug the state of the running object, show PIT and FIB entries in live and where packages are being dropped.
+The NS-3 simulator supports several simulation environments. In this thesis, NS-3 PyViz was used as a live simulator \cite{pyviz}. PyViz also has an interactive console that visualizes the connections between the nodes of the simulation. It also can be used to debug the state of the running object, show PIT and FIB entries in live and where packages are being dropped.
 
 \begin{figure}[H]
   \centering
@@ -123,11 +123,11 @@ Packet processing in NFD is accomplished through forwarding pipelines and forwar
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/PipelinesAndStrategies}
-  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines}
+  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:PipelinesAndStrategies}
 \end{figure}
 
-Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about the failure to satisfy a particular interest). After a pipeline has finished it's processing the package is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
+Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about the failure to satisfy a particular interest). After a pipeline has finished it's processing, the packet is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
 
 \begin{itemize}
 \item \emph{Interest Processing Path}
@@ -144,7 +144,7 @@ The interest processing path consists of the following pipelines:
 \begin{itemize}
 \item \emph{incoming interest}: Interest has been received through a face and is ready to be processed by the forwarder
 \item \emph{interest loop}: loop has been detected and interest needs to be dealt with
-\item \emph{content store miss}: incoming interest can't be satisfied by the content store
+\item \emph{content store miss}: incoming interest cannot be satisfied by the content store
 \item \emph{content store hit}: incoming interest can be satisfied by CS and does not need further forwarding 
 \item \emph{outgoing interest}: interest is made ready and sent out
 \item \emph{interest reject}: strategy rejects interests according to PIT entries
@@ -158,8 +158,8 @@ After receiving an interest package through a face implemented in \texttt{Face::
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/IncomingInterestPipeline}
-  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines}
+  \includegraphics[scale=0.5]{chapter-3/IncomingInterestPipeline}
+  \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:IncomingInterestPipeline}
 \end{figure}
 
@@ -199,8 +199,8 @@ The \texttt{Forwarder::onOutgoingInterest} method implements the outgoing intere
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/OutgoingInterestPipeline}
-  \caption{Outgoing interest pipeline}
+  \includegraphics[scale=0.5]{chapter-3/OutgoingInterestPipeline}
+  \caption{Outgoing interest pipeline \cite{Afanasyev16}}
   \label{fig:OutgoingInterestPipeline}
 \end{figure}
 
@@ -229,8 +229,8 @@ The following figure \ref{fig:IncomingDataPipeline} summarizes the steps taken b
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/IncomingDataPipeline}
-  \caption{Incoming data pipeline}
+  \includegraphics[scale=0.5]{chapter-3/IncomingDataPipeline}
+  \caption{Incoming data pipeline \cite{Afanasyev16}}
   \label{fig:IncomingDataPipeline}
 \end{figure}
 

@@ -1,16 +1,16 @@
 \chapter{Related Work}
 
-Today's use of the Internet is heavily based on content dissemination of all kinds of media like audio and video. TV-Shows, clips and tutorials on Youtube, podcasting for educational purposes like on Coursera need to be distributed around the globe. Popular TV-Shows are being distributed globally within the first few hours after being telecast to the audience through p2p networks. When a video clip goes viral millions of requests for the content are made from all over the world. In 2008 alone 500 exabytes were created and today's number is a multiple of that. This became possible since computers and computing devices got so inexpensive that almost anybody can afford them. Limited storage on clouds is given free to all users by many providers. When the Internet was invented, there were only a few computers and few resources like tape storage devices, archives or computing power distributed geographically. A client requested some specific information or resources from a specific destination which needed to be known to the client. The client was connected through TCP/IP to the server, and after the connection was established and possibly secured, the transfer of the information needed by the client could start. Host-centric networking was very reasonable at that time, but the Internet evolved towards content-dissemination and with its evolution the need for new and more efficient solutions.
+Today's use of the Internet is heavily based on content dissemination of all kinds of media like audio and video. TV-Shows, clips and tutorials on Youtube, podcasting for educational purposes like on Coursera need to be distributed around the globe. Popular TV-Shows are being often distributed globally within the first few hours after being telecast to the audience through p2p networks. If such a TV-Show reaches a certain attraction, it may be downloaded over 1.5 million times resulting in a transfer of almost 2'000 terabytes in the first 12 hours of being available \cite{forbes14}. In 2008 alone 500 exabytes were created and today's number is a multiple of that \cite{gantz07}. This became possible since computers and computing devices got so inexpensive that almost anybody can afford them. Limited storage on clouds is given free to all users by many providers. When the Internet was invented, there were only a few computers and few resources like tape storage devices, archives or computing power distributed geographically. A client requested some specific information or resources from a specific destination which needed to be known to the client. The client was connected through TCP/IP to the server, and after the connection was established and possibly secured, the transfer of the information needed by the client could start. Host-centric networking was very reasonable at that time, but the Internet evolved towards content-dissemination and with its evolution the need for new and more efficient solutions.
 
 \vspace{5mm} %5mm vertical space
 
-TCP/IP is no longer best suited for today's use of the Internet. One of the main reasons is that a TCP/IP connection is established between two machines and requires it to be active at all times. For content dissemination, a mechanism that supports multipoint to multipoint connections that do not have to be active at all times might be much better. Another reason is that a client often does not know where to get some specific information from (and doesn't really care) but knows exactly what it wants. Therefore a paradigm shift from host-centric networks started to evolve towards content-centric networks.
+TCP/IP is no longer best suited for today's use of the Internet. One of the main reasons is that a TCP/IP connection is established between two machines and requires this connection to be active at all times. For content dissemination, a mechanism that supports multipoint to multipoint connections that do not have to be active at all times might be much better. Another reason is that a client often does not know where to get some specific information from (and doesn't really care) but knows exactly what it wants. Therefore a paradigm shift from host-centric networks started to evolve towards content-centric networks.
 
 \newpage
 
 \section{Named Data Network / Content Centric Networks}
 
-Information-centric networking (ICN) is a possible answer to today's problems with TCP/IP architecture. ICN originated as a possible new paradigm for the future Internet to improve on scalability, reliability and efficient content distribution. One of the many ICN architectures is content-centric networking (CCN) originally introduced by Van Jacobson. It is being continuously researched around the globe and one initiative trying to implement CCN is Named Data Networking (NDN) project.
+Information-centric networking (ICN) is a possible answer to today's problems with TCP/IP architecture. ICN originated as a possible new paradigm for the future Internet to improve on scalability, reliability and efficient content distribution \cite{jacobson09, ndn17}. One of the many ICN architectures is content-centric networking (CCN) originally introduced by Van Jacobson. It is being continuously researched around the globe and one initiative trying to implement CCN is Named Data Networking (NDN) project.
 
 \vspace{5mm} %5mm vertical space
 
@@ -21,7 +21,7 @@ In CCN the content is made directly addressable and routable by name. An Interes
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-2/NetworkStack}
-  \caption{TCP/IP protocol stack on the left and CCN protocol stack on the right}
+  \caption{TCP/IP protocol stack on the left and CCN protocol stack on the right \cite{jacobson09}.}
   \label{fig:NetworkStack}
 \end{figure}
 
@@ -42,7 +42,7 @@ In CCN there are no clients and servers anymore but \textbf{consumers} and \text
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.55]{chapter-2/InterestAndData}
-  \caption{Overview of the packet structure for interests and data messages in NDN}
+  \caption{Overview of the packet structure for interests and data messages in NDN \cite{ndnWiki}.}
   \label{fig:InterestAndData}
 \end{figure}
 
@@ -62,6 +62,17 @@ The Content Store (CS) is located within the intermediate nodes. It is a cache o
 
 The Forwarding Information Base (FIB) is used by the strategy to forward interests upstream towards potential producers or intermediate nodes, that have cached the requested data. Every interest that needs to be forwarded will be matched against the FIB entries by the longest prefix match algorithm. It basically checks the content name of the interest with the FIB entries and chooses the entry with the largest number of leading name components, since the routing is done by content name. If an entry is found the interest will be sent upstream to the outgoing faces. If there is no match the interest can be broadcast or dropped according to the network implementation strategy. The FIB is always checked last if there is no PIT entry (it has not yet been forwarded or it has been already satisfied) and there is no CS data that can satisfy the interest directly.
 
+Figure \ref{fig:NDNcommunication} shows how the above mentioned data structures work together. Network interfaces are abstracted in NDN into faces in order to support software and hardware interfaces. Consumers and Producers generally have additional faces for the application requesting some data or generating it.
+
+\begin{figure}[H]
+  \centering
+  \includegraphics[scale=0.6]{chapter-2/NDNcommunication}
+  \caption{Interaction of the CS, FIB and PIT data structures within a node \cite{ndn17}}
+  \label{fig:NDNcommunication}
+\end{figure}
+
+In a forwarding scenario, an interest is received on Face 0 or Face 1 and a PIT entry is created if no CS match was found and no PIT already exists. If a PIT entry exists the face id is added to the entry as an incoming face. The FIB entries have outgoing faces to which interests are forwarded to, if necessary. An index keeps track of all entries in the different data structures and keeps pointers to them. If a new interest is created within the application, the interest is sent through the application face (Face 2) to the lower layers of the node for further forwarding. 
+
 \subsection{Forwarding of an Interest}
 
 Interests are forwarded based on the content name and the implemented strategy on all intermediate nodes. The above discussed tables are used for deciding if and how to further process the interest. The strategy is only responsible for forwarding the interests towards content sources or producers. The data coming back follows the path of the interest back to the consumer.
@@ -71,7 +82,7 @@ Interests are forwarded based on the content name and the implemented strategy o
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.45]{chapter-2/SimpleInterestForwarding}
-  \caption{Shows how the data structures are used in order to forward or discard the interest}
+  \caption{Shows how the data structures are used in order to forward or discard the interest \cite{amadeo14}}
   \label{fig:SimpleInterestForwarding}
 \end{figure}
 
@@ -81,12 +92,15 @@ When an interest arrives at an intermediate node the content store is checked fi
 
 \vspace{5mm} %5mm vertical space
 
-Sending Data downstream to the original requester is straightforward since no special routing is required. The Data follows the breadcrumbs of the interest left the PIT entries. These breadcrumbs are the incoming faces the interest and serve as the outgoing faces for the data message.
+Sending Data downstream to the original requester is straightforward and no special routing is required. The Data follows the breadcrumbs of the interest, which are left inside the PIT entries. These breadcrumbs are the incoming faces of the previously forwarded interest and serve as the outgoing faces for the data message on the way back to the requester.
 
 \subsection{Transport and Routing}
 
-As mentioned above the "content chunks" layer in the CCN protocol stack makes even weaker demands on the lower layers than the IP layer makes its lower layer, the Network Access Layer. It operates on unreliable, best-effort packet delivery services in potentially highly dynamic and mobile environments. Interests and Data packages are expected to get lost and/or corrupted. In CNN the strategy layer of the intermediate nodes is responsible for retransmitting the interest if within the timeout no data has been received. The strategy layer knows which outgoing faces were used and what the timeout was, therefore it is able to adjust the parameters for a retransmission. The same is true for the strategy layer of the consumer. If it does not receive any data back within a given timeframe, it too will retransmit the interest.
-Flow control can be managed by the consumer in terms of how many interests can be sent out before receiving the first data packages back. It is also managed on a hop-by-hop basis. Each intermediate node decides when to retransmit an interest due to loss or corrupted data coming back. The buffer for the interests is the PIT whereas the buffer for the data passing downstream to the consumers is the CS. There is no need for special congestion control techniques.
+As mentioned above the "content chunks" layer in the CCN protocol stack makes even weaker demands on the lower layers than the IP layer makes its lower layer, the Network Access Layer. It operates on unreliable, best-effort packet delivery services in potentially highly dynamic and mobile environments. Interests and Data packets are expected to get lost and/or corrupted. In CCN the strategy layer of the intermediate nodes is responsible for retransmitting the interest if within the timeout no data has been received. The strategy layer knows which outgoing faces were used and what the timeout was, therefore it is able to adjust the parameters for a retransmission. The same is true for the strategy layer of the consumer. If it does not receive any data back within a given timeframe, it will retransmit the interest, too.
+
+\vspace{5mm} %5mm vertical space
+
+Flow control can be managed by the consumer in terms of how many interests can be sent out before receiving the first data packet back. It is also managed on a hop-by-hop basis. Each intermediate node decides when to retransmit an interest due to loss or corrupted data coming back. The buffer for the interests is the PIT whereas the buffer for the data passing downstream to the consumers is the CS. There is no need for special congestion control techniques.
 
 \subsection{Sequencing}
 
@@ -96,10 +110,16 @@ This name can be aggregated with more components if needed by the application or
 
 \subsection{Network Security}
 
-CCN digitally sings and encrypts the content itself and not the connection over which it travels. TCP/IP needs to secure the connections, which in turn must link the content to the server infrastructure. To trust a content the user must fetch it from its original source making it very difficult to cache popular content and make it available to other users. For a rich and robust content-based security model the consumer must be able to assess the integrity (content is not corrupted), pertinence (what question does it answer) and provenance (who claims this is an answer). TCP/IP can only provide weak integrity through a checksum and only implicit pertinence and provenance through securing the host to host channel and therefore trusting the source and destination addresses. CNN, on the other hand, transparently provides then content name and therefore the meaning of the content which satisfies pertinence. Through public key signatures the consumer and any intermediate node can check the content's authenticity, therefore verify integrity and satisfy provenance.
+CCN digitally signs and encrypts the content itself and not the connection over which it travels. TCP/IP needs to secure the connections, which in turn must link the content to the server infrastructure. To trust a content object the user must fetch it from its original source making it very difficult to cache popular content and make it available to other users. For a rich and robust content-based security model the consumer must be able to assess the integrity (content is not corrupted), pertinence (what question does it answer) and provenance (who claims this is an answer). TCP/IP can only provide weak integrity through a checksum and only implicit pertinence and provenance through securing the host to host channel and therefore trusting the source and destination addresses. CCN, on the other hand, transparently provides then content name and therefore the meaning of the content which satisfies pertinence. Through public key signatures the consumer and any intermediate node can check the content's authenticity, therefore verifying integrity and satisfying provenance.
+
+\vspace{5mm} %5mm vertical space
+
 Content Protection and Access Control could be solved solely by encrypting the content with different keys. No trusted servers or directories would need to enforce complicated access policies on the filesystem. Expensive authentication services like SWITCH AAI could be saved. If for example, certain documents within a database should be only readable by a certain group of people these documents could be simply encrypted while still accessible to everyone. Only the people with the correct key could encrypt it and use it.
 Network security is improved against many classes of network attacks. Every node can possibly (if the resources allow it) check the integrity of the data and cache it for further use. There is no single host that provides the data, therefore hiding content from consumers is very difficult.
-DDoS attacks with data packages are not really a problem since every node can ignore unsolicited data coming in. If resources allow it, the node can simply store it in CS and mark it as unsolicited. If space runs low on the CS these data packages will be removed first. No propagation of unsolicited data takes place since no PIT entries exist for the data. DDoS attacks, therefore, would have to be done through interests. If the prefix stays the same the PIT entry get's updated for every new interest, but no forwarding takes place. If the prefix changes constantly the strategy has many means to take action like limiting the rate of the interests with certain prefix patterns or lower prioritization of interests that result in data coming back. 
+
+\vspace{5mm} %5mm vertical space
+
+DDoS attacks with data packets are not really a problem since every node can ignore unsolicited data coming in. If resources allow it, the node can simply store it in the CS and mark it as unsolicited. If space runs low on the CS these data packets will be removed first. No propagation of unsolicited data takes place since no PIT entries exist for the data. DDoS attacks, therefore, would have to be done through interests. If the prefix stays the same the PIT entry get's updated for every new interest, but no forwarding takes place. If the prefix changes constantly the strategy has many means to take action like limiting the rate of the interests with certain prefix patterns or lower prioritization of interests that result in data coming back. 
 
 \newpage
 \section{VANETs}
@@ -121,8 +141,8 @@ In such dynamic and mobile environments, the TCP/IP based approach that focuses 
 
 \vspace{5mm} %5mm vertical space
 
-There are two main routing schemes for VANETs. In the \emph{proactiv} scheme, the content providers advertise periodically in order to keep the FIB entries updated with fresh routing information. In the \emph{reactive} scheme no advertisement by the content providers is done and the FIB's are populated based on interest flooding. Flooding-based discovery seems to be better suited for VANET's since periodical FIB updates on all intermediate nodes incur a high and mostly unnecessary cost on the network. An interest is able to find it's way quickly to some node having a copy of the data or the producer itself. Collision avoidance and packet suppression is done on lower layers, although packet suppression will be done in the forwarder module in ndnSIM (see chapter 3).
-Caching policies in VANET's differ slightly from regular CCN use since the vehicles are moving fast into and out of regions relevant to the data. Data about possible congestion gets outdated pretty quickly so do often warnings of any kind. Further, the question arises if unsolicited data should be cached into CS and if yes, under which conditions and for how long. As mentioned before vehicles could link otherwise disconnected areas, but in that case, the data naming should be clear or that specific intent.
+There are two main routing schemes for VANETs. In the \emph{proactive} scheme, the content providers advertise periodically in order to keep the FIB entries updated with fresh routing information. In the \emph{reactive} scheme no advertisement by the content providers is done and the FIB's are populated based on interest flooding. Flooding-based discovery seems to be better suited for VANETs since periodical FIB updates on all intermediate nodes incur a high and mostly unnecessary cost on the network. An interest is able to find it's way quickly to some node having a copy of the data or the producer itself. Collision avoidance and packet suppression is done on lower layers, although packet suppression will be done in the forwarder module in ndnSIM (see chapter 3).
+Caching policies in VANETs differ slightly from regular CCN use since the vehicles are moving fast into and out of regions relevant to the data. Data about possible congestion gets outdated pretty quickly so do often warnings of any kind. Further, the question arises if unsolicited data should be cached into CS and if yes, under which conditions and for how long. As mentioned before vehicles could link otherwise disconnected areas, but in that case, the data naming should be clear or that specific intent.
 
 \vspace{5mm} %5mm vertical space
 

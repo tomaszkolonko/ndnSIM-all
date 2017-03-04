@@ -14,25 +14,25 @@
 \BOOKMARK [1][-]{section.2.2}{VANETs}{chapter.2}% 14
 \BOOKMARK [0][-]{chapter.3}{ndnSIM}{}% 15
 \BOOKMARK [1][-]{section.3.1}{Design overview}{chapter.3}% 16
-\BOOKMARK [2][-]{subsection.3.1.1}{Face abstraction}{section.3.1}% 17
-\BOOKMARK [2][-]{subsection.3.1.2}{Content Store abstraction}{section.3.1}% 18
-\BOOKMARK [2][-]{subsection.3.1.3}{Pending Interest Table \(PIT\) abstraction}{section.3.1}% 19
-\BOOKMARK [2][-]{subsection.3.1.4}{Forwarding Information Base \(FIB\) abstraction}{section.3.1}% 20
-\BOOKMARK [2][-]{subsection.3.1.5}{Forwarding Strategy abstraction}{section.3.1}% 21
+\BOOKMARK [2][-]{subsection.3.1.1}{Face Abstraction}{section.3.1}% 17
+\BOOKMARK [2][-]{subsection.3.1.2}{Content Store Abstraction}{section.3.1}% 18
+\BOOKMARK [2][-]{subsection.3.1.3}{Pending Interest Table \(PIT\) Abstraction}{section.3.1}% 19
+\BOOKMARK [2][-]{subsection.3.1.4}{Forwarding Information Base \(FIB\) Abstraction}{section.3.1}% 20
+\BOOKMARK [2][-]{subsection.3.1.5}{Forwarding Strategy Abstraction}{section.3.1}% 21
 \BOOKMARK [1][-]{section.3.2}{Simulation Environment}{chapter.3}% 22
 \BOOKMARK [1][-]{section.3.3}{Forwarding by the NDN Forwarding Daemon \(NFD\)}{chapter.3}% 23
 \BOOKMARK [2][-]{subsection.3.3.1}{Interest Processing Path}{section.3.3}% 24
 \BOOKMARK [2][-]{subsection.3.3.2}{Data Processing Path}{section.3.3}% 25
-\BOOKMARK [0][-]{chapter.4}{Design and Implementation}{}% 26
+\BOOKMARK [0][-]{chapter.4}{Design and Implementation of the Forwarding Strategy by MAC Addresses}{}% 26
 \BOOKMARK [1][-]{section.4.1}{Problem Description}{chapter.4}% 27
 \BOOKMARK [1][-]{section.4.2}{Multipath Approach}{chapter.4}% 28
-\BOOKMARK [2][-]{subsection.4.2.1}{Changes to the Interest}{section.4.2}% 29
-\BOOKMARK [2][-]{subsection.4.2.2}{Changes to the Data}{section.4.2}% 30
+\BOOKMARK [2][-]{subsection.4.2.1}{Changes to the Interest Message}{section.4.2}% 29
+\BOOKMARK [2][-]{subsection.4.2.2}{Changes to the Data Message}{section.4.2}% 30
 \BOOKMARK [2][-]{subsection.4.2.3}{Changes to the FIB}{section.4.2}% 31
 \BOOKMARK [2][-]{subsection.4.2.4}{Changes to the PIT}{section.4.2}% 32
-\BOOKMARK [1][-]{section.4.3}{Topology and Mobility}{chapter.4}% 33
-\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 34
-\BOOKMARK [1][-]{section.5.1}{Evaluation environment}{chapter.5}% 35
+\BOOKMARK [0][-]{chapter.5}{Evaluation}{}% 33
+\BOOKMARK [1][-]{section.5.1}{Evaluation environment}{chapter.5}% 34
+\BOOKMARK [2][-]{subsection.5.1.1}{Topology and Mobility}{section.5.1}% 35
 \BOOKMARK [1][-]{section.5.2}{Results for a static 8 nodes scenario}{chapter.5}% 36
 \BOOKMARK [1][-]{section.5.3}{Results for dynamic 16 nodes scenario}{chapter.5}% 37
 \BOOKMARK [0][-]{chapter.6}{Conclusion}{}% 38
@@ -40,4 +40,4 @@
 \BOOKMARK [1][-]{section.6.2}{Future Work}{chapter.6}% 40
 \BOOKMARK [2][-]{subsection.6.2.1}{Static 8 nodes scenario}{section.6.2}% 41
 \BOOKMARK [2][-]{subsection.6.2.2}{Dynamic 8 nodes scenario}{section.6.2}% 42
-\BOOKMARK [0][-]{chapter*.42}{Bibliography}{}% 43
+\BOOKMARK [0][-]{chapter*.43}{Bibliography}{}% 43
