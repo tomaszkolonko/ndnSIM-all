@@ -26,11 +26,11 @@
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Node movement in NS2 trace files\relax }}{37}{figure.caption.33}
 \contentsline {figure}{\numberline {5.3}{\ignorespaces Basic static scenario with 8 nodes, 1 consumer and 1 producer\relax }}{38}{figure.caption.34}
 \contentsline {figure}{\numberline {5.4}{\ignorespaces Satisfaction ratio at different simulation times for both implementations\relax }}{39}{figure.caption.35}
-\contentsline {figure}{\numberline {5.5}{\ignorespaces Number of sent and received packages over simulation time\relax }}{40}{figure.caption.36}
+\contentsline {figure}{\numberline {5.5}{\ignorespaces Number of sent and received packets over simulation time\relax }}{40}{figure.caption.36}
 \contentsline {figure}{\numberline {5.6}{\ignorespaces Latency of both implementations over simulation time\relax }}{41}{figure.caption.37}
 \contentsline {figure}{\numberline {5.7}{\ignorespaces Ad-hoc scenario with 16 nodes and movement, 1 consumer and 1 producer\relax }}{42}{figure.caption.38}
 \contentsline {figure}{\numberline {5.8}{\ignorespaces Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes.\relax }}{43}{figure.caption.39}
 \contentsline {figure}{\numberline {5.9}{\ignorespaces Satisfaction ratio at different simulation times for both implementations with mobility\relax }}{44}{figure.caption.40}
-\contentsline {figure}{\numberline {5.10}{\ignorespaces Number of sent and received packages over simulation time\relax }}{45}{figure.caption.41}
+\contentsline {figure}{\numberline {5.10}{\ignorespaces Number of sent and received packets over simulation time\relax }}{45}{figure.caption.41}
 \contentsline {figure}{\numberline {5.11}{\ignorespaces Latency of both implementations over simulation time\relax }}{46}{figure.caption.42}
 \addvspace {10\p@ }

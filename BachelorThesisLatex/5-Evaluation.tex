@@ -10,7 +10,7 @@ All tests are run on the ns-3 network simulator with ndnSIM version 2.0.  As WiF
 
 \subsection{Topology and Mobility}
 
-The topology of the nodes and their movement is a fundamental factor that should be considered carefully. In order to be able to run specific tests, the nodes need to be spaced accordingly. Since WiFi 802.11a is used in this theses the nodes should not exceed 200 meters or the connection will be lost. On the other hand putting them to near together will introduce problems in collisions, retransmissions and lost packages. The nodes will not be able to handle flooding efficiently when clustered all together. Random movement is another problem that can lead to unwanted problems and lost routes.
+The topology of the nodes and their movement is a fundamental factor that should be considered carefully. In order to be able to run specific tests, the nodes need to be spaced accordingly. Since WiFi 802.11a is used in this theses the nodes should not exceed 200 meters or the connection will be lost. On the other hand putting them to near together will introduce problems in collisions, retransmissions and lost packets. The nodes will not be able to handle flooding efficiently when clustered all together. Random movement is another problem that can lead to unwanted problems and lost routes.
  
 The topology is created within a trace file that can be read by the \texttt{Ns2MobilityHelper} helper class and is fully supported by the ns-3 network simulator. The initial positions of the nodes within the cartesian coordinate system are placed inside the file by specifying the node, it's x-value and it's y-value as shown in figure \ref{fig:ns2traceFileStatic}:
 
@@ -49,7 +49,7 @@ The first scenario is a static 8 node scenario with one consumer on the left and
 
 \vspace{5mm} %5mm vertical space
 
-The runs have been conducted for 100, 200, 300 and 600 seconds each. The consumer was configured to sent out Interests at a frequency of 3 Interests per second. For the ratio, received Data over send Interests only distinct packages were counted. Retransmissions were ignored. The average latency was measured in nanoseconds, as the time difference of the Interest leaving the consumer and the corresponding Data package being received at the consumer added together and divided by all successful Interest requests.
+The runs have been conducted for 100, 200, 300 and 600 seconds each. The consumer was configured to sent out Interests at a frequency of 3 Interests per second. For the ratio, received Data over send Interests only distinct packets were counted. Retransmissions were ignored. The average latency was measured in nanoseconds, as the time difference of the Interest leaving the consumer and the corresponding Data packet being received at the consumer added together and divided by all successful Interest requests.
 
 \vspace{5mm} %5mm vertical space
 
@@ -69,7 +69,7 @@ Figure \ref{fig:staticS1iod} shows that the ratio of satisfied Interests over si
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-5/staticS1iod}
-  \caption{Number of sent and received packages over simulation time}
+  \caption{Number of sent and received packets over simulation time}
   \label{fig:staticS1iod}
 \end{figure}
 
@@ -84,7 +84,7 @@ Figure \ref{fig:staticS1latency} shows how the latency changes with the simulati
   \label{fig:staticS1latency}
 \end{figure}
 
-The implementation has been tested with overhearing of data coming back and adding the route to the FIB entries but with a higher cost. If the Data packet was intended for the receiving node, the node added or updated the FIB with the new information and attached cost 111 to this specific next hop. The number 111 was randomly chosen and represents a relative low cost. If the data was only overheard (unsolicited) a FIB entry was updated or created with cost 222 instead of ignored and dropped immediately to save resources. The results were slightly worse than the above proposed implementation, but still much better than the base one.
+The implementation has been tested with overhearing of data coming back and adding the route to the FIB entries but with a higher cost. If the Data packet was intended for the receiving node, the node added or updated the FIB with the new information and attached cost 111 to this specific next hop. The number 111 was randomly chosen and represents a relative low cost. If the Data was only overheard (unsolicited) a FIB entry was updated or created with cost 222 instead of ignored and dropped immediately to save resources. The results were slightly worse than the above proposed implementation, but still much better than the base one.
 
 \vspace{5mm} %5mm vertical space
 
@@ -136,14 +136,14 @@ Figure \ref{fig:scenario2ratio} shows the ratio of sent Interest packets over sa
 \vspace{5mm} %5mm vertical space
 
 Like in the static scenario it is important to look at the overall throughput and set the satisfaction ratio into context of send and satisfied Interests. Figure \ref{fig:scenario2iod} shows the base implementation in brown colour. The dark bar shows the Interests send upstream towards a potential content producer, while the lighter bar shows the satisfied Interests. The ratio obtained in \ref{fig:scenario2ratio} is seen once again by comparing the bars of one color per simulation time to each other. The new implementation has not only a better ratio of satisfied Interests over simulation time, but also is able to send and receive more data. The reason is that the nodes are targeted specifically by the MAC address and don't congest the network even if send to three upstream addresses.
-The new implementation sends 39 Interests out and receives 28 data that satisfy the Interests in the first 100 seconds of the simulation. The next 100 seconds roughly doubles the Interests being sent and satisfied, whereas the next 100 seconds result in a decrease of newly satisfied Interests. That problem was described above and can be seen figure \ref{fig:scenario2extended}. Different trace-files led to different results and whenever a clustering of the intermediate nodes was observed the successfully sent out and satisfied Interests also slowed down. The clustering issue is also a problem for the ndnSIM base implementation strategy, but preferred nodes by FIB entries only pose a problem to the new implementation that needs further attention.
+The new implementation sends 39 Interests out and receives 28 Data that satisfy the Interests in the first 100 seconds of the simulation. The next 100 seconds roughly doubles the Interests being sent and satisfied, whereas the next 100 seconds result in a decrease of newly satisfied Interests. That problem was described above and can be seen figure \ref{fig:scenario2extended}. Different trace-files led to different results and whenever a clustering of the intermediate nodes was observed the successfully sent out and satisfied Interests also slowed down. The clustering issue is also a problem for the ndnSIM base implementation strategy, but preferred nodes by FIB entries only pose a problem to the new implementation that needs further attention.
 
 \clearpage
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-5/scenario2iod}
-  \caption{Number of sent and received packages over simulation time}
+  \caption{Number of sent and received packets over simulation time}
   \label{fig:scenario2iod}
 \end{figure}
 
