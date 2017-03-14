@@ -1,26 +1,26 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {2.1}{\ignorespaces TCP/IP protocol stack on the left and CCN protocol stack on the right \cite {jacobson09}.\relax }}{4}{figure.caption.4}
-\contentsline {figure}{\numberline {2.2}{\ignorespaces Overview of the packet structure for interests and data messages in NDN \cite {ndnWiki}.\relax }}{5}{figure.caption.5}
-\contentsline {figure}{\numberline {2.3}{\ignorespaces Interaction of the CS, FIB and PIT data structures within a node \cite {ndn17}\relax }}{7}{figure.caption.9}
-\contentsline {figure}{\numberline {2.4}{\ignorespaces Shows how the data structures are used in order to forward or discard the interest \cite {amadeo14}\relax }}{8}{figure.caption.10}
+\contentsline {figure}{\numberline {2.2}{\ignorespaces Overview of the packet structure for Interests and Data messages in NDN \cite {ndnWiki}.\relax }}{5}{figure.caption.5}
+\contentsline {figure}{\numberline {2.3}{\ignorespaces Interaction of the CS, FIB and PIT Data structures within a node \cite {ndn17}\relax }}{7}{figure.caption.9}
+\contentsline {figure}{\numberline {2.4}{\ignorespaces Shows how the Data structures are used in order to forward or discard the Interest \cite {amadeo14}\relax }}{8}{figure.caption.10}
 \contentsline {figure}{\numberline {2.5}{\ignorespaces Different communication agents interacting with each other through different channels\relax }}{11}{figure.caption.11}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {3.1}{\ignorespaces Basic component abstractions in ndnSIM \cite {afanasyev12}\relax }}{14}{figure.caption.12}
 \contentsline {figure}{\numberline {3.2}{\ignorespaces Face abstractions around ndn::l3Protocol \cite {afanasyev12}\relax }}{15}{figure.caption.13}
-\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT data structure \cite {Afanasyev16}\relax }}{16}{figure.caption.14}
-\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB data structure \cite {Afanasyev16}\relax }}{17}{figure.caption.15}
+\contentsline {figure}{\numberline {3.3}{\ignorespaces PIT Data structure \cite {Afanasyev16}\relax }}{16}{figure.caption.14}
+\contentsline {figure}{\numberline {3.4}{\ignorespaces FIB Data structure \cite {Afanasyev16}\relax }}{17}{figure.caption.15}
 \contentsline {figure}{\numberline {3.5}{\ignorespaces Simulation of a possible scenario\relax }}{18}{figure.caption.16}
 \contentsline {figure}{\numberline {3.6}{\ignorespaces PIT and FIB entries in real time\relax }}{19}{figure.caption.17}
 \contentsline {figure}{\numberline {3.7}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite {Afanasyev16}\relax }}{20}{figure.caption.18}
 \contentsline {figure}{\numberline {3.8}{\ignorespaces Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite {Afanasyev16}\relax }}{21}{figure.caption.20}
-\contentsline {figure}{\numberline {3.9}{\ignorespaces Outgoing interest pipeline \cite {Afanasyev16}\relax }}{23}{figure.caption.24}
-\contentsline {figure}{\numberline {3.10}{\ignorespaces Incoming data pipeline \cite {Afanasyev16}\relax }}{24}{figure.caption.26}
+\contentsline {figure}{\numberline {3.9}{\ignorespaces Outgoing Interest pipeline \cite {Afanasyev16}\relax }}{23}{figure.caption.24}
+\contentsline {figure}{\numberline {3.10}{\ignorespaces Incoming Data pipeline \cite {Afanasyev16}\relax }}{24}{figure.caption.26}
 \addvspace {10\p@ }
-\contentsline {figure}{\numberline {4.1}{\ignorespaces Incoming interest pipeline for the implementation of MAC addresses\relax }}{29}{figure.caption.28}
-\contentsline {figure}{\numberline {4.2}{\ignorespaces Incoming data pipeline for data messages\relax }}{31}{figure.caption.29}
-\contentsline {figure}{\numberline {4.3}{\ignorespaces FIB new data structure\relax }}{32}{figure.caption.30}
-\contentsline {figure}{\numberline {4.4}{\ignorespaces New PIT data structure\relax }}{33}{figure.caption.31}
+\contentsline {figure}{\numberline {4.1}{\ignorespaces Incoming Interest pipeline for the implementation of MAC addresses\relax }}{29}{figure.caption.28}
+\contentsline {figure}{\numberline {4.2}{\ignorespaces Incoming data pipeline for Data messages\relax }}{31}{figure.caption.29}
+\contentsline {figure}{\numberline {4.3}{\ignorespaces FIB new Data structure\relax }}{32}{figure.caption.30}
+\contentsline {figure}{\numberline {4.4}{\ignorespaces New PIT Data structure\relax }}{33}{figure.caption.31}
 \addvspace {10\p@ }
 \contentsline {figure}{\numberline {5.1}{\ignorespaces Node positioning in NS2 trace files\relax }}{36}{figure.caption.32}
 \contentsline {figure}{\numberline {5.2}{\ignorespaces Node movement in NS2 trace files\relax }}{37}{figure.caption.33}
@@ -32,5 +32,5 @@
 \contentsline {figure}{\numberline {5.8}{\ignorespaces Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes.\relax }}{43}{figure.caption.39}
 \contentsline {figure}{\numberline {5.9}{\ignorespaces Satisfaction ratio at different simulation times for both implementations with mobility\relax }}{44}{figure.caption.40}
 \contentsline {figure}{\numberline {5.10}{\ignorespaces Number of sent and received packages over simulation time\relax }}{45}{figure.caption.41}
-\contentsline {figure}{\numberline {5.11}{\ignorespaces Latency of both implementations over simulation time\relax }}{45}{figure.caption.42}
+\contentsline {figure}{\numberline {5.11}{\ignorespaces Latency of both implementations over simulation time\relax }}{46}{figure.caption.42}
 \addvspace {10\p@ }
