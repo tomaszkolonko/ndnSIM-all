@@ -6,7 +6,7 @@ To achieve comparability the scenario and trace-files are copied into a clean ba
 
 \section{Evaluation environment}
 
-All tests are run on the ns-3 network simulator with ndnSIM version 2.0.  As WiFi standard 802.11a was used, which means each node has a transmission range of approximately 120 meters in open space \cite{wifi80211a} . For the propagation delay \texttt{ns3::ConstantSpeedPropagationDelayModel} was used and for the propagation loss \texttt{ns3::ThreeLogDistancePropagationLossModel} and \texttt{ns3::NakamiPropagationLossModel} were used. Interest lifetime is set to 4 seconds and the retransmission timeout to 500ms. Data packet size is 1200kb.
+All tests are run on the ns-3 network simulator with ndnSIM version 2.0.  As WiFi standard 802.11a was used, which means each node has a transmission range of approximately 120 meters in open space \cite{wifi80211a} . For the propagation delay \texttt{ns3::Constant}\texttt{SpeedPropagation}\texttt{DelayModel} was used and for the propagation loss \texttt{ns3::Three}\texttt{LogDistance}\texttt{Propagation}\texttt{LossModel} and \texttt{ns3::}\texttt{Nakami}\texttt{Propagation}\texttt{LossModel} were used. Interest lifetime is set to 4 seconds and the retransmission timeout to 500ms. Data packet size is 1200kb.
 
 \subsection{Topology and Mobility}
 
@@ -21,6 +21,8 @@ The topology is created within a trace file that can be read by the \texttt{Ns2M
   \label{fig:ns2traceFileStatic}
 \end{figure}
 
+\clearpage
+
 This scenario has been used for the static 8 node simulations. For the dynamic scenario, movement had to be added through special statements in the trace file. Every statement specifies the time at which the movement will take place, the node which has to be moved, the new destination and speed. The node will stop when it arrives at the new destination or when a new statement changes its course and speed. Figure \ref{fig:ns2traceFileDynamic} shows few lines from the trace file used in the dynamic 16 node scenario.
 
 \begin{figure}[H]
@@ -29,6 +31,8 @@ This scenario has been used for the static 8 node simulations. For the dynamic s
   \caption{Node movement in NS2 trace files}
   \label{fig:ns2traceFileDynamic}
 \end{figure}
+
+\clearpage
 
 \section{Results for a static 8 nodes scenario}
 
@@ -71,6 +75,8 @@ Figure \ref{fig:staticS1iod} shows that the ratio of satisfied interests over si
 
 Figure \ref{fig:staticS1latency} shows how the latency changes with the simulation time and chosen implementation. As expected from \ref{fig:staticS1iod} the latency increases significantly with congestion and retransmissions in the base implementation of the multicast strategy. During the first 100 seconds, the latency reaches 40 seconds. At the end of the simulation it is about 140 seconds. The new implementation has a much lower latency, starting with around 11 seconds for the first 100 seconds of the simulation. Then it increases slightly till around 15 seconds for 600 seconds of simulation. This also shows that congestion and retransmission stay relatively constant for the new implementation.
 
+\clearpage
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-5/staticS1latency}
@@ -107,6 +113,8 @@ Figure \ref{fig:scenario2} shows the topology at the beginning of the simulation
 
 For the static scenario, it was sufficient to keep the configured routes constant, since no movement changed the topology. In this scenario, though, by moving intermediate nodes, the strategy may possibly lead to loosing the connection altogether (if the nodes move too far away). The base implementation of ndnSIM does not have this problem since it has no specific routes to follow and basically broadcasts the interest all over again using the next best node available. The trace file was randomly generated in order to give a realistic scenario and the above problem can be seen around simulation time: 200 seconds in Figure \ref{fig:scenario2extended}. This problem is also noticed in the numeric data.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-5/scenario2extended}
@@ -125,8 +133,12 @@ Figure \ref{fig:scenario2ratio} shows the ratio of sent interest packets over sa
   \label{fig:scenario2ratio}
 \end{figure}
 
+\vspace{5mm} %5mm vertical space
+
 Like in the static scenario it is important to look at the overall throughput and set the satisfaction ratio into context of send and satisfied interests. Figure \ref{fig:scenario2iod} shows the base implementation in brown colour. The dark bar shows the interests send upstream towards a potential content producer, while the lighter bar shows the satisfied interests. The ratio obtained in \ref{fig:scenario2ratio} is seen once again by comparing the bars of one color per simulation time to each other. The new implementation has not only a better ratio of satisfied interests over simulation time, but also is able to send and receive more data. The reason is that the nodes are targeted specifically by the MAC address and don't congest the network even if send to three upstream addresses.
 The new implementation sends 39 interests out and receives 28 data that satisfy the interests in the first 100 seconds of the simulation. The next 100 seconds roughly doubles the interests being sent and satisfied, whereas the next 100 seconds result in a decrease of newly satisfied interests. That problem was described above and can be seen figure \ref{fig:scenario2extended}. Different trace-files led to different results and whenever a clustering of the intermediate nodes was observed the successfully sent out and satisfied interests also slowed down. The clustering issue is also a problem for the ndnSIM base implementation strategy, but preferred nodes by FIB entries only pose a problem to the new implementation that needs further attention.
+
+\clearpage
 
 \begin{figure}[H]
   \centering
@@ -135,7 +147,11 @@ The new implementation sends 39 interests out and receives 28 data that satisfy 
   \label{fig:scenario2iod}
 \end{figure}
 
+\vspace{5mm} %5mm vertical space
+
 Figure \ref{fig:scenario2latency} shows the observed latency for both implementations. As expected the latency is significantly better with the new implementation, although it is longer, due to increased number of nodes and more distance between the consumer and the producer. As the unsatisfied interests are retransmitted the latency increases over time.
+
+\vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
@@ -143,6 +159,8 @@ Figure \ref{fig:scenario2latency} shows the observed latency for both implementa
   \caption{Latency of both implementations over simulation time}
   \label{fig:scenario2latency}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 In the static and dynamic scenarios, the latency time is around 20 seconds, which is too high for real-time applications. But it can be used well in background processes, like downloading maps, weather forecast or entertainment media.
 

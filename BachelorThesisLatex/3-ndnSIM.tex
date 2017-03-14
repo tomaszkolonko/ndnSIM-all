@@ -10,6 +10,8 @@ NdnSIM is an open source simulator for NDN networks within the existing NS-3 sim
 
 NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modeled components making experimentation on one hand very fine-grained and on the other hand very isolated and decoupled from the rest. The NDN core protocol stack can be installed on every simulated network node in a consistent manner through helpers, that take care of all the parts that need to play together like the inter-node communication with installed applications through their respective application faces.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/ndnSIMcomponentAbstraction}
@@ -17,11 +19,15 @@ NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modeled 
   \label{fig:ndnSIMcomponentAbstraction}
 \end{figure}
 
+\vspace{5mm} %5mm vertical space
+
 The basic component abstractions are seen in figure \ref{fig:ndnSIMcomponentAbstraction}. The core NDN Protocol is the ndn::L3Protocol that receives interest and data packages from upper and lower layers through the corresponding faces. As of ndnSIM version 2.0 there are two distinct faces: the application face (ndn::AppFace) is responsible for inter-node communication between the application and the node itself while the net device face (ndn::NetDeviceFace) is responsible for inter-network communication with different nodes. Other faces for different purposes are expected to be added by the core developer or the community as needed. The CS (ndn::ContentStore) is an abstraction for in-network caching of data and can easily be omitted or replaced by another implementation of a different storing policy. The PIT (ndn::Pit) abstracts the data structure that is responsible for logging all received interests with their nonce and incoming faces while the FIB (ndn::Fib) abstracts the data structure to guide the strategy in interest forwarding. The Strategy (ndn::ForwadingStrategy) is responsible for implementing how interests and data are forwarded. That includes lookups in the content store for cached data, in PIT for already forwarded interests and in FIB if both previous searches didn't yield any matches. Each action in the forwarder of the strategy is represented as a virtual function in the forwarder header class and can be overwritten.
 
 \subsection{Face Abstraction}
 
 The face abstraction plays an important role in the overall modularity of the NDN simulator by acting as an interface, therefore, making ndnSIM design independent from any underlying transport layers. All communication between application, the NDN core protocol and other nodes with the L3 protocol happens through faces that take care of any needed conversion.
+
+\vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
@@ -29,6 +35,8 @@ The face abstraction plays an important role in the overall modularity of the ND
   \caption{Face abstractions around ndn::l3Protocol \cite{afanasyev12}}
   \label{fig:CommunicationLayerAbstraction}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 As shown in \ref{fig:CommunicationLayerAbstraction} the application can communicate with ndn::L3Protocol through the AppFace whereas for inter-node transmission it depends on the transmission protocols which faces need to be used. TCP and UDP have their respective ndn::UdpFace and ndn::TcpFace. IPv4 and IPv6 also have their own ndn::Ipv4Face making it particularly easy to implement the NDN architecture on top of IP or even TCP/IP. If NDN needs to be implemented without TCP/IP protocol it can communicate directly with the link layer through the ndn::NetDeviceFace.
 
@@ -40,12 +48,16 @@ The CS is crucial for the NDN Internet architecture as it caches data for later 
 
 The PIT data structure keeps information about each forwarded interest. Each PIT entry is uniquely identified by the content name of the interest. It holds a list of all incoming faces on which the interest was received and a list of all outgoing faces that the interest has been forwarded to. The arrival and expiration time are also kept in order to retransmit a lost interest. The nonce of an interest is a randomly generated number that is attached to the interest and identifies the interest in order to avoid loops. Nonce and Interest name uniquely identify the interest. Different consumers issuing the same interest will very likely have different nonces. In that case, no loop is detected and the incoming face is added to the already existing PIT entry. If the same nonce and interest are received again, the interest has looped and should be dropped.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/PITdataStructure}
   \caption{PIT data structure \cite{Afanasyev16}}
   \label{fig:PITdataStructure}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they relate to each other. There are also two additional timers on every PIT entry that are not explicitly shown here. The \emph{unsatisfy timer} is the lifetime of an interest and counts down. If it reaches 0 the PIT entry has expired and needs to be forwarded again. The \emph{straggler timer} starts counting down as soon an interest got rejected or satisfied. The straggler timer gives the node the time to detect further loops by the satisfied or rejected interest still floating within the network. Also, data plane measurements of returning data might require to still finish obtaining data points just after that event. Deleting the PIT entry immediately, there would be no means to detect loops and acquire valuable measurements \cite{Afanasyev16}. After the straggler timer runs out the PIT entry is deleted. The PIT abstraction provides basic functions to insert, lookup, delete PIT entries and get measurements if necessary.
 
@@ -55,12 +67,16 @@ Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they r
 
 The FIB guides the forwarding strategy in making decisions about Interest forwarding. It is similar to an IP's FIB but contains name prefixes instead of IP prefixes and holds several interfaces (out-faces) therefore enabling multicast forwarding. The faces are ordered according to their cost (routing metric) putting the cheapest connections at the beginning of the list. The lookup is performed on the content name prefixes. The longest prefix match yields the requested FIB entry with its outgoing face(es).
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/FIBdataStructure}
   \caption{FIB data structure \cite{Afanasyev16}}
   \label{fig:FIBdataStructure}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 As shown in Figure \ref{fig:FIBdataStructure} each FIB entry that has been identified by longest-prefix match has an aggregated collection of NextHops. The NextHop collection must be non-empty and for every NextHop there is one outgoing face towards a possible content source. There may only be one NextHop with a specific face id. The FIB abstraction provides basic insertions, deletions, and exact match operations.
 
@@ -92,6 +108,8 @@ The strategy has one important function:
 
 The NS-3 simulator supports several simulation environments. In this thesis, NS-3 PyViz was used as a live simulator \cite{pyviz}. PyViz also has an interactive console that visualizes the connections between the nodes of the simulation. It also can be used to debug the state of the running object, show PIT and FIB entries in live and where packages are being dropped.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/Simulation}
@@ -99,7 +117,11 @@ The NS-3 simulator supports several simulation environments. In this thesis, NS-
   \label{fig:Simulation}
 \end{figure}
 
+\vspace{5mm} %5mm vertical space
+
 Figure \ref{fig:Simulation} shows a current scenario in development. Zoom and speed can interactively be adjusted. The simulation can be started and paused at any time. Node-specific information can be shown while hovering over the node. Traffic between the nodes is visualized by green lines. The current utilized bandwidth is mentioned just above the traffic lines in a live simulation.
+
+\vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
@@ -107,6 +129,8 @@ Figure \ref{fig:Simulation} shows a current scenario in development. Zoom and sp
   \caption{PIT and FIB entries in real time}
   \label{fig:PITandFIBvis}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:PITandFIBvis} shows all the PIT and FIB entries in real time. Face id's with the corresponding face type are also shown for easier debugging purposes.
 
@@ -120,12 +144,16 @@ All the above mentioned modular components and abstractions are implemented and 
 
 Packet processing in NFD is accomplished through forwarding pipelines and forwarding strategies. A forwarding pipeline is an aggregation of different steps that are applied on a packet or a PIT entry. Forwarding pipelines are triggered by specific events like the reception of an Interest, detection of a loop, of when an interest is ready to be forwarded further, etc. A forwarding strategy is attached at the beginning or the end of a pipeline and supports it with information about how and when to forward the interest. Figure \ref{fig:PipelinesAndStrategies} shows the interactions between forwarding pipelines and strategies. For the thesis, relevant pipelines will be shortly described.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-3/PipelinesAndStrategies}
   \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:PipelinesAndStrategies}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 Forwarding pipelines operate on interests, data and nacks (negative acknowledgments send downstream to inform about the failure to satisfy a particular interest). After a pipeline has finished it's processing, the packet is handed off to another pipeline or to a decision point inside the strategy until all processing is finished. NFD uses three main forwarding paths:
 
@@ -156,12 +184,16 @@ The interest processing path consists of the following pipelines:
 
 After receiving an interest package through a face implemented in \texttt{Face::onReceiveInterest} the interest is forwarded to the incoming interest pipeline that is implemented in \texttt{Forwarder::onIncomingInterest} method. The input parameters to this method are the interest itself and a reference to the face it was received on. Figure \ref{fig:IncomingInterestPipeline} shows all the steps taken within the pipeline.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{chapter-3/IncomingInterestPipeline}
   \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:IncomingInterestPipeline}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 The following is a short step by step description of the pipeline in figure  \ref{fig:IncomingInterestPipeline}:
 
@@ -197,12 +229,16 @@ The incoming interest pipeline has finished.
 
 The \texttt{Forwarder::onOutgoingInterest} method implements the outgoing interest pipeline. It is entered from the \texttt{Strategy::sendInterest} or a child of the Strategy class that overrides the method. The parameters are the PIT entry, the outgoing face and a \texttt{wantNewNonce} boolean that signalizes that a new nonce is needed for the interest. As mentioned above the PIT entry holds a reference to the interest and therefore the interest packet is not in the parameters list. Figure \ref{fig:OutgoingInterestPipeline} illustrates the outgoing interest pipeline.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{chapter-3/OutgoingInterestPipeline}
   \caption{Outgoing interest pipeline \cite{Afanasyev16}}
   \label{fig:OutgoingInterestPipeline}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 \begin{enumerate}
 \item First localhost and localhop violation is checked. Interests with a /localhost scope are not permitted to be sent out through non-local faces. Interests with a /localhop scope are permitted to be sent out through a non-local face only if the PIT entry has one or more in-records with that has a local face stored in it.
@@ -227,12 +263,16 @@ The data processing path consists of the following pipelines:
  \texttt{Face::onReceiveData} fires when an data arrives at a face. It triggers the  \texttt{Forwarder::onData} which calls \texttt{Forwarder::onIncomingData} with the incoming face and the data as parameters.
 The following figure \ref{fig:IncomingDataPipeline} summarizes the steps taken by this pipeline:
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.5]{chapter-3/IncomingDataPipeline}
   \caption{Incoming data pipeline \cite{Afanasyev16}}
   \label{fig:IncomingDataPipeline}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 \begin{enumerate}
 \item Like with the incoming interest pipeline the /localhost scope needs to be checked. Data may not contain the prefix /localhost when coming from a non-local face.

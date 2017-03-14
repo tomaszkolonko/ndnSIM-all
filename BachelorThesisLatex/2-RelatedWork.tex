@@ -64,6 +64,8 @@ The Forwarding Information Base (FIB) is used by the strategy to forward interes
 
 Figure \ref{fig:NDNcommunication} shows how the above mentioned data structures work together. Network interfaces are abstracted in NDN into faces in order to support software and hardware interfaces. Consumers and Producers generally have additional faces for the application requesting some data or generating it.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-2/NDNcommunication}
@@ -90,7 +92,7 @@ Interests are forwarded based on the content name and the implemented strategy o
 
 When an interest arrives at an intermediate node the content store is checked first if the requested data has been cached already. If the interest can be satisfied by some cached data, the data message could be sent downstream towards the consumer and the interest is dropped (not further processed). If the CS has no data with the same content name as in the interest, the PIT entries are checked. If a PIT entry already exists for the interest, the node has already requested the data and is awaiting it. In that case, the incoming face(s) are added to the existing PIT entry and the interest is dropped. If a PIT entry does not exist yet and no cached data can satisfy the interest, the node checks the FIB entries for a longest prefix match, in order for the interest to be forwarded upstream towards a potential content source. If an entry is found, a new PIT entry needs to be created with the name of the interest, it's incoming face and outgoing face (from the FIB). The interest is then forwarded according to the FIB and the strategy.
 
-\vspace{5mm} %5mm vertical space
+\clearpage
 
 Sending Data downstream to the original requester is straightforward and no special routing is required. The Data follows the breadcrumbs of the interest, which are left inside the PIT entries. These breadcrumbs are the incoming faces of the previously forwarded interest and serve as the outgoing faces for the data message on the way back to the requester.
 
@@ -106,6 +108,8 @@ Flow control can be managed by the consumer in terms of how many interests can b
 
 One of the big advantages in CCN over the host-to-host based TCP/IP approach is that the data in transition can be used many times by many different consumers. That leads to the problem of uniquely identifying the data in a self-explanatory way. Consumers must be able to deterministically construct a name for the data without having previously seen it. Hierarchical names that reflect the content and the organizational structure of their origin are very well suited to solve that problem. Since the naming is absolutely irrelevant for the network, applications can choose a naming that fits their need best. For example, to get the segment 34 of a video version 2 by group A of the University of Bern the name could be: \textbf{/unibe.ch/group/A/videos/introduction.mpg/\_v2/\_s32}\\
 This name can be aggregated with more components if needed by the application or network. It only needs to adhere to previously specified rules.
+
+\clearpage
 
 
 \subsection{Network Security}

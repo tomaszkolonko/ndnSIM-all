@@ -19,6 +19,8 @@ In order to support paths, the nodes must know where the packet did come from an
 
 In order to populate the FIB entries, the information about the topology must be communicated to all surrounding neighbors. The information about previous nodes that have been encountered, while forwarding the interest towards a potential content source, can be added to the interest. That makes it possible to forward the data downstream towards the requester by following the breadcrumbs left in the PIT entries. These breadcrumbs consist in our implementation of the MAC addresses of the net device from the previous node. The interest has three new fields:
 
+\clearpage
+
 \begin{itemize}
 \item \emph{std::string m\_interestOriginMacAddress}: This field has the MAC address of the previous node.
 \item \emph{std::string m\_interestTargetMacAddress}: This field has the MAC address of the next node, that the interest should be forwarded to. It is possible that the FIB entry exists but no MAC address is configured yet.
@@ -27,12 +29,16 @@ In order to populate the FIB entries, the information about the topology must be
 
 The following figure \ref{fig:incomingInterestPipelineWithMac} illustrated the MAC address relevant steps in the incoming interest pipeline \texttt{Forwarder::onIncomingInterest}.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-4/incomingInterestPipelineWithMac}
   \caption{Incoming interest pipeline for the implementation of MAC addresses}
   \label{fig:incomingInterestPipelineWithMac}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 At the beginning of the simulation, no knowledge about the topology is present. The first interest is broadcast. Since the FIB entries have not yet been populated with information on neighboring nodes and their MAC address, the first interest cannot have a valid targetMacAddress. The missing MAC address signals to all receiving nodes that the interest is being flooded through the network and needs to be broadcast further. After information about the topology is present the interest will have a valid MAC address of the target it is supposed to reach.
 
@@ -62,12 +68,16 @@ The data is also extended with three new member variables:
 
 The following figure \ref{fig:incomingDataPipelineWithMac} illustrates the MAC address relevant steps in the incoming data pipeline \texttt{Forwarder::onIncomingData}.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-4/incomingDataPipelineWithMac}
   \caption{Incoming data pipeline for data messages}
   \label{fig:incomingDataPipelineWithMac}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 The steps are explained as follows:
 
@@ -89,12 +99,16 @@ The data encoding of the interest and data packets had to be extended by the new
 The FIB entries hold information about how to forward the interest upstream. Every FIB entry is uniquely identified by the prefix of the incoming interest. It is found by longest prefix match. The entry aggregates NextHop objects with the corresponding faces and cost information as shown in chapter 3 figure \ref{fig:FIBdataStructure}.
 In this thesis, forwarding is not done by faces as initially implemented in ndnSIM \cite{Afanasyev16}, but by MAC addresses. These MAC addresses are updated inside existing FIB entries or new FIB entries are created with this additional information. Therefore the new FIB entries have been extended with functions to fetch the new information from the NextHop entries. And the NextHop entries have been extended by a new MAC address field.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-4/newFIBdataStructure}
   \caption{FIB new data structure}
   \label{fig:newFIBdataStructure}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:FIBdataStructure} shows only the relevant and new member variables and methods added to the data structure. The FIB entries need new methods that find next hops according to the MAC addresses or a combination of MAC addresses and faces. A new method returns a NextHopList that is passed by reference. The NextHop class has been extended by the target MAC field, setters and getters.
 
@@ -104,12 +118,16 @@ Figure \ref{fig:FIBdataStructure} shows only the relevant and new member variabl
 
 The PIT entries hold information about how to forward the data downstream. Every PIT entry is uniquely identified by the prefix of the incoming data. It is found by longest prefix match. The entry aggregates in-record and out-record objects with the corresponding faces, lastNonce and lastRenewed information, as shown in chapter 3 figure \ref{fig:PITdataStructure}. The faces need to be extended by MAC addresses since the data is broadcast and the receiving node needs to identify if it is the intended recipient.
 
+\vspace{5mm} %5mm vertical space
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-4/newPITdataStructure}
   \caption{New PIT data structure}
   \label{fig:newPITdataStructure}
 \end{figure}
+
+\vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:newPITdataStructure} shows only the relevant and new member variables and methods added to the data structure. A new list member variable \texttt{m\_originMacCollection} has been added to the PIT entry. Every interest forwarded correctly leaves it's origin MAC address in this list. When requested data arrives at the node, the origin MAC collection in the PIT entry is checked and attached to the data's field. Methods, setters and getters encapsulate the member variable within its class.
 
