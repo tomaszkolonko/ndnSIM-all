@@ -4,7 +4,7 @@ Today's use of the Internet is heavily based on content dissemination of all kin
 
 \vspace{5mm} %5mm vertical space
 
-TCP/IP is no longer best suited for today's use of the Internet. One of the main reasons is that a TCP/IP connection is established between two machines and requires this connection to be active at all times. For content dissemination, a mechanism that supports multipoint to multipoint connections that do not have to be active at all times might be much better. Another reason is that a client often does not know where to get some specific information from (and doesn't really care) but knows exactly what it wants. Therefore a paradigm shift from host-centric networks started to evolve towards content-centric networks.
+TCP/IP is no longer best suited for today's use of the Internet. One of the main reasons is that a TCP/IP connection is established between two machines and requires this connection to be active at all times \cite{Ajunwadkar14}. For content dissemination, a mechanism that supports multipoint to multipoint connections that do not have to be active at all times might be much better. Another reason is that a client often does not know where to get some specific information from (and does not really care) but knows exactly what it wants. Therefore a paradigm shift from host-centric networks started to evolve towards content-centric networks \cite{ndn17}.
 
 \newpage
 
@@ -14,14 +14,14 @@ Information-centric networking (ICN) is a possible answer to today's problems wi
 
 \vspace{5mm} %5mm vertical space
 
-In CCN the content is made directly addressable and routable by name. An Interest (request by a client) is sent out and routed according to its name until it reaches some endpoint that is able to respond with Content Objects to that Interest. Some of the main goals of CCN is better utilization of the bandwidth by increasing throughput and decreasing network traffic, better security, availability, flexibility and scalability of the networks. Better utilization of the bandwidth can be achieved by multicasting the same content to several endpoints and not re-unicasting the same content over and over again through the same channels near the content source. Also, content caching in intermediate nodes reduces the strain on bandwidth and increases overall efficiency. Better security is achieved by hashing and signing the content itself instead of the point-to-point connection between two hosts. Encrypting the data leads to more privacy within the Internet and could substitute many current access policy patterns used by servers and web pages. Better availability and flexibility are intrinsically given by content caching. Better scalability is achieved by not needing pre-planned structures like content delivery and P2P networks. Data is not only kept at the content producer but everywhere along the route if necessary.
+In CCN the content is made directly addressable and routable by name. An Interest (request by a client) is sent out and routed according to its name until it reaches some endpoint that is able to respond with Content Objects to that Interest \cite{jacobson09}. Some of the main goals of CCN is better utilization of the bandwidth by increasing throughput and decreasing network traffic, better security, availability, flexibility and scalability of the networks \cite{ndn17}. Better utilization of the bandwidth can be achieved by multicasting the same content to several endpoints and not re-unicasting the same content over and over again through the same channels near the content source. Also, content caching in intermediate nodes reduces the strain on bandwidth and increases overall efficiency. Better security is achieved by hashing and signing the content itself instead of the point-to-point connection between two hosts. Encrypting the data leads to more privacy within the Internet and could substitute many current access policy patterns used by servers and web pages. Better availability and flexibility are intrinsically given by content caching. Better scalability is achieved by not needing pre-planned structures like content delivery and P2P networks. Data is not only kept at the content producer but everywhere along the route if necessary.
 
 \vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-2/NetworkStack}
-  \caption{TCP/IP protocol stack on the left and CCN protocol stack on the right \cite{jacobson09}.}
+  \caption{TCP/IP protocol stack on the left and CCN protocol stack on the right \cite{jacobson09}}
   \label{fig:NetworkStack}
 \end{figure}
 
@@ -42,7 +42,7 @@ In CCN there are no clients and servers anymore but \textbf{consumers} and \text
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.55]{chapter-2/InterestAndData}
-  \caption{Overview of the packet structure for Interests and Data messages in NDN \cite{ndnWiki}.}
+  \caption{Overview of the packet structure for Interests and Data messages in NDN \cite{ndnWiki}}
   \label{fig:InterestAndData}
 \end{figure}
 
@@ -52,7 +52,7 @@ The most important Data structures for routing the Interest to the producer and 
 
 \subsubsection{PIT}
 
-The Pending Interest Table (PIT) keeps track of all the Interests that have been forwarded towards potential content sources. It also keeps track of all incoming and outgoing faces of the specific Interests (multiple in-faces and out-faces reflect the multipoint to multipoint characteristics of CCN). If a second Interest with the same content name but different nonce arrives at the node, the incoming face will be added to the already existing PIT entry of the previously forwarded Interest. The Interest will not be re-forwarded and shortly after dropped. It won't be deleted right away since a looped Interest is identified by its nonce. When an Interest reaches a content source or a producer, Data is sent back.  This Data message follows the breadcrumbs (faces) that are left in the PIT entries in order to find it's way back to the consumer. The PIT entries are deleted shortly after the requested Data has been sent downstream.
+The Pending Interest Table (PIT) keeps track of all the Interests that have been forwarded towards potential content sources. It also keeps track of all incoming and outgoing faces of the specific Interests (multiple in-faces and out-faces reflect the multipoint to multipoint characteristics of CCN). If a second Interest with the same content name but different nonce arrives at the node, the incoming face will be added to the already existing PIT entry of the previously forwarded Interest. The Interest will not be re-forwarded and shortly after dropped. It will not be deleted right away since a looped Interest is identified by its nonce. When an Interest reaches a content source or a producer, Data is sent back.  This Data message follows the breadcrumbs (faces) that are left in the PIT entries in order to find it's way back to the consumer. The PIT entries are deleted shortly after the requested Data has been sent downstream.
 
 \subsubsection{CS} 
 
@@ -73,7 +73,7 @@ Figure \ref{fig:NDNcommunication} shows how the above mentioned Data structures 
   \label{fig:NDNcommunication}
 \end{figure}
 
-In a forwarding scenario, an Interest is received on Face 0 or Face 1 and a PIT entry is created if no CS match was found and no PIT already exists. If a PIT entry exists the face id is added to the entry as an incoming face. The FIB entries have outgoing faces to which Interests are forwarded to, if necessary. An index keeps track of all entries in the different Data structures and keeps pointers to them. If a new Interest is created within the application, the Interest is sent through the application face (Face 2) to the lower layers of the node for further forwarding. 
+In a forwarding scenario, as seen in Figure \ref{fig:NDNcommunication}, an Interest is received on Face 0 or Face 1 and a PIT entry is created if no CS match was found and no PIT already exists. If a PIT entry exists the face id is added to the entry as an incoming face. The FIB entries have outgoing faces to which Interests are forwarded to, if necessary. An index keeps track of all entries in the different Data structures and keeps pointers to them. If a new Interest is created within the application, the Interest is sent through the application face (Face 2) to the lower layers of the node for further forwarding. 
 
 \subsection{Forwarding of an Interest}
 
@@ -118,17 +118,17 @@ CCN digitally signs and encrypts the content itself and not the connection over 
 
 \vspace{5mm} %5mm vertical space
 
-Content Protection and Access Control could be solved solely by encrypting the content with different keys. No trusted servers or directories would need to enforce complicated access policies on the filesystem. Expensive authentication services like SWITCH AAI could be saved. If for example, certain documents within a Database should be only readable by a certain group of people these documents could be simply encrypted while still accessible to everyone. Only the people with the correct key could encrypt it and use it.
+Content Protection and Access Control could be solved solely by encrypting the content with different keys \cite{jacobson09}. No trusted servers or directories would need to enforce complicated access policies on the filesystem. Expensive authentication services like SWITCH AAI could be saved. If for example, certain documents within a Database should be only readable by a certain group of people these documents could be simply encrypted while still accessible to everyone. Only the people with the correct key could encrypt it and use it.
 Network security is improved against many classes of network attacks. Every node can possibly (if the resources allow it) check the integrity of the Data and cache it for further use. There is no single host that provides the Data, therefore hiding content from consumers is very difficult.
 
 \vspace{5mm} %5mm vertical space
 
-DDoS attacks with Data packets are not really a problem since every node can ignore unsolicited Data coming in. If resources allow it, the node can simply store it in the CS and mark it as unsolicited. If space runs low on the CS these Data packets will be removed first. No propagation of unsolicited Data takes place since no PIT entries exist for the Data. DDoS attacks, therefore, would have to be done through Interests. If the prefix stays the same the PIT entry get's updated for every new Interest, but no forwarding takes place. If the prefix changes constantly the strategy has many means to take action like limiting the rate of the Interests with certain prefix patterns or lower prioritization of Interests that result in Data coming back. 
+DDoS attacks with Data packets are not really a problem since every node can ignore unsolicited Data coming in. If resources allow it, the node can simply store it in the CS and mark it as unsolicited. If space runs low on the CS these Data packets will be removed first. No propagation of unsolicited Data takes place since no PIT entries exist for the Data. DDoS attacks, therefore, would have to be done through Interests. If the prefix stays the same the PIT entry get's updated for every new Interest, but no forwarding takes place \cite{jacobson09}. If the prefix changes constantly the strategy has many means to take action like limiting the rate of the Interests with certain prefix patterns or lower prioritization of Interests that result in Data coming back. 
 
 \newpage
 \section{VANETs}
 
-Vehicular ad hoc network's (VANETs) operate in very dynamic and mobile environments under possibly poor and intermittent connectivity. To the few static roadside units (RSU) there are many devices ranging from trackers and phones on pedestrians other vehicles like cars, motorcycles or drones to airplanes and satellites as shown in Figure \ref{fig:VANETecosystem}.
+Vehicular ad hoc network's (VANETs) operate in very dynamic and mobile environments under possibly poor and intermittent connectivity. To the few static roadside units (RSU) there are many devices ranging from trackers and phones on pedestrians other vehicles like cars, motorcycles or drones to airplanes and satellites as shown in Figure \ref{fig:VANETecosystem} \cite{wu11}.
 
 \vspace{5mm} %5mm vertical space
 
@@ -141,11 +141,11 @@ Vehicular ad hoc network's (VANETs) operate in very dynamic and mobile environme
 
 \vspace{5mm} %5mm vertical space
 
-In such dynamic and mobile environments, the TCP/IP based approach that focuses on the source and destination and their secured connection quickly becomes a burden. Dynamic name-to-IP resolutions are difficult to do and infer a high management overhead. Keeping the connection up in urban areas where signal propagation is obstructed frequently can quickly become a challenge. Mobile IP is a workaround for this problem but does not solve the issue really. The CCN approach, on the other hand, seems to be very well suited for such ecosystems where the focus lies on the information itself (trusted road safety information for a specific area) and not on the identity of the host (other vehicles, RSU, the Internet) the Data might have originated from. With in-network caching, the CCN approach also tackles the problem of poor signal strength and intermitted connectivity within a very heterogenous network system. A vehicle can store information and propagate it to an otherwise disconnected area through a \emph{store-carry-and-forward} mechanism. The multipoint to multipoint characteristics already mentioned before allows to aggregate the same Interests (maps, safety warnings, road condition, congestion warnings....) and multicast the arriving Data through different faces and different channels back to the consumers simultaneously.
+In such dynamic and mobile environments, the TCP/IP based approach that focuses on the source and destination and their secured connection quickly becomes a burden \cite{wang12a}. Dynamic name-to-IP resolutions are difficult to do and infer a high management overhead. Keeping the connection up in urban areas where signal propagation is obstructed frequently can quickly become a challenge. Mobile IP is a workaround for this problem but does not solve the issue really \cite{amadeo16}. The CCN approach, on the other hand, seems to be very well suited for such ecosystems where the focus lies on the information itself (trusted road safety information for a specific area) and not on the identity of the host (other vehicles, RSU, the Internet) the Data might have originated from. With in-network caching, the CCN approach also tackles the problem of poor signal strength and intermitted connectivity within a very heterogenous network system. A vehicle can store information and propagate it to an otherwise disconnected area through a \emph{store-carry-and-forward} mechanism. The multipoint to multipoint characteristics already mentioned before allows to aggregate the same Interests (maps, safety warnings, road condition, congestion warnings....) and multicast the arriving Data through different faces and different channels back to the consumers simultaneously.
 
 \vspace{5mm} %5mm vertical space
 
-There are two main routing schemes for VANETs. In the \emph{proactive} scheme, the content providers advertise periodically in order to keep the FIB entries updated with fresh routing information. In the \emph{reactive} scheme no advertisement by the content providers is done and the FIB's are populated based on Interest flooding. Flooding-based discovery seems to be better suited for VANETs since periodical FIB updates on all intermediate nodes incur a high and mostly unnecessary cost on the network. An Interest is able to find it's way quickly to some node having a copy of the Data or the producer itself. Collision avoidance and packet suppression is done on lower layers, although packet suppression will be done in the forwarder module in ndnSIM (see chapter 3).
+There are two main routing schemes for VANETs. In the \emph{proactive} scheme, the content providers advertise periodically in order to keep the FIB entries updated with fresh routing information. In the \emph{reactive} scheme no advertisement by the content providers is done and the FIB's are populated based on Interest flooding \cite{amadeo16}. Flooding-based discovery seems to be better suited for VANETs since periodical FIB updates on all intermediate nodes incur a high and mostly unnecessary cost on the network. An Interest is able to find it's way quickly to some node having a copy of the Data or the producer itself. Collision avoidance and packet suppression is done on lower layers, although packet suppression will be done in the forwarder module in ndnSIM (see chapter 3).
 Caching policies in VANETs differ slightly from regular CCN use since the vehicles are moving fast into and out of regions relevant to the Data. Data about possible congestion gets outdated pretty quickly so do often warnings of any kind. Further, the question arises if unsolicited Data should be cached into CS and if yes, under which conditions and for how long. As mentioned before vehicles could link otherwise disconnected areas, but in that case, the Data naming should be clear or that specific intent.
 
 \vspace{5mm} %5mm vertical space

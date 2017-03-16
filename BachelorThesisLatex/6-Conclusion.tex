@@ -14,11 +14,11 @@ The results of the dynamic scenario are also quite good and promising compared t
 
 CCN and its implementation in ndnSIM are still in the early beginnings, although research into this topic has been going on for already several years. As devices get more in number and become highly mobile there are many scenarios that need further investigation.
 
-\subsection{Static 8 nodes scenario}
+\subsection{Static 8 Nodes Scenario}
 
 For the static 8 nodes scenario, Interesting future work could be to improve on dynamic route selection. Incrementing and decrementing the cost of the FIB next hops should rely on some relevant metric obtained from the network. In addition, the value of the cost should not be set relative to other routes but directly reflect the connections ability to forward the Interest upstream. Since the costs directly impact the performance of the simulation, keeping the cost values as low as possible is important for good results. NACKs (negative acknowledgments) could be implemented reducing the time between retransmissions. NACKS have been introduced in ndnSIM version 2.2 and improved significantly in version 2.3 \cite{ndnSIMreleaseNotes}. Adding 100 or 200 nodes to the current scenario would give important insights into scalability of the used implementation, especially since scalability is an important feature and advantage of the CCN architecture. The achieved improvements could potentially be multiplied by introducing a CS to the scenario with several consumers and producers, resulting in in-network caching of Data packets and less overall traffic.
 
-\subsection{Dynamic 16 nodes scenario}
+\subsection{Dynamic 16 Nodes Scenario}
 
 For the dynamic 16 node scenario introducing a timer for the FIB entries should result in more sophisticated routing. If a FIB entry has not been used for a certain amount of time it should be deleted forcing flooding and therefore get current information about the next neighbor (and consequently about the topology). That problem was described in figure \ref{fig:scenario2extended}. That would lead to dynamically find new routes when a time out occurs. It is similarly implemented in the PIT entries but not yet in the FIB entries. Negative acknowledgments could also be used to signal that an Interest could not be forwarded to the node present in the FIB's next hop. Deleting, in that case, the FIB would also lead to refreshing the information about the topology. In such a case latency should be reduced significantly since the routes would be constantly updated. The ratio of satisfied Interests (Interests send / Data received back) over simulation time, and overall throughput would be also increased.
 

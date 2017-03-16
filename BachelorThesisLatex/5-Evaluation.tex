@@ -4,7 +4,7 @@ The evaluation is conducted on several independent scenarios. As mentioned in ch
 
 To achieve comparability the scenario and trace-files are copied into a clean base installation of ndnSIM version 2.0. All parameters are kept equal. Then it is run once on the clean installation and once on the improved one. In the first scenario, the implementation of the MAC addresses and the forwarding mechanism is tested and evaluated. In the second scenario, mobility is introduced with changes to the strategy. The different scenarios are tested for Interest/Data ratio, latency, congestion and number of distinct routes, although distinct routes do not exist in the already existent multicast strategy. It is introduced as part of the thesis for the new implementation.
 
-\section{Evaluation environment}
+\section{Evaluation Environment}
 
 All tests are run on the ns-3 network simulator with ndnSIM version 2.0.  As WiFi standard 802.11a was used, which means each node has a transmission range of approximately 120 meters in open space \cite{wifi80211a} . For the propagation delay \texttt{ns3::Constant}\texttt{SpeedPropagation}\texttt{DelayModel} was used and for the propagation loss \texttt{ns3::Three}\texttt{LogDistance}\texttt{Propagation}\texttt{LossModel} and \texttt{ns3::}\texttt{Nakami}\texttt{Propagation}\texttt{LossModel} were used. Interest lifetime is set to 4 seconds and the retransmission timeout to 500ms. Data packet size is 1200kb.
 
@@ -34,7 +34,7 @@ This scenario has been used for the static 8 node simulations. For the dynamic s
 
 \clearpage
 
-\section{Results for a static 8 nodes scenario}
+\section{Results for a Static 8 Nodes Scenario}
 
 The first scenario is a static 8 node scenario with one consumer on the left and one producer on the right. 6 intermediate nodes are placed in between as seen in figure \ref{fig:scenario1}. Every node has 3 net devices with distinct MAC addresses. They allow on one hand to send and receive simultaneously, while extending on the multi-path idea. The paths are determined by the FIB entries that have been configured with MAC addresses from data being forwarded downstream. Therefore the first segment of an Interest can be requested through the first net device. The second segment is requested through the second net device and the third segment through the third net device. The fourth segment would be sent again through the first net device. That is achieved by a static counter and a modulo operation leading to different routes.
 
@@ -66,6 +66,8 @@ Figure \ref{fig:staticS1ratio} compares the ratio of satisfied Interests (Intere
 
 Figure \ref{fig:staticS1iod} shows that the ratio of satisfied Interests over simulation time alone (as shown in Figure \ref{fig:staticS1ratio}) does not make any statement about a number of the Interests sent towards a potential content producer and the amount of received Data. With the base implementation, there is not much gain with increased simulation time whereas with the new implementation the gain nearly doubles. The reason for that observation is explained with congestion. Broadcasting the Interest at each node leads to an exponential increase in the packets being retransmitted within the network leading to congestion, loss of packets and retransmissions. The new implementation floods the network only with the first Interest and uses configured routes for all further Interests leading to much less traffic. Retransmissions have been observed at the consumer and although the new implementation has fewer retransmissions (around 15 percent) it is not very significant and they happen on a much higher transmission rate. It can be expected that the retransmission rate is strongly correlated with the retransmission timer in the consumer and the lifetime of the Interest itself.
 
+\clearpage
+
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.6]{chapter-5/staticS1iod}
@@ -94,7 +96,7 @@ Since one to three new FIB entries were added to every node, an additional appro
 
 Having more than one valid next hop within a FIB entry did not result in more routes taken by the Interests. Instead of alternating between possible next hops only the first one (with the lowest cost) was chosen and the Interest forwarded to. Incrementing each next hop's cost by one after forwarding through it and sorting the FIB's next hops did increase the number of different routes effectively used. The next hops within the FIB entry were selected in alternating fashion. Unfortunately, that did not improve the overall performance. It decreased it despite having more routes to chose from. The reason for this behavior is how ndnSIM translates FIB next hop's cost into transmission time. The lower the cost the more reliable and faster the Interest is forwarded. For example re-setting the cost to 50 after reaching 150 while incrementing all forwarded FIB next hops led to significantly better results. If in contrast, the cost was initially set to 250 and reset to this value after reaching 350, the overall performance was significantly worse. Since that is true for both scenarios equally, has not been further investigated.
 
-\section{Results for dynamic 16 nodes scenario}
+\section{Results for a Dynamic 16 Nodes Scenario}
 
 For the dynamic scenario, 8 further nodes were introduced. All 14 intermediate nodes have been randomly scattered between the consumer and the producer. Random movement was added to the trace file by changing direction and speed of every intermediate node at 5 second intervals. This random movement has been achieved by a self written script, that generates random numbers within the grid range (between 100 and 600) for the new x and y coordinates and random numbers between 0 and 10 for the speed. The values were inserted into the correct statements as shown in \ref{fig:ns2traceFileDynamic}. The net devices remain to be three. Retransmission time is set to 500 milliseconds, while the Interest lifetime also remains at 4 seconds. 
 
@@ -118,7 +120,7 @@ For the static scenario, it was sufficient to keep the configured routes constan
 \begin{figure}[H]
   \centering
   \includegraphics[scale=0.4]{chapter-5/scenario2extended}
-  \caption{Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes.}
+  \caption{Node 10 is one of the producer preferred nodes while node 14 is one of the consumer preferred nodes}
   \label{fig:scenario2extended}
 \end{figure}
 
@@ -135,7 +137,7 @@ Figure \ref{fig:scenario2ratio} shows the ratio of sent Interest packets over sa
 
 \vspace{5mm} %5mm vertical space
 
-Like in the static scenario it is important to look at the overall throughput and set the satisfaction ratio into context of send and satisfied Interests. Figure \ref{fig:scenario2iod} shows the base implementation in brown colour. The dark bar shows the Interests send upstream towards a potential content producer, while the lighter bar shows the satisfied Interests. The ratio obtained in \ref{fig:scenario2ratio} is seen once again by comparing the bars of one color per simulation time to each other. The new implementation has not only a better ratio of satisfied Interests over simulation time, but also is able to send and receive more data. The reason is that the nodes are targeted specifically by the MAC address and don't congest the network even if send to three upstream addresses.
+Like in the static scenario it is important to look at the overall throughput and set the satisfaction ratio into context of send and satisfied Interests. Figure \ref{fig:scenario2iod} shows the base implementation in brown colour. The dark bar shows the Interests send upstream towards a potential content producer, while the lighter bar shows the satisfied Interests. The ratio obtained in \ref{fig:scenario2ratio} is seen once again by comparing the bars of one color per simulation time to each other. The new implementation has not only a better ratio of satisfied Interests over simulation time, but also is able to send and receive more data. The reason is that the nodes are targeted specifically by the MAC address and do not congest the network even if send to three upstream addresses.
 The new implementation sends 39 Interests out and receives 28 Data that satisfy the Interests in the first 100 seconds of the simulation. The next 100 seconds roughly doubles the Interests being sent and satisfied, whereas the next 100 seconds result in a decrease of newly satisfied Interests. That problem was described above and can be seen figure \ref{fig:scenario2extended}. Different trace-files led to different results and whenever a clustering of the intermediate nodes was observed the successfully sent out and satisfied Interests also slowed down. The clustering issue is also a problem for the ndnSIM base implementation strategy, but preferred nodes by FIB entries only pose a problem to the new implementation that needs further attention.
 
 \clearpage
@@ -150,6 +152,8 @@ The new implementation sends 39 Interests out and receives 28 Data that satisfy 
 \vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:scenario2latency} shows the observed latency for both implementations. As expected the latency is significantly better with the new implementation, although it is longer, due to increased number of nodes and more distance between the consumer and the producer. As the unsatisfied Interests are retransmitted the latency increases over time.
+
+\clearpage
 
 \vspace{5mm} %5mm vertical space
 

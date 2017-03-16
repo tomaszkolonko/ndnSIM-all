@@ -14,7 +14,7 @@ NS-3 and ndnSIM both follow a philosophy of maximum abstraction for all modeled 
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/ndnSIMcomponentAbstraction}
+  \includegraphics[scale=0.5]{chapter-3/ndnSIMcomponentAbstraction}
   \caption{Basic component abstractions in ndnSIM \cite{afanasyev12}}
   \label{fig:ndnSIMcomponentAbstraction}
 \end{figure}
@@ -31,7 +31,7 @@ The face abstraction plays an important role in the overall modularity of the ND
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/CommunicationLayerAbstraction}
+  \includegraphics[scale=0.5]{chapter-3/CommunicationLayerAbstraction}
   \caption{Face abstractions around ndn::l3Protocol \cite{afanasyev12}}
   \label{fig:CommunicationLayerAbstraction}
 \end{figure}
@@ -52,7 +52,7 @@ The PIT Data structure keeps information about each forwarded Interest. Each PIT
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/PITdataStructure}
+  \includegraphics[scale=0.58]{chapter-3/PITdataStructure}
   \caption{PIT Data structure \cite{Afanasyev16}}
   \label{fig:PITdataStructure}
 \end{figure}
@@ -60,8 +60,6 @@ The PIT Data structure keeps information about each forwarded Interest. Each PIT
 \vspace{5mm} %5mm vertical space
 
 Figure \ref{fig:PITdataStructure} shows the different PIT classes and how they relate to each other. There are also two additional timers on every PIT entry that are not explicitly shown here. The \emph{unsatisfy timer} is the lifetime of an Interest and counts down. If it reaches 0 the PIT entry has expired and needs to be forwarded again. The \emph{straggler timer} starts counting down as soon an Interest got rejected or satisfied. The straggler timer gives the node the time to detect further loops by the satisfied or rejected Interest still floating within the network. Also, Data plane measurements of returning data might require to still finish obtaining data points just after that event. Deleting the PIT entry immediately, there would be no means to detect loops and acquire valuable measurements \cite{Afanasyev16}. After the straggler timer runs out the PIT entry is deleted. The PIT abstraction provides basic functions to insert, lookup, delete PIT entries and get measurements if necessary.
-
-\newpage
 
 \subsection{Forwarding Information Base (FIB) Abstraction}
 
@@ -71,7 +69,7 @@ The FIB guides the forwarding strategy in making decisions about Interest forwar
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/FIBdataStructure}
+  \includegraphics[scale=0.6]{chapter-3/FIBdataStructure}
   \caption{FIB Data structure \cite{Afanasyev16}}
   \label{fig:FIBdataStructure}
 \end{figure}
@@ -93,7 +91,7 @@ NdnSIM's modular architecture allows experimenting with different types of forwa
 \end{itemize}
 
 
-The strategy is called on three occasions. The first time from the forwarder::onContentStoreMiss(), when the decision has to be made how to forward the Interest upstream. The second time from the forwarder::onContentStoreHit() to decide how to proceed with a satisfied Interest. And the last time from the forwarder::onIncomingData()
+The strategy is called on three occasions. The first time from the forwarder::onContentStoreMiss(), when the decision has to be made how to forward the Interest upstream. The second time from the forwarder::onContentStoreHit() to decide how to proceed with a satisfied Interest. And the last time from the forwarder::onIncomingData().
 
 \vspace{5mm} %5mm vertical space
 
@@ -112,7 +110,7 @@ The NS-3 simulator supports several simulation environments. In this thesis, NS-
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/Simulation}
+  \includegraphics[scale=0.5]{chapter-3/Simulation}
   \caption{Simulation of a possible scenario}
   \label{fig:Simulation}
 \end{figure}
@@ -121,11 +119,13 @@ The NS-3 simulator supports several simulation environments. In this thesis, NS-
 
 Figure \ref{fig:Simulation} shows a current scenario in development. Zoom and speed can interactively be adjusted. The simulation can be started and paused at any time. Node-specific information can be shown while hovering over the node. Traffic between the nodes is visualized by green lines. The current utilized bandwidth is mentioned just above the traffic lines in a live simulation.
 
+\clearpage
+
 \vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/PITandFIBvis}
+  \includegraphics[scale=0.5]{chapter-3/PITandFIBvis}
   \caption{PIT and FIB entries in real time}
   \label{fig:PITandFIBvis}
 \end{figure}
@@ -148,7 +148,7 @@ Packet processing in NFD is accomplished through forwarding pipelines and forwar
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.4]{chapter-3/PipelinesAndStrategies}
+  \includegraphics[scale=0.47]{chapter-3/PipelinesAndStrategies}
   \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:PipelinesAndStrategies}
 \end{figure}
@@ -188,7 +188,7 @@ After receiving an Interest packet through a face implemented in \texttt{Face::o
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{chapter-3/IncomingInterestPipeline}
+  \includegraphics[scale=0.6]{chapter-3/IncomingInterestPipeline}
   \caption{Pipelines and Strategies, white boxes are decision points inside the strategy while blue boxes represent the different pipelines \cite{Afanasyev16}}
   \label{fig:IncomingInterestPipeline}
 \end{figure}
@@ -209,7 +209,7 @@ The following is a short step by step description of the pipeline in figure  \re
 
 \subsubsection{ContentStore Miss Pipeline}
 
-If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} doesn't yield any data that can satisfy the Interest, the content store miss pipeline is called. This pipeline is implemented in \texttt{Forwarder::onContentStoreMiss} and the parameters for this method are the Interest packet, the incoming face and the PIT entry. The validity of the Interest has been checked already and it needs to be forwarded by taking the following steps:
+If the ContentStore lookup in \texttt{Forwarder::onIncomingInterest} does not yield any data that can satisfy the Interest, the content store miss pipeline is called. This pipeline is implemented in \texttt{Forwarder::onContentStoreMiss} and the parameters for this method are the Interest packet, the incoming face and the PIT entry. The validity of the Interest has been checked already and it needs to be forwarded by taking the following steps:
 
 \begin{enumerate}
 \item In the incoming Interest pipeline a PIT entry was created already. Now the in-record with its incoming face needs to be added to the PIT entry and if it already exists then the in-record with its face is updated. The expiration counter is set to the value of the Interest's field \texttt{InterestLifetime}.
@@ -233,7 +233,7 @@ The \texttt{Forwarder::onOutgoingInterest} method implements the outgoing Intere
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{chapter-3/OutgoingInterestPipeline}
+  \includegraphics[scale=0.63]{chapter-3/OutgoingInterestPipeline}
   \caption{Outgoing Interest pipeline \cite{Afanasyev16}}
   \label{fig:OutgoingInterestPipeline}
 \end{figure}
@@ -243,7 +243,7 @@ The \texttt{Forwarder::onOutgoingInterest} method implements the outgoing Intere
 \begin{enumerate}
 \item First localhost and localhop violation is checked. Interests with a /localhost scope are not permitted to be sent out through non-local faces. Interests with a /localhop scope are permitted to be sent out through a non-local face only if the PIT entry has one or more in-records with that has a local face stored in it.
 \item The Interest is picked from the PIT entry and saved to a local variable.
-\item If the \texttt{wantNewNonce} flag is set, the Interest is copied and a new nonce is attached to it. This is necessary when the node needs to retransmit the Interest. If the Interest wouldn't receive a new nonce it would be recognized as a looped Interest and dropped immediately.
+\item If the \texttt{wantNewNonce} flag is set, the Interest is copied and a new nonce is attached to it. This is necessary when the node needs to retransmit the Interest. If the Interest would not receive a new nonce it would be recognized as a looped Interest and dropped immediately.
 \item An out-record is created in the PIT entry and add an out-face to it. If an out-record with the same out-face already exists, the entry gets refreshed by the \texttt{InterestLifetime} value.
 \item The Interest is forwarded upstream via out-face.
 \end{enumerate}
@@ -263,11 +263,13 @@ The data processing path consists of the following pipelines:
  \texttt{Face::onReceiveData} fires when a Data arrives at a face. It triggers the  \texttt{Forwarder::onData} which calls \texttt{Forwarder::onIncomingData} with the incoming face and the Data as parameters.
 The following figure \ref{fig:IncomingDataPipeline} summarizes the steps taken by this pipeline:
 
+\clearpage
+
 \vspace{5mm} %5mm vertical space
 
 \begin{figure}[H]
   \centering
-  \includegraphics[scale=0.5]{chapter-3/IncomingDataPipeline}
+  \includegraphics[scale=0.65]{chapter-3/IncomingDataPipeline}
   \caption{Incoming Data pipeline \cite{Afanasyev16}}
   \label{fig:IncomingDataPipeline}
 \end{figure}

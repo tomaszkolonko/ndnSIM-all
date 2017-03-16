@@ -18,35 +18,35 @@
 \contentsline {chapter}{\numberline {3}ndnSIM}{13}{chapter.3}
 \contentsline {section}{\numberline {3.1}Design overview}{14}{section.3.1}
 \contentsline {subsection}{\numberline {3.1.1}Face Abstraction}{15}{subsection.3.1.1}
-\contentsline {subsection}{\numberline {3.1.2}Content Store Abstraction}{15}{subsection.3.1.2}
+\contentsline {subsection}{\numberline {3.1.2}Content Store Abstraction}{16}{subsection.3.1.2}
 \contentsline {subsection}{\numberline {3.1.3}Pending Interest Table (PIT) Abstraction}{16}{subsection.3.1.3}
 \contentsline {subsection}{\numberline {3.1.4}Forwarding Information Base (FIB) Abstraction}{17}{subsection.3.1.4}
-\contentsline {subsection}{\numberline {3.1.5}Forwarding Strategy Abstraction}{17}{subsection.3.1.5}
+\contentsline {subsection}{\numberline {3.1.5}Forwarding Strategy Abstraction}{18}{subsection.3.1.5}
 \contentsline {section}{\numberline {3.2}Simulation Environment}{18}{section.3.2}
-\contentsline {section}{\numberline {3.3}Forwarding by the NDN Forwarding Daemon (NFD)}{19}{section.3.3}
-\contentsline {subsection}{\numberline {3.3.1}Interest Processing Path}{20}{subsection.3.3.1}
-\contentsline {subsubsection}{Incoming Interest Pipeline}{21}{section*.19}
-\contentsline {subsubsection}{ContentStore Miss Pipeline}{22}{section*.21}
-\contentsline {subsubsection}{ContentStore Hit Pipeline}{23}{section*.22}
-\contentsline {subsubsection}{Outgoing Interest Pipeline}{23}{section*.23}
-\contentsline {subsection}{\numberline {3.3.2}Data Processing Path}{24}{subsection.3.3.2}
-\contentsline {subsubsection}{Incoming Data Pipeline}{24}{section*.25}
-\contentsline {subsubsection}{Outgoing Data Pipeline}{25}{section*.27}
-\contentsline {chapter}{\numberline {4}Design and Implementation of the Forwarding Strategy by MAC Addresses}{27}{chapter.4}
-\contentsline {section}{\numberline {4.1}Problem Description}{27}{section.4.1}
-\contentsline {section}{\numberline {4.2}Multipath Approach}{28}{section.4.2}
-\contentsline {subsection}{\numberline {4.2.1}Changes to the Interest Message}{28}{subsection.4.2.1}
-\contentsline {subsection}{\numberline {4.2.2}Changes to the Data Message}{30}{subsection.4.2.2}
-\contentsline {subsection}{\numberline {4.2.3}Changes to the FIB}{32}{subsection.4.2.3}
-\contentsline {subsection}{\numberline {4.2.4}Changes to the PIT}{33}{subsection.4.2.4}
-\contentsline {chapter}{\numberline {5}Evaluation}{35}{chapter.5}
-\contentsline {section}{\numberline {5.1}Evaluation environment}{35}{section.5.1}
-\contentsline {subsection}{\numberline {5.1.1}Topology and Mobility}{36}{subsection.5.1.1}
-\contentsline {section}{\numberline {5.2}Results for a static 8 nodes scenario}{38}{section.5.2}
-\contentsline {section}{\numberline {5.3}Results for dynamic 16 nodes scenario}{42}{section.5.3}
-\contentsline {chapter}{\numberline {6}Conclusions and Outlook}{47}{chapter.6}
-\contentsline {section}{\numberline {6.1}Summary and Conclusions}{47}{section.6.1}
-\contentsline {section}{\numberline {6.2}Future Work}{48}{section.6.2}
-\contentsline {subsection}{\numberline {6.2.1}Static 8 nodes scenario}{48}{subsection.6.2.1}
-\contentsline {subsection}{\numberline {6.2.2}Dynamic 16 nodes scenario}{48}{subsection.6.2.2}
-\contentsline {chapter}{Bibliography}{49}{chapter*.43}
+\contentsline {section}{\numberline {3.3}Forwarding by the NDN Forwarding Daemon (NFD)}{20}{section.3.3}
+\contentsline {subsection}{\numberline {3.3.1}Interest Processing Path}{21}{subsection.3.3.1}
+\contentsline {subsubsection}{Incoming Interest Pipeline}{22}{section*.19}
+\contentsline {subsubsection}{ContentStore Miss Pipeline}{23}{section*.21}
+\contentsline {subsubsection}{ContentStore Hit Pipeline}{24}{section*.22}
+\contentsline {subsubsection}{Outgoing Interest Pipeline}{24}{section*.23}
+\contentsline {subsection}{\numberline {3.3.2}Data Processing Path}{25}{subsection.3.3.2}
+\contentsline {subsubsection}{Incoming Data Pipeline}{25}{section*.25}
+\contentsline {subsubsection}{Outgoing Data Pipeline}{27}{section*.27}
+\contentsline {chapter}{\numberline {4}Design and Implementation of the Forwarding Strategy by MAC Addresses}{29}{chapter.4}
+\contentsline {section}{\numberline {4.1}Problem Description}{29}{section.4.1}
+\contentsline {section}{\numberline {4.2}Multipath Approach}{30}{section.4.2}
+\contentsline {subsection}{\numberline {4.2.1}Changes to the Interest Message}{30}{subsection.4.2.1}
+\contentsline {subsection}{\numberline {4.2.2}Changes to the Data Message}{32}{subsection.4.2.2}
+\contentsline {subsection}{\numberline {4.2.3}Changes to the FIB}{34}{subsection.4.2.3}
+\contentsline {subsection}{\numberline {4.2.4}Changes to the PIT}{35}{subsection.4.2.4}
+\contentsline {chapter}{\numberline {5}Evaluation}{37}{chapter.5}
+\contentsline {section}{\numberline {5.1}Evaluation Environment}{37}{section.5.1}
+\contentsline {subsection}{\numberline {5.1.1}Topology and Mobility}{38}{subsection.5.1.1}
+\contentsline {section}{\numberline {5.2}Results for a Static 8 Nodes Scenario}{40}{section.5.2}
+\contentsline {section}{\numberline {5.3}Results for a Dynamic 16 Nodes Scenario}{44}{section.5.3}
+\contentsline {chapter}{\numberline {6}Conclusions and Outlook}{49}{chapter.6}
+\contentsline {section}{\numberline {6.1}Summary and Conclusions}{49}{section.6.1}
+\contentsline {section}{\numberline {6.2}Future Work}{50}{section.6.2}
+\contentsline {subsection}{\numberline {6.2.1}Static 8 Nodes Scenario}{50}{subsection.6.2.1}
+\contentsline {subsection}{\numberline {6.2.2}Dynamic 16 Nodes Scenario}{50}{subsection.6.2.2}
+\contentsline {chapter}{Bibliography}{51}{chapter*.43}
