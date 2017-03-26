@@ -136,7 +136,7 @@ main(int argc, char* argv[])
   NetDeviceContainer wifiNetDevices = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices2 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
-  NetDeviceContainer wifiNetDevices4 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
+  // NetDeviceContainer wifiNetDevices4 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
   //NetDeviceContainer wifiNetDevices3 = wifi.Install(wifiPhyHelper, wifiMacHelper, nodes);
 
 
@@ -201,7 +201,7 @@ main(int argc, char* argv[])
   consumerHelper.SetAttribute("Frequency", DoubleValue(3.0));
   ApplicationContainer consumer = consumerHelper.Install(nodes.Get(0));
   consumer.Start(Seconds(2));
-  consumer.Stop(Seconds(300));
+  consumer.Stop(Seconds(100));
 
   ndn::AppHelper producerHelper("ns3::ndn::Producer");
   producerHelper.SetPrefix("/test");
@@ -217,7 +217,7 @@ main(int argc, char* argv[])
   //  ndn::CsTracer::Install(nodes, "cs-trace.txt", Seconds(1));
   //  ndn::CsTracer::InstallALL("cs-trace.txt", Seconds(1));
 
-  Simulator::Stop(Seconds(300));
+  Simulator::Stop(Seconds(100));
 
   Simulator::Run();
   /*

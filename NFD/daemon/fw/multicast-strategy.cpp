@@ -39,7 +39,6 @@ const bool debug = false;
 static const int NET_DEVICE_ZERO = 0;
 static const int NET_DEVICE_ONE = 1;
 static const int NET_DEVICE_TWO = 2;
-static const int NET_DEVICE_THREE = 3;
 static const int NET_DEVICE_NONE = 4;
 static const int NET_DEVICE_INVALID = -1;
 
@@ -86,8 +85,6 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 		} else if(currentMacAddresses[2] == interest.getInterestTargetMacAddress()){
 		  semaphoreNetDevice = NET_DEVICE_TWO;
 		  //found = interest_macAddressPath.find(currentMacAddresses[semaphoreNetDevice]);
-		} else if(currentMacAddresses[3] == interest.getInterestTargetMacAddress()){
-			semaphoreNetDevice = NET_DEVICE_THREE;
 		} else {
 		  semaphoreNetDevice = NET_DEVICE_INVALID;
 		  // DROP THE INTEREST SINCE IT HAS A MAC THAT WAS NOT MEANT FOR THIS NODE / NETDEVICE
@@ -105,8 +102,8 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 	if(semaphoreNetDevice == NET_DEVICE_NONE) {
 		newCurrentOriginMac = currentMacAddresses[netDeviceSemaphore%3];
 		netDeviceSemaphore++;
-	} else if(semaphoreNetDevice == NET_DEVICE_ZERO || semaphoreNetDevice == NET_DEVICE_ONE || semaphoreNetDevice == NET_DEVICE_TWO
-		|| semaphoreNetDevice == NET_DEVICE_THREE){
+	} else if(semaphoreNetDevice == NET_DEVICE_ZERO || semaphoreNetDevice == NET_DEVICE_ONE || semaphoreNetDevice == NET_DEVICE_TWO)
+	{
 		newCurrentOriginMac = currentMacAddresses[semaphoreNetDevice];
 	} else {
 		std::cout << "&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&" << std::endl;
@@ -195,7 +192,7 @@ MulticastStrategy::afterReceiveInterest(const Face& inFace,
 			std::string targetMac = "";
 			if (pitEntry->canForwardTo(*outFace) && twice <= 2) {
 				twice++;
-				originMacBroadcasting = currentMacAddresses[semaphoreBraodcasting%4];
+				originMacBroadcasting = currentMacAddresses[semaphoreBraodcasting%3];
 				semaphoreBraodcasting++;
 				this->sendInterest(pitEntry, outFace, originMacBroadcasting, targetMac, inFace.getId());
 			}
