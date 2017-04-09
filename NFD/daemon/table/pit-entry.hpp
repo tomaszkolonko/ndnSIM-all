@@ -109,6 +109,21 @@ public:
   int
   findNonce(uint32_t nonce, const Face& face) const;
 
+  clock_t
+  getLatencyStartTime();
+
+  void
+  setLatencyStartTime();
+
+  clock_t
+  getLatencyEndTime();
+
+  void
+  setLatencyEndTime();
+
+  double
+  getLatency();
+
 public: // InRecord
   const InRecordCollection&
   getInRecords() const;
@@ -199,6 +214,9 @@ private:
   OutRecordCollection m_outRecords;
   OriginMacCollection m_originMacRecords;
 
+  clock_t m_nodeLatencyBegin = clock();
+  clock_t m_nodeLatencyEnd = clock();
+
   static const Name LOCALHOST_NAME;
   static const Name LOCALHOP_NAME;
 
@@ -207,6 +225,37 @@ private:
   friend class nfd::NameTree;
   friend class nfd::name_tree::Entry;
 };
+
+inline clock_t
+Entry::getLatencyStartTime()
+{
+	return m_nodeLatencyBegin;
+}
+
+inline void
+Entry::setLatencyStartTime()
+{
+	m_nodeLatencyBegin = clock();
+}
+
+inline clock_t
+Entry::getLatencyEndTime()
+{
+	return m_nodeLatencyEnd;
+}
+
+inline void
+Entry::setLatencyEndTime()
+{
+	m_nodeLatencyEnd = clock();
+}
+
+inline double
+Entry::getLatency()
+{
+	double elapsed_secs = double(m_nodeLatencyEnd - m_nodeLatencyBegin) / CLOCKS_PER_SEC;
+	return elapsed_secs;
+}
 
 inline const Interest&
 Entry::getInterest() const

@@ -330,6 +330,7 @@ Forwarder::onOutgoingInterest(shared_ptr<pit::Entry> pitEntry, Face& outFace, st
 
   // insert OutRecord
   pitEntry->insertOrUpdateOutRecord(outFace.shared_from_this(), *interest2);
+  pitEntry->setLatencyStartTime();
 
   // TODO UNCOMMENT THIS LINE FOR TRYTRY
   // pitEntry->insertOrUpdateOriginMacRecord(originMac, *interest2);
@@ -510,6 +511,9 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
 
     // Dead Nonce List insert if necessary (for OutRecord of inFace)
     this->insertDeadNonceList(*pitEntry, true, data.getFreshnessPeriod(), &inFace);
+
+    std::cout << "you are on node: " << node->GetId() << std::endl;
+    this->cancelAndPrintLatencyTimer(pitEntry);
 
     // mark PIT satisfied
     // ATTENTION: EVERY PIT ENTRY THAT IS ITERATED THROUGH WILL BE DISPACHED AND DELETED!!!!
@@ -797,6 +801,17 @@ Forwarder::cancelUnsatisfyAndStragglerTimer(shared_ptr<pit::Entry> pitEntry)
 {
   scheduler::cancel(pitEntry->m_unsatisfyTimer);
   scheduler::cancel(pitEntry->m_stragglerTimer);
+}
+
+void
+Forwarder::cancelAndPrintLatencyTimer(shared_ptr<pit::Entry> pitEntry)
+{
+  pitEntry->setLatencyEndTime();
+  double result = pitEntry->getLatency();
+  std::ostringstream strs;
+  strs << result;
+  std::string str = strs.str();
+  std::cout << "LATENCY PER NODE: " + str << std::endl;
 }
 
 static inline void

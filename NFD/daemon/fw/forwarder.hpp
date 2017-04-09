@@ -112,6 +112,9 @@ public: // allow enabling ndnSIM content store (will be removed in the future)
   void
   setCsFromNdnSim(ns3::Ptr<ns3::ndn::ContentStore> cs);
 
+  void
+  cancelAndPrintLatencyTimer(shared_ptr<pit::Entry> pitEntry);
+
 public:
   /** \brief trigger before PIT entry is satisfied
    *  \sa Strategy::beforeSatisfyInterest
