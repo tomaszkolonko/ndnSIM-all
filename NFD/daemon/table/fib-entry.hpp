@@ -86,8 +86,17 @@ public:
    *  If a NextHop record for face already exists, its cost is updated.
    *  \note shared_ptr is passed by value because this function will take shared ownership
    */
+  //void
+  //addNextHop(shared_ptr<Face> face, uint64_t cost, std::string mac);
+
+
+  /** \brief adds a NextHop record
+   *
+   *  If a NextHop record for face already exists, its cost is updated.
+   *  \note shared_ptr is passed by value because this function will take shared ownership
+   */
   void
-  addNextHop(shared_ptr<Face> face, uint64_t cost, std::string mac);
+  addNextHop(shared_ptr<Face> face, uint64_t cost, std::string mac, uint64_t latency);
 
   /** \brief removes a NextHop record
    *

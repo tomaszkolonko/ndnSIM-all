@@ -39,6 +39,7 @@ enum {
   Origin              = 111,
   Mac				  = 120,
   Cost                = 106,
+  Latency			  = 113,
   Flags               = 108,
   Strategy            = 107,
   ExpirationPeriod    = 109,

@@ -66,6 +66,19 @@ public:
      */static void
   AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, int32_t metric, std::string mac);
 
+ /**
+	* \brief Add forwarding entry to FIB
+	*
+	* \param node   Node
+	* \param prefix Routing prefix
+	* \param face   Face
+	* \param metric Routing metric
+	* \param mac    The Mac Address
+	* \param latency The Latency
+	*/
+ static void
+ AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, int32_t metric, std::string mac, uint64_t latency);
+
   /**
    * \brief Add forwarding entry to FIB
    *
@@ -99,6 +112,19 @@ public:
    */
   static void
   AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric, std::string macAddress);
+
+  /**
+   * \brief Add forwarding entry to FIB
+   *
+   * \param nodeName Node
+   * \param prefix Routing prefix
+   * \param faceId Face index
+   * \param metric Routing metric
+   * \param std::string macAddress
+   * \param clock_t latency
+   */
+  static void
+  AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric, std::string macAddress, uint64_t latency);
 
   /**
    * @brief Add forwarding entry to FIB (work only with point-to-point links)

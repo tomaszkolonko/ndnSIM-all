@@ -206,6 +206,7 @@ FibManager::addNextHop(ControlParameters& parameters,
   FaceId faceId = parameters.getFaceId();
   uint64_t cost = parameters.getCost();
   std::string macAddress= parameters.getMac();
+  uint64_t latency = parameters.getLatency();
 
   NFD_LOG_TRACE("add-nexthop prefix: " << prefix
                 << " faceid: " << faceId
@@ -224,7 +225,7 @@ FibManager::addNextHop(ControlParameters& parameters,
       shared_ptr<fib::Entry> entry = m_managedFib.insert(prefix).first;
       //std::cout << "---- >>>>>" << macAddress << std::endl;
 
-      entry->addNextHop(nextHopFace, cost, macAddress);
+      entry->addNextHop(nextHopFace, cost, macAddress, latency);
 
       NFD_LOG_DEBUG("add-nexthop result: OK"
                     << " prefix:" << prefix

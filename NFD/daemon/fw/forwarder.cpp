@@ -455,18 +455,21 @@ Forwarder::onIncomingData(Face& inFace, const Data& data)
   	  return;
   }
 
+  const shared_ptr<pit::Entry>& pitEntry = pitMatches.front();
+  std::cout << "++++++++++" << pitEntry->getLatency() << "++++++" << std::endl;
+
   if(std::regex_match(data.getDataTargetMacAddress(), std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
 	  if(data.getDataTargetMacAddress() == currentMacAddresses[0] || data.getDataTargetMacAddress() == currentMacAddresses[1]
 			  || data.getDataTargetMacAddress() == currentMacAddresses[2]) {
-		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress());
+		  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 111, data.getDataOriginMacAddress(), pitEntry->getLatency());
 	  } else {
 		  // WITH OR WITHOUT OVERHEARING
-		  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress());
+		  // ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 222, data.getDataOriginMacAddress(), pitEntry->getLatency());
 		  return;
 	  }
 	  // FOR NOW ELSE {} HAS NO EFFECT
   } else if (node->GetId() == 7 && data.getDataTargetMacAddress() == "lowerLayerOfProducer") {
-	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress());
+	  ns3::ndn::FibHelper::AddRoute(node, "/", inFace.getId(), 12, data.getDataOriginMacAddress(), pitEntry->getLatency());
   }
 
   string initial_mac_target_data = data.getDataTargetMacAddress();

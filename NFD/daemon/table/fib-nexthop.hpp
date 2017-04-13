@@ -59,10 +59,17 @@ public:
   void
   incrementCost();
 
+  void
+  setLatency(uint64_t latency);
+
+  uint64_t
+  getLatency() const;
+
 private:
   shared_ptr<Face> m_face;
   uint64_t m_cost;
   std::string m_targetMac;
+  uint64_t m_latency;
 };
 
 } // namespace fib

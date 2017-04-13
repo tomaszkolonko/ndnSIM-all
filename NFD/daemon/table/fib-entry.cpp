@@ -82,7 +82,7 @@ Entry::hasNextHop(shared_ptr<Face> face, std::string macAddress) const
 }
 
 void
-Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
+Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress, uint64_t latency)
 {
   auto it = this->findNextHop(*face);
   if(std::regex_match (macAddress, std::regex("([0-9a-fA-F]{2}[:-]){5}[0-9a-fA-F]{2}"))) {
@@ -100,6 +100,7 @@ Entry::addNextHop(shared_ptr<Face> face, uint64_t cost, std::string macAddress)
   if(it->getCost() == 0) {
 	  it->setCost(cost);
   }
+  it->setLatency(latency);
   it->setTargetMac(macAddress);
   this->sortNextHops();
 }
@@ -117,7 +118,7 @@ void
 Entry::sortNextHops()
 {
   std::sort(m_nextHops.begin(), m_nextHops.end(),
-            [] (const NextHop& a, const NextHop& b) { return a.getCost() < b.getCost(); });
+            [] (const NextHop& a, const NextHop& b) { return a.getLatency() < b.getLatency(); });
 }
 
 } // namespace fib

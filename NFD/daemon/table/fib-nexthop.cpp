@@ -59,6 +59,18 @@ NextHop::setTargetMac(std::string mac)
   m_targetMac = mac;
 }
 
+uint64_t
+NextHop::getLatency() const
+{
+  return m_latency;
+}
+
+void
+NextHop::setLatency(uint64_t latency)
+{
+	m_latency = latency;
+}
+
 std::string
 NextHop::getTargetMac() const
 {

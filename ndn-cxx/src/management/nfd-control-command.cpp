@@ -180,13 +180,15 @@ FibAddNextHopCommand::FibAddNextHopCommand()
     .required(CONTROL_PARAMETER_NAME)
     .optional(CONTROL_PARAMETER_FACE_ID)
     .optional(CONTROL_PARAMETER_COST)
-    .optional(CONTROL_PARAMETER_MAC);
+    .optional(CONTROL_PARAMETER_MAC)
+    .optional(CONTROL_PARAMETER_LATENCY);
 
   m_responseValidator
     .required(CONTROL_PARAMETER_NAME)
     .required(CONTROL_PARAMETER_FACE_ID)
     .required(CONTROL_PARAMETER_COST)
-    .required(CONTROL_PARAMETER_MAC);
+    .required(CONTROL_PARAMETER_MAC)
+    .required(CONTROL_PARAMETER_LATENCY);
 }
 
 void
@@ -201,6 +203,9 @@ FibAddNextHopCommand::applyDefaultsToRequest(ControlParameters& parameters) cons
   if (!parameters.hasMac()) {
       parameters.setMac("control command");
     }
+  if (!parameters.hasLatency()) {
+        parameters.setLatency(0);
+      }
 }
 
 void
@@ -305,6 +310,9 @@ RibRegisterCommand::applyDefaultsToRequest(ControlParameters& parameters) const
   }
   if (!parameters.hasCost()) {
     parameters.setCost(0);
+  }
+  if (!parameters.hasLatency()) {
+    parameters.setLatency(0);
   }
   if (!parameters.hasMac()) {
       parameters.setMac("control command");

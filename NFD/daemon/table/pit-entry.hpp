@@ -29,6 +29,7 @@
 #include "pit-in-record.hpp"
 #include "pit-out-record.hpp"
 #include "core/scheduler.hpp"
+#include "ns3/simulator.h"
 
 namespace nfd {
 
@@ -109,19 +110,19 @@ public:
   int
   findNonce(uint32_t nonce, const Face& face) const;
 
-  clock_t
+  uint64_t
   getLatencyStartTime();
 
   void
   setLatencyStartTime();
 
-  clock_t
+  uint64_t
   getLatencyEndTime();
 
   void
   setLatencyEndTime();
 
-  double
+  uint64_t
   getLatency();
 
 public: // InRecord
@@ -214,8 +215,8 @@ private:
   OutRecordCollection m_outRecords;
   OriginMacCollection m_originMacRecords;
 
-  clock_t m_nodeLatencyBegin = clock();
-  clock_t m_nodeLatencyEnd = clock();
+  uint64_t m_nodeLatencyBegin = (uint64_t) ns3::Simulator::Now().GetMilliSeconds();
+  uint64_t m_nodeLatencyEnd = (uint64_t) ns3::Simulator::Now().GetMilliSeconds();
 
   static const Name LOCALHOST_NAME;
   static const Name LOCALHOP_NAME;
@@ -226,7 +227,7 @@ private:
   friend class nfd::name_tree::Entry;
 };
 
-inline clock_t
+inline uint64_t
 Entry::getLatencyStartTime()
 {
 	return m_nodeLatencyBegin;
@@ -235,10 +236,10 @@ Entry::getLatencyStartTime()
 inline void
 Entry::setLatencyStartTime()
 {
-	m_nodeLatencyBegin = clock();
+	m_nodeLatencyBegin = ns3::Simulator::Now().GetMilliSeconds();
 }
 
-inline clock_t
+inline uint64_t
 Entry::getLatencyEndTime()
 {
 	return m_nodeLatencyEnd;
@@ -247,13 +248,13 @@ Entry::getLatencyEndTime()
 inline void
 Entry::setLatencyEndTime()
 {
-	m_nodeLatencyEnd = clock();
+	m_nodeLatencyEnd = ns3::Simulator::Now().GetMilliSeconds();
 }
 
-inline double
+inline uint64_t
 Entry::getLatency()
 {
-	double elapsed_secs = double(m_nodeLatencyEnd - m_nodeLatencyBegin) / CLOCKS_PER_SEC;
+	uint64_t elapsed_secs = uint64_t(m_nodeLatencyEnd - m_nodeLatencyBegin);
 	return elapsed_secs;
 }
 

@@ -43,6 +43,7 @@ enum ControlParameterField {
   CONTROL_PARAMETER_FLAGS,
   CONTROL_PARAMETER_STRATEGY,
   CONTROL_PARAMETER_MAC,
+  CONTROL_PARAMETER_LATENCY,
   CONTROL_PARAMETER_EXPIRATION_PERIOD,
   CONTROL_PARAMETER_UBOUND
 
@@ -59,6 +60,7 @@ const std::string CONTROL_PARAMETER_FIELD[CONTROL_PARAMETER_UBOUND] = {
   "Strategy",
   "ExpirationPeriod",
   "Mac",
+  "Latency",
 };
 
 /**
@@ -306,6 +308,29 @@ public: // getters & setters
     return *this;
   }
 
+  bool
+  hasLatency() const
+  {
+    return m_hasFields[CONTROL_PARAMETER_LATENCY];
+  }
+
+  uint64_t
+  getLatency() const
+  {
+    BOOST_ASSERT(this->hasLatency());
+    return m_latency;
+  }
+
+  ControlParameters&
+  setLatency(uint64_t latency)
+  {
+    m_wire.reset();
+    m_latency = latency;
+    m_hasFields[CONTROL_PARAMETER_LATENCY] = true;
+    return *this;
+  }
+
+
   ControlParameters&
   unsetMac()
   {
@@ -423,6 +448,7 @@ private: // fields
   Name                m_strategy;
   time::milliseconds  m_expirationPeriod;
   std::string 		  m_mac;
+  uint64_t			  m_latency;
 
 private:
   mutable Block m_wire;

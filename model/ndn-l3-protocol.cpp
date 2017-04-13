@@ -284,7 +284,7 @@ L3Protocol::initializeManagement()
   std::ostringstream str;
   str<<ad;
   std::string macAddress = str.str().substr(6);
-  entry->addNextHop(m_impl->m_internalFace, 0, macAddress);
+  entry->addNextHop(m_impl->m_internalFace, 0, macAddress, 0);
 }
 
 void

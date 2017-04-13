@@ -143,6 +143,32 @@ FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, i
 
   AddNextHop(parameters, node);
 }
+
+void
+FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, shared_ptr<Face> face, int32_t metric, std::string mac, uint64_t latency)
+{
+  NS_LOG_LOGIC("[" << node->GetId() << "]$ route add " << prefix << " via " << face->getLocalUri()
+                   << " metric " << metric);
+
+  if(debug) {
+	  std::cout << "LOWER FibHelper::AddRoute node [" << node->GetId() << "]$ route add "
+			  << prefix << " via " << face->getLocalUri() << " metric " << metric << std::endl;
+  }
+  // Get L3Protocol object
+  Ptr<L3Protocol> L3protocol = node->GetObject<L3Protocol>();
+  // Get the forwarder instance
+  shared_ptr<nfd::Forwarder> m_forwarder = L3protocol->getForwarder();
+
+  ControlParameters parameters;
+  parameters.setName(prefix);
+  parameters.setFaceId(face->getId());
+  parameters.setCost(metric);
+  parameters.setMac(mac);
+  parameters.setLatency(latency);
+
+  AddNextHop(parameters, node);
+}
+
 void
 FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric)
 {
@@ -167,6 +193,19 @@ FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t
   //                                          << node->GetId() << "]");
 
   AddRoute(node, prefix, face, metric, macAddress);
+}
+
+void
+FibHelper::AddRoute(Ptr<Node> node, const Name& prefix, uint32_t faceId, int32_t metric, std::string macAddress, uint64_t latency)
+{
+  Ptr<L3Protocol> ndn = node->GetObject<L3Protocol>();
+  NS_ASSERT_MSG(ndn != 0, "Ndn stack should be installed on the node");
+
+  shared_ptr<Face> face = ndn->getFaceById(faceId);
+  //NS_ASSERT_MSG(face != 0, "Face with ID [" << faceId << "] does not exist on node ["
+  //                                          << node->GetId() << "]");
+
+  AddRoute(node, prefix, face, metric, macAddress, latency);
 }
 
 void

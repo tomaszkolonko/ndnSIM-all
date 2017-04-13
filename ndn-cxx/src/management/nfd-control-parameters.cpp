@@ -63,6 +63,9 @@ ControlParameters::wireEncode(EncodingImpl<TAG>& encoder) const
   if (this->hasCost()) {
     totalLength += prependNonNegativeIntegerBlock(encoder, tlv::nfd::Cost, m_cost);
   }
+  if (this->hasLatency()) {
+    totalLength += prependNonNegativeIntegerBlock(encoder, tlv::nfd::Latency, m_latency);
+  }
   if (this->hasMac()) {
 	  size_t valLength = encoder.prependByteArray(
 	                         reinterpret_cast<const uint8_t*>(m_mac.c_str()), m_mac.size());
@@ -170,6 +173,12 @@ ControlParameters::wireDecode(const Block& block)
     if (this->hasMac()) {
       m_mac.assign(reinterpret_cast<const char*>(val->value()), val->value_size());
     }
+
+val = m_wire.find(tlv::nfd::Latency);
+  m_hasFields[CONTROL_PARAMETER_LATENCY] = val != m_wire.elements_end();
+  if (this->hasLatency()) {
+	m_latency = static_cast<uint64_t>(readNonNegativeInteger(*val));
+  }
 
   val = m_wire.find(tlv::nfd::Flags);
   m_hasFields[CONTROL_PARAMETER_FLAGS] = val != m_wire.elements_end();
